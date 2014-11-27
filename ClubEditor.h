@@ -17,10 +17,18 @@ public:
     explicit ClubEditor(QWidget *parent = 0);
     ~ClubEditor();
 
+signals:
+    void clubUpdated(Club *club);
+
 public slots:
     void editClub(Club *club);
     void updateClubName();
     void updateCoachName();
+    void updateClub();
+    void revertClub();
+
+private:
+    void updateControls();
 
 private:
     Ui::ClubEditor *ui;

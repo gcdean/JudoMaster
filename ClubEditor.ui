@@ -21,6 +21,9 @@
        <property name="text">
         <string>Name:</string>
        </property>
+       <property name="buddy">
+        <cstring>clubNameEdit</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -35,6 +38,9 @@
        <property name="text">
         <string>Coach Name:</string>
        </property>
+       <property name="buddy">
+        <cstring>coachNameEdit</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -48,6 +54,9 @@
       <widget class="QLabel" name="label_8">
        <property name="text">
         <string>Country:</string>
+       </property>
+       <property name="buddy">
+        <cstring>usaBtn</cstring>
        </property>
       </widget>
      </item>
@@ -84,6 +93,9 @@
        <property name="text">
         <string>Address 1:</string>
        </property>
+       <property name="buddy">
+        <cstring>address1Edit</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -97,6 +109,9 @@
       <widget class="QLabel" name="label_4">
        <property name="text">
         <string>Address 2:</string>
+       </property>
+       <property name="buddy">
+        <cstring>address2Edit</cstring>
        </property>
       </widget>
      </item>
@@ -112,6 +127,9 @@
        <property name="text">
         <string>City:</string>
        </property>
+       <property name="buddy">
+        <cstring>cityEdit</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -125,6 +143,9 @@
       <widget class="QLabel" name="label_6">
        <property name="text">
         <string>State:</string>
+       </property>
+       <property name="buddy">
+        <cstring>stateCombo</cstring>
        </property>
       </widget>
      </item>
@@ -153,6 +174,9 @@
        <property name="text">
         <string>Zip:</string>
        </property>
+       <property name="buddy">
+        <cstring>zipEdit</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -173,8 +197,44 @@
      </item>
     </layout>
    </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <item>
+      <widget class="QPushButton" name="saveBtn">
+       <property name="text">
+        <string>Save</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="revertBtn">
+       <property name="text">
+        <string>Revert</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>clubNameEdit</tabstop>
+  <tabstop>coachNameEdit</tabstop>
+  <tabstop>usaBtn</tabstop>
+  <tabstop>canadaBtn</tabstop>
+  <tabstop>otherCountryBtn</tabstop>
+  <tabstop>otherCountryEdit</tabstop>
+  <tabstop>address1Edit</tabstop>
+  <tabstop>address2Edit</tabstop>
+  <tabstop>cityEdit</tabstop>
+  <tabstop>stateCombo</tabstop>
+  <tabstop>zipEdit</tabstop>
+  <tabstop>saveBtn</tabstop>
+  <tabstop>revertBtn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

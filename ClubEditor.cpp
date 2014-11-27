@@ -15,8 +15,10 @@ ClubEditor::ClubEditor(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->clubNameEdit, &QLineEdit::editingFinished, this, &ClubEditor::updateClubName);
-    connect(ui->coachNameEdit, &QLineEdit::editingFinished, this, &ClubEditor::updateCoachName);
+//    connect(ui->clubNameEdit, &QLineEdit::editingFinished, this, &ClubEditor::updateClubName);
+//    connect(ui->coachNameEdit, &QLineEdit::editingFinished, this, &ClubEditor::updateCoachName);
+    connect(ui->saveBtn, &QPushButton::pressed, this, &ClubEditor::updateClub);
+    connect(ui->revertBtn, &QPushButton::pressed, this, &ClubEditor::revertClub);
 }
 
 ClubEditor::~ClubEditor()
@@ -28,6 +30,16 @@ void ClubEditor::editClub(Club *club)
 {
     m_club = club;
 
+    updateControls();
+}
+
+void ClubEditor::updateClubName()
+{
+    m_club->setClubName(ui->clubNameEdit->text());
+}
+
+void ClubEditor::updateControls()
+{
     ui->clubNameEdit->setText(m_club->clubName());
     ui->coachNameEdit->setText(m_club->coachName());
     ui->address1Edit->setText(m_club->address1());
@@ -51,14 +63,41 @@ void ClubEditor::editClub(Club *club)
         ui->otherCountryBtn->setChecked(true);
         ui->otherCountryEdit->setText(m_club->country());
     }
-}
 
-void ClubEditor::updateClubName()
-{
-    m_club->setClubName(ui->clubNameEdit->text());
 }
 
 void ClubEditor::updateCoachName()
 {
     m_club->setCoachName(ui->coachNameEdit->text());
+}
+
+void ClubEditor::updateClub()
+{
+    // This should be done with a controller
+    m_club->setClubName(ui->clubNameEdit->text());
+    m_club->setCoachName(ui->coachNameEdit->text());
+    m_club->setAddress1(ui->address1Edit->text());
+    m_club->setAddress2(ui->address2Edit->text());
+    m_club->setCity(ui->cityEdit->text());
+    m_club->setState(ui->stateCombo->currentText());
+    QString country;
+    if(ui->usaBtn->isChecked())
+    {
+        country = "USA";
+    }
+    else if(ui->canadaBtn->isChecked())
+    {
+        country = "Canada";
+    }
+    else
+    {
+        country = ui->otherCountryEdit->text();
+    }
+    m_club->setCountry(country);
+
+}
+
+void ClubEditor::revertClub()
+{
+    updateControls();
 }

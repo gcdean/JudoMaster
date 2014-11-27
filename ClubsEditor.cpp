@@ -1,44 +1,45 @@
 #include "ClubsEditor.h"
 #include "ui_ClubsEditor.h"
 
+#include "JudoMasterApplication.h"
 #include <QAbstractListModel>
 
 
 class ClubModel : public QAbstractListModel
 {
 public:
-    ClubModel(QList<Club *>* clubs, QObject* parent = 0) :
+    ClubModel(QObject* parent = 0) :
         QAbstractListModel(parent)
     {
-        m_clubs = clubs;
+
     }
 
     QModelIndex addClub(Club* club)
     {
-        beginInsertRows(QModelIndex(), m_clubs->size(), m_clubs->size() + 1);
-        m_clubs->append(club);
+        ClubController *controller = JMApp()->clubController();
+        beginInsertRows(QModelIndex(), controller->clubs()->size(), controller->clubs()->size() + 1);
+        controller->addClub(*club);
         endInsertRows();
 
-        return createIndex(m_clubs->size() - 1, 0);
+        return createIndex(controller->clubs()->size() - 1, 0);
     }
 
     Club* club(const QModelIndex &index)
     {
-        Club *c = m_clubs->at(index.row());
+        Club *c = JMApp()->clubController()->clubs()->at(index.row());
         return c;
     }
 
     int rowCount(const QModelIndex &parent) const
     {
-        if(m_clubs)
-            return m_clubs->size();
-        else
-            return 0;
+        if(JMApp()->clubController()->isValid())
+            return (JMApp()->clubController()->clubs()->size());
+        return 0;
     }
 
     QVariant data(const QModelIndex &index, int role) const
     {
-        Club *club = m_clubs->at(index.row());
+        Club *club = JMApp()->clubController()->clubs()->at(index.row());
 
         switch(role)
         {
@@ -68,7 +69,7 @@ public:
     int findNextClubId()
     {
         int nextId = 0;
-        foreach (Club* club, *m_clubs)
+        foreach (Club* club, *JMApp()->clubController()->clubs())
         {
 
             nextId = std::max(nextId, club->id());
@@ -80,8 +81,6 @@ public:
         return nextId;
     }
 
-private:
-    QList<Club *>* m_clubs;
 };
 
 
@@ -89,9 +88,11 @@ private:
 ClubsEditor::ClubsEditor(QWidget *parent) :
     QWidget(parent)
     , ui(new Ui::ClubsEditor)
-    , m_clubs(0)
 {
     ui->setupUi(this);
+
+    ui->clubList->setModel(new ClubModel(ui->clubList));
+
     connect(ui->addClubBtn, &QPushButton::clicked, this, &ClubsEditor::addClub);
     connect(this, &ClubsEditor::clubAdded, ui->clubEditor, &ClubEditor::editClub);
     connect(ui->clubList, &QListView::clicked, this, &ClubsEditor::clubSelected);
@@ -106,19 +107,8 @@ ClubsEditor::~ClubsEditor()
 
 void ClubsEditor::setClubs(QList<Club *> *clubs)
 {
-    if(m_clubs && m_clubs->size() > 0)
-    {
-        // Clear the list.
-    }
 
-    if(!clubs)
-    {
-        return; // Cleaning out the list
-    }
-    m_clubs = clubs;
-
-    ui->clubList->setModel(new ClubModel(m_clubs, ui->clubList));
-
+    // DELETE
 }
 
 void ClubsEditor::addClub()
@@ -141,6 +131,5 @@ void ClubsEditor::clubSelected(const QModelIndex &index)
     if(!model)
         return; // Handle null value
 
-    Club *club = model->club(index);
     emit clubSelect(model->club(index));
 }

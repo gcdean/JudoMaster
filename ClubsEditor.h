@@ -32,7 +32,7 @@ private slots:
 private:
     Ui::ClubsEditor *ui;
 
-    QList<Club *>* m_clubs;
+//    QList<Club *>* m_clubs;
 };
 
 #endif // CLUBSEDITOR_H

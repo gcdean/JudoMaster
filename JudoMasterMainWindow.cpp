@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include "JudoMasterApplication.h"
 #include "Tournament.h"
 
 JudoMasterMainWindow::JudoMasterMainWindow(QWidget *parent) :
@@ -92,6 +93,7 @@ void JudoMasterMainWindow::newTournament()
     ui->actionSave->setEnabled(true);
     ui->actionSave_As->setEnabled(true);
 
+    JMApp()->clubController().setTournament(m_tournament);
 }
 
 bool JudoMasterMainWindow::getFilename()

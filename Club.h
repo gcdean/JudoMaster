@@ -32,11 +32,17 @@ public:
     QString coachName() const {return m_coachName;}
     void setCoachName(QString name) {m_coachName = name;}
     QString address1() const {return m_address1;}
+    void setAddress1(QString address1) {m_address1 = address1;}
     QString address2() const {return m_address2;}
+    void setAddress2(QString address2) {m_address2 = address2;}
     QString country() const {return m_country;}
+    void setCountry(QString country) {m_country = country;}
     QString city() const {return m_city;}
+    void setCity(QString city) {m_city = city;}
     QString state() const {return m_state;}
+    void setState(QString state) {m_state = state;}
     QString zip() const {return m_zip;}
+    void setZip(QString zip) {m_zip = zip;}
 
     const QList<Competitor> competitors() const;
 

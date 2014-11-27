@@ -1,9 +1,9 @@
 #include "JudoMasterMainWindow.h"
-#include <QApplication>
+#include "JudoMasterApplication.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    JudoMasterApplication a(argc, argv);
     JudoMasterMainWindow w;
     w.show();
 
