@@ -88,12 +88,11 @@ void JudoMasterMainWindow::newTournament()
     QDate trnDate(2015, 3, 15);
     m_tournament->setDate(trnDate);
 
-    ui->detailsWidget->setClubs(&m_tournament->clubs());
-
     ui->actionSave->setEnabled(true);
     ui->actionSave_As->setEnabled(true);
 
-    JMApp()->clubController().setTournament(m_tournament);
+    JMApp()->clubController()->setTournament(m_tournament);
+    JMApp()->competitorController()->setTournament(m_tournament);
 }
 
 bool JudoMasterMainWindow::getFilename()

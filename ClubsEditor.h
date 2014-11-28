@@ -19,8 +19,6 @@ public:
     explicit ClubsEditor(QWidget *parent = 0);
     ~ClubsEditor();
 
-    void setClubs(QList<Club *>* clubs);
-
 signals:
     void clubAdded(Club *club);
     void clubSelect(Club *club);

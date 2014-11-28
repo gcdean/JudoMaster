@@ -5,8 +5,8 @@
 #include "Tournament.h"
 #include <QObject>
 
-/*
- * Manages clubs.
+/**
+ * @brief Manages clubs
  */
 class ClubController : public QObject
 {
@@ -15,6 +15,7 @@ public:
     explicit ClubController(QObject *parent = 0);
 
     void setTournament(Tournament* tournament);
+    void createClub();
     void addClub(Club& club);
     void updateClub(Club& club);
     void removeClub(int clubId);
@@ -32,7 +33,7 @@ public slots:
 
 private:
         Club* findClub(int id);
-
+        int findNextClubId();
 private:
     Tournament *m_tournament;
 };

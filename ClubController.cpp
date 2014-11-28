@@ -11,6 +11,13 @@ void ClubController::setTournament(Tournament *tournament)
     emit tournamentChanged();
 }
 
+void ClubController::createClub()
+{
+    int clubId = findNextClubId();
+    Club club(clubId, QString("<Club %1>").arg(clubId), QString("<coach %1>").arg(clubId));
+    addClub(club);
+}
+
 void ClubController::addClub(Club &club)
 {
     if(!m_tournament)
@@ -72,4 +79,19 @@ Club* ClubController::findClub(int id)
         }
     }
     return club;
+}
+
+int ClubController::findNextClubId()
+{
+    int nextId = 0;
+    foreach (Club* club, m_tournament->clubs())
+    {
+
+        nextId = std::max(nextId, club->id());
+    }
+
+    // We now have the max club id.
+    nextId++;
+
+    return nextId;
 }

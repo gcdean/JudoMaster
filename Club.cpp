@@ -13,6 +13,9 @@ Club::Club(int id, QString clubName, QString coachName, QString addr1, QString a
 {
 }
 
+/*
+ * Copy Constructor
+ */
 Club::Club(const Club &src)
 {
     m_id = src.id();

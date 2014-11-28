@@ -24,6 +24,7 @@ public:
     void setStartTime(QTime startTime) {m_startTime = startTime;}
 
     QList<Club *>& clubs() {return m_clubs;}
+    QList<Competitor *>& competitors() {return m_competitors;}
 
     void read(QJsonObject &json);
     void write(QJsonObject& json) const;

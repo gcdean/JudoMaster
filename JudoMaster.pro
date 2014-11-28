@@ -21,7 +21,10 @@ SOURCES += main.cpp\
     ClubEditor.cpp \
     CompetitorList.cpp \
     ClubController.cpp \
-    JudoMasterApplication.cpp
+    JudoMasterApplication.cpp \
+    ClubListModel.cpp \
+    CompetitorTableModel.cpp \
+    CompetitorController.cpp
 
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
@@ -32,7 +35,10 @@ HEADERS  += JudoMasterMainWindow.h \
     ClubEditor.h \
     CompetitorList.h \
     ClubController.h \
-    JudoMasterApplication.h
+    JudoMasterApplication.h \
+    ClubListModel.h \
+    CompetitorTableModel.h \
+    CompetitorController.h
 
 FORMS    += JudoMasterMainWindow.ui \
     ClubsEditor.ui \

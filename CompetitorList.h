@@ -15,8 +15,14 @@ public:
     explicit CompetitorList(QWidget *parent = 0);
     ~CompetitorList();
 
+    void setClubId(int id);
+
+private slots:
+    void addCompetitor();
+
 private:
     Ui::CompetitorList *ui;
+    int m_clubId;
 };
 
 #endif // COMPETITORLIST_H

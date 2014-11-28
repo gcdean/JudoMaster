@@ -23,7 +23,7 @@ class Club
 
 public:
     Club(){}
-    explicit Club(int id, QString clubName, QString coachName, QString addr1, QString addr2, QString country, QString city, QString state, QString zip);
+    explicit Club(int id, QString clubName, QString coachName, QString addr1 = QString(), QString addr2 = QString(), QString country = QString(), QString city = QString(), QString state = QString(), QString zip = QString());
     Club(const Club& src);
 
     int id() const {return m_id;}
