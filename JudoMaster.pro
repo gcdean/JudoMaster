@@ -24,13 +24,14 @@ SOURCES += main.cpp\
     JudoMasterApplication.cpp \
     ClubListModel.cpp \
     CompetitorTableModel.cpp \
-    CompetitorController.cpp
+    CompetitorController.cpp \
+    Bracket.cpp \
+    JMUtil.cpp
 
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
     Club.h \
     Tournament.h \
-    Rank.h \
     ClubsEditor.h \
     ClubEditor.h \
     CompetitorList.h \
@@ -38,7 +39,9 @@ HEADERS  += JudoMasterMainWindow.h \
     JudoMasterApplication.h \
     ClubListModel.h \
     CompetitorTableModel.h \
-    CompetitorController.h
+    CompetitorController.h \
+    Bracket.h \
+    JMUtil.h
 
 FORMS    += JudoMasterMainWindow.ui \
     ClubsEditor.ui \

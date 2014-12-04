@@ -14,7 +14,7 @@ Club* ClubListModel::club(const QModelIndex &index)
     return c;
 }
 
-int ClubListModel::rowCount(const QModelIndex &parent) const
+int ClubListModel::rowCount(const QModelIndex &) const
 {
     if(JMApp()->clubController()->isValid())
         return (JMApp()->clubController()->clubs()->size());
@@ -36,22 +36,24 @@ QVariant ClubListModel::data(const QModelIndex &index, int role) const
     }
 }
 
-QVariant ClubListModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ClubListModel::headerData(int , Qt::Orientation , int role) const
 {
     switch(role)
     {
         case Qt::DisplayRole:
             return QVariant(QString("Club Name"));
     }
+
+    return QVariant();
 }
 
-Qt::ItemFlags ClubListModel::flags(const QModelIndex &index) const
+Qt::ItemFlags ClubListModel::flags(const QModelIndex &) const
 {
     return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 
-void ClubListModel::clubAdded(Club *club)
+void ClubListModel::clubAdded(Club *)
 {
     // The club has already been added.
     int numClubs = JMApp()->clubController()->clubs()->size();

@@ -13,6 +13,27 @@ void Tournament::read(QJsonObject &json)
     m_name = json["name"].toString();
     m_date = QDate::fromString(json["date"].toString(), "dd.mm.yyyy");
     m_startTime = QTime::fromString(json["name"].toString(), "HH.mm");
+
+    // Read the clubs
+    QJsonArray clubs = json["clubs"].toArray();
+    for(int x = 0; x < clubs.size(); x++)
+    {
+        QJsonObject jobj = clubs[x].toObject();
+        Club *club = new Club();
+        club->read(jobj);
+        m_clubs.append(club);
+    }
+
+    // Read the competitors
+    QJsonArray competitors = json["competitors"].toArray();
+    for(int x = 0; x < competitors.size(); x++)
+    {
+        QJsonObject jobj = competitors[x].toObject();
+        Competitor *competitor = new Competitor(jobj);
+        m_competitors.append(competitor);
+
+    }
+
 }
 
 void Tournament::write(QJsonObject &json) const

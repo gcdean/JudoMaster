@@ -1,11 +1,21 @@
 #include "CompetitorTableModel.h"
 #include "JudoMasterApplication.h"
+#include "JMUtil.h"
+
+#include <QColor>
 
 CompetitorTableModel::CompetitorTableModel(QObject *parent) :
     QAbstractTableModel(parent)
     , m_clubId(-1)
 {
     connect(JMApp()->competitorController(), &CompetitorController::competitorAdded, this, &CompetitorTableModel::addCompetitor);
+}
+
+void CompetitorTableModel::setClubId(int id)
+{
+    beginResetModel();
+    m_clubId = id;
+    endResetModel();
 }
 
 int CompetitorTableModel::rowCount(const QModelIndex &) const
@@ -68,7 +78,16 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
     const Competitor *judoka = competitors.at(index.row());
     switch(role)
     {
+        case Qt::BackgroundRole:
+            if(index.column() == 5)
+            {
+                return QVariant(rankToColor(judoka->rank()));
+            }
+
+        break;
+
         case Qt::DisplayRole:
+        case Qt::EditRole:
             switch(index.column())
             {
                 case 0:
@@ -80,7 +99,7 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
                 break;
 
                 case 2:
-                    return QVariant(judoka->gender());
+                    return QVariant(genderToString(judoka->gender()));
                 break;
 
                 case 3:
@@ -92,36 +111,7 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
                 break;
 
                 case 5:
-                    switch(judoka->rank())
-                    {
-                        case White:
-                            return QVariant("White");
-                        break;
-                        case Yellow:
-                            return QVariant("Yellow");
-                            break;
-                        case Orange:
-                            return QVariant("Orange");
-                            break;
-                        case Green:
-                            return QVariant("Green");
-                            break;
-                        case Blue:
-                            return QVariant("Blue");
-                            break;
-                        case Purple:
-                            return QVariant("Purple");
-                            break;
-                        case Brown:
-                            return QVariant("Brown");
-                            break;
-                        case Black:
-                            return QVariant("Black");
-                            break;
-
-                        default:
-                            return QVariant("Unknown");
-                    }
+                    return QVariant(rankToString(judoka->rank()));
 
                 break;
 
@@ -131,6 +121,45 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
     }
 
     return QVariant();
+}
+
+Qt::ItemFlags CompetitorTableModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    int col = index.column();
+    if(col == 0 || col == 1)
+    {
+        flags |= Qt::ItemIsEditable;
+    }
+
+    return flags;
+}
+
+bool CompetitorTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    bool updated = false;
+    const QList<Competitor *> competitors = JMApp()->competitorController()->competitors(m_clubId);
+    Competitor *competitor = competitors.at(index.row());
+
+    switch(index.column())
+    {
+        case 0: // First Name
+            competitor->setFirstName(value.toString());
+            updated = true;
+        break;
+
+        case 1: // Last Name
+            competitor->setLastName(value.toString());
+            updated = true;
+        break;
+    }
+
+    if(updated)
+    {
+        emit dataChanged(index, index);
+    }
+    return updated;
+
 }
 
 void CompetitorTableModel::addCompetitor(Competitor *competitor)

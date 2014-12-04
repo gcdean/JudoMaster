@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QString>
 
-#include "Rank.h"
+#include "JMUtil.h"
 
 class Competitor //: public QObject
 {
@@ -23,16 +23,19 @@ class Competitor //: public QObject
 
 public:
 
-    explicit Competitor(int id, QString firstName, QString lastName, QString gender, int age , double weight, Rank rank, int clubId);
+    explicit Competitor(int id, QString firstName, QString lastName, JM::Gender gender, int age , double weight, JM::Rank rank, int clubId);
     Competitor(const Competitor& src);
+    Competitor(QJsonObject &json);
 
     int id() const {return m_id;}
     QString firstName() const {return m_firstName;}
+    void setFirstName(QString name) {m_firstName = name;}
     QString lastName() const {return m_lastName;}
-    QString gender() const {return m_gender;}
+    void setLastName(QString name) {m_lastName = name;}
+    JM::Gender gender() const {return m_gender;}
     int age() const {return m_age;}
     double weight() const {return m_weight;}
-    Rank rank() const {return m_rank;}
+    JM::Rank rank() const {return m_rank;}
     int clubId() const {return m_clubId;}
     void setClubId(int id) {m_clubId = id;}
 
@@ -43,10 +46,10 @@ private:
     int m_id;
     QString m_firstName;
     QString m_lastName;
-    QString m_gender;
+    JM::Gender m_gender;
     int m_age;
     double m_weight;
-    Rank m_rank;
+    JM::Rank m_rank;
     int m_clubId;
 };
 

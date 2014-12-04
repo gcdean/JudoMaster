@@ -23,9 +23,13 @@ public slots:
     void save();
     void saveAs();
     void newTournament();
+    void close();
+    void open();
 
 private:
     bool getFilename();
+    void updateControls();
+    void loadFile(QString filename);
 
 private:
     Ui::JudoMasterMainWindow *ui;

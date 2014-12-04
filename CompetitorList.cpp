@@ -27,7 +27,9 @@ void CompetitorList::setClubId(int id)
 {
     m_clubId = id;
     CompetitorTableModel *model = dynamic_cast<CompetitorTableModel *>(ui->competitorTable->model());
+
     model->setClubId(id);
+    ui->competitorTable->reset();
 }
 
 void CompetitorList::addCompetitor()

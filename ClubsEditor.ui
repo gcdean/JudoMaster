@@ -90,7 +90,7 @@
      </widget>
      <widget class="QTabWidget" name="competitorList">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="ClubEditor" name="clubEditor">
        <attribute name="title">

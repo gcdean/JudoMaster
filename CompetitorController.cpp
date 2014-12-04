@@ -1,5 +1,5 @@
 #include "CompetitorController.h"
-#include "Rank.h"
+#include "JMUtil.h"
 
 #include <QString>
 
@@ -16,7 +16,7 @@ void CompetitorController::setTournament(Tournament *tournament)
 void CompetitorController::createClubCompetitor(int clubId)
 {
     int compId = findNextId();
-    Competitor *competitor = new Competitor(compId, QString("Competitor"), QString("%1").arg(compId), QString("F"), 0, 0, White, clubId);
+    Competitor *competitor = new Competitor(compId, QString("Competitor"), QString("%1").arg(compId), JM::Female, 0, 0, JM::White, clubId);
     m_tournament->competitors().append(competitor);
 
     emit competitorAdded(competitor);
