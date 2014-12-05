@@ -1,6 +1,7 @@
 #include "CompetitorList.h"
 #include "ui_CompetitorList.h"
 
+#include "ClubController.h"
 #include "CompetitorTableModel.h"
 #include "JudoMasterApplication.h"
 
@@ -16,6 +17,7 @@ CompetitorList::CompetitorList(QWidget *parent) :
     ui->competitorTable->setModel(model);
 
     connect(ui->addBtn, &QPushButton::clicked, this, &CompetitorList::addCompetitor);
+    connect(JMApp()->clubController(), &ClubController::tournamentChanged, this, &CompetitorList::tournamentChanged);
 }
 
 CompetitorList::~CompetitorList()
@@ -35,4 +37,9 @@ void CompetitorList::setClubId(int id)
 void CompetitorList::addCompetitor()
 {
     JMApp()->competitorController()->createClubCompetitor(m_clubId);
+}
+
+void CompetitorList::tournamentChanged()
+{
+    ui->competitorTable->reset();
 }

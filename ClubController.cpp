@@ -59,16 +59,23 @@ void ClubController::removeClub(int clubId)
     }
 }
 
+namespace
+{
+    const QList<Club *> NOCLUBS;
+}
 const QList<Club *> *ClubController::clubs() const
 {
     if(!m_tournament)
-        return 0;
+        return &NOCLUBS;
     return &m_tournament->clubs();
 }
 
 Club* ClubController::findClub(int id)
 {
     Club* club = 0;
+
+    if(!m_tournament)
+        return club;
 
     for(int x = 0; x < m_tournament->clubs().size() && !club; x++)
     {
@@ -84,10 +91,13 @@ Club* ClubController::findClub(int id)
 int ClubController::findNextClubId()
 {
     int nextId = 0;
-    foreach (Club* club, m_tournament->clubs())
+    if(m_tournament)
     {
+        foreach (Club* club, m_tournament->clubs())
+        {
 
-        nextId = std::max(nextId, club->id());
+            nextId = std::max(nextId, club->id());
+        }
     }
 
     // We now have the max club id.

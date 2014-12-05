@@ -19,6 +19,7 @@ public:
 
 private slots:
     void addCompetitor();
+    void tournamentChanged();
 
 private:
     Ui::CompetitorList *ui;

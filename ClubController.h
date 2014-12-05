@@ -21,8 +21,6 @@ public:
     void removeClub(int clubId);
     const QList <Club *> *clubs() const;
 
-    bool isValid() const {return m_tournament != 0;}
-
 signals:
     void tournamentChanged();
     void clubAdded(Club* club);

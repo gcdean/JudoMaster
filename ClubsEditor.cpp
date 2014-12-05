@@ -5,6 +5,7 @@
 #include "JudoMasterApplication.h"
 #include <QAbstractListModel>
 
+#include <QDebug>
 
 ClubsEditor::ClubsEditor(QWidget *parent) :
     QWidget(parent)
@@ -20,7 +21,7 @@ ClubsEditor::ClubsEditor(QWidget *parent) :
     connect(this, &ClubsEditor::clubSelect, ui->clubEditor, &ClubEditor::editClub);
 
     connect(ui->clubList->selectionModel(), &QItemSelectionModel::currentChanged, this, &ClubsEditor::clubSelected);
-
+    connect(JMApp()->clubController(), &ClubController::tournamentChanged, this, &ClubsEditor::tournamentChanged);
 }
 
 ClubsEditor::~ClubsEditor()
@@ -48,4 +49,9 @@ void ClubsEditor::clubSelected(const QModelIndex &index)
 
     ui->competitorsList->setClubId(model->club(index)->id());
     emit clubSelect(model->club(index));
+}
+
+void ClubsEditor::tournamentChanged()
+{
+    ui->clubList->reset();
 }
