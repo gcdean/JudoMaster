@@ -7,26 +7,19 @@
 #include <QString>
 
 #include "Competitor.h"
+#include "JMDataObj.h"
 
-class Club
+/**
+ * @brief Represents all the data for a Judo club
+ */
+class Club : public JMDataObj
 {
-//    Q_OBJECT
-//    Q_PROPERTY(int id READ id)
-//    Q_PROPERTY(QString clubName READ clubName)
-//    Q_PROPERTY(QString coachName READ coachName)
-//    Q_PROPERTY(QString address1 READ address1)
-//    Q_PROPERTY(QString address2 READ address2)
-//    Q_PROPERTY(QString country READ country)
-//    Q_PROPERTY(QString city READ city)
-//    Q_PROPERTY(QString state READ state)
-//    Q_PROPERTY(QString zip READ zip)
 
 public:
-    Club(){}
+    Club();
     explicit Club(int id, QString clubName, QString coachName, QString addr1 = QString(), QString addr2 = QString(), QString country = QString(), QString city = QString(), QString state = QString(), QString zip = QString());
     Club(const Club& src);
 
-    int id() const {return m_id;}
     QString clubName() const {return m_clubName;}
     void setClubName(QString name) {m_clubName = name;}
     QString coachName() const {return m_coachName;}
@@ -48,11 +41,10 @@ public:
 
     void addCompetitor(Competitor competitor);
 
-    void read(QJsonObject &json);
-    void write(QJsonObject &json) const;
+    void read(const QJsonObject &json) override;
+    void write(QJsonObject &json) const override;
 
 private:
-    int m_id;
     QString m_clubName;
     QString m_coachName;
     QString m_address1;

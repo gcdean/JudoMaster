@@ -46,7 +46,7 @@ namespace
 }
 
 Bracket::Bracket()
-    : m_id(0)
+    : JMDataObj(-1)
     , m_name("")
     , m_bracketType(Bracket::Age)
     , m_weightType(Bracket::LightMediumHeavy)
@@ -56,16 +56,38 @@ Bracket::Bracket()
 {    
 }
 
-
-Bracket::Bracket(QJsonObject jobj)
+Bracket::Bracket(int id)
+    : JMDataObj(id)
+    , m_name("")
+    , m_bracketType(Bracket::Age)
+    , m_weightType(Bracket::LightMediumHeavy)
+    , m_minAge(0)
+    , m_maxAge(0)
+    , m_maxWeight(0.0)
 {
-    read(jobj);
+
 }
 
-
-void Bracket::read(QJsonObject &json)
+Bracket::Bracket(const Bracket &src)
+    : JMDataObj(src)
 {
-    m_id = json["id"].toInt();
+    m_name = src.name();
+    m_bracketType = src.type();
+    m_weightType = src.weightType();
+    m_minAge = src.minAge();
+    m_maxAge = src.maxAge();
+    m_maxWeight = src.maxWeight();
+}
+
+Bracket::Bracket(const QJsonObject &json)
+    : JMDataObj(json)
+{
+    // The base class constructor will call read
+}
+
+void Bracket::read(const QJsonObject &json)
+{
+    JMDataObj::read(json);
     m_name = json["name"].toString();
     m_bracketType = bracketTypeFromString(json["bracketType"].toString());
     m_weightType = weightTypeFromStr(json["weightType"].toString());
@@ -76,7 +98,7 @@ void Bracket::read(QJsonObject &json)
 
 void Bracket::write(QJsonObject &json) const
 {
-    json["id"] = m_id;
+    JMDataObj::write(json);
     json["name"] = m_name;
     json["bracketType"] = bracketTypeToStr(m_bracketType);
     json["weightType"] = weightTypeToStr(m_weightType);

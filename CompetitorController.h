@@ -1,23 +1,26 @@
 #ifndef COMPETITORCONTROLLER_H
 #define COMPETITORCONTROLLER_H
 
-#include "Competitor.h"
-#include "Tournament.h"
+#include "BaseController.h"
 #include <QObject>
+
+class Competitor;
 
 /**
  * @brief Manages Competitors
  *
  */
-class CompetitorController : public QObject
+class CompetitorController : public BaseController
 {
     Q_OBJECT
 public:
     explicit CompetitorController(QObject *parent = 0);
 
-    void setTournament(Tournament* tournament);
     void createClubCompetitor(int clubId);
-    int numClubCompetitors(int clubId) const;
+
+    int size() const /*override*/;
+    int size(int id) const /*override*/;
+
     const QList<Competitor *> clubCompetitors(int clubId) const;
     const QList<Competitor *> competitors(int clubId = -1) const;
 
@@ -26,11 +29,10 @@ signals:
 
 public slots:
 
-private:
-    int findNextId();
 
-private:
-    Tournament *m_tournament;
+protected:
+    int findNextId() /*override*/;
+
 };
 
 #endif // COMPETITORCONTROLLER_H

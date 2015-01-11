@@ -1,7 +1,13 @@
 #include "Club.h"
 
+Club::Club()
+    : JMDataObj(-1)
+{
+
+}
+
 Club::Club(int id, QString clubName, QString coachName, QString addr1, QString addr2, QString country, QString city, QString state, QString zip)
-    : m_id(id)
+    : JMDataObj(id)
     , m_clubName(clubName)
     , m_coachName(coachName)
     , m_address1(addr1)
@@ -17,8 +23,8 @@ Club::Club(int id, QString clubName, QString coachName, QString addr1, QString a
  * Copy Constructor
  */
 Club::Club(const Club &src)
+    : JMDataObj(src)
 {
-    m_id = src.id();
     m_clubName = src.clubName();
     m_coachName = src.coachName();
     m_address1 = src.address1();
@@ -43,9 +49,9 @@ void Club::addCompetitor(Competitor competitor)
     m_competitors.append(competitor);
 }
 
-void Club::read(QJsonObject &json)
+void Club::read(const QJsonObject &json)
 {
-    m_id = json["id"].toInt();
+    JMDataObj::read(json);
     m_clubName = json["clubname"].toString();
     m_coachName = json["coachname"].toString();
     m_address1 = json["address1"].toString();
@@ -58,7 +64,7 @@ void Club::read(QJsonObject &json)
 
 void Club::write(QJsonObject &json) const
 {
-    json["id"] = m_id;
+    JMDataObj::write(json);
     json["clubname"] = m_clubName;
     json["coachname"] = m_coachName;
     json["address1"] = m_address1;

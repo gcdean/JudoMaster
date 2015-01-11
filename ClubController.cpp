@@ -1,36 +1,34 @@
 #include "ClubController.h"
 
-ClubController::ClubController(QObject *parent) :
-    QObject(parent)
-{
-}
+#include "Club.h"
+#include "Tournament.h"
 
-void ClubController::setTournament(Tournament *tournament)
+ClubController::ClubController(QObject *parent) :
+    BaseController(parent)
 {
-    m_tournament = tournament;
-    emit tournamentChanged();
 }
 
 void ClubController::createClub()
 {
-    int clubId = findNextClubId();
+    int clubId = findNextId();
     Club club(clubId, QString("<Club %1>").arg(clubId), QString("<coach %1>").arg(clubId));
     addClub(club);
 }
 
 void ClubController::addClub(Club &club)
 {
-    if(!m_tournament)
+    if(!tournament())
         return;
 
     Club *newClub = new Club(club);
-    m_tournament->clubs().append(newClub);
-    emit clubAdded(newClub);
+    tournament()->clubs().append(newClub);
+    //emit clubAdded(newClub);
+    emit addedDataObj(newClub);
 }
 
 void ClubController::updateClub(Club& club)
 {
-    if(!m_tournament)
+    if(!tournament())
         return;
 
     Club* foundClub = findClub(club.id());
@@ -47,13 +45,13 @@ void ClubController::updateClub(Club& club)
 
 void ClubController::removeClub(int clubId)
 {
-    if(!m_tournament)
+    if(!tournament())
         return;
 
     Club *foundClub = findClub(clubId);
     if(foundClub)
     {
-        m_tournament->clubs().removeOne(foundClub);
+        tournament()->clubs().removeOne(foundClub);
         // May need to delete club which means signature of signal changes
         emit clubRemoved(foundClub);
     }
@@ -65,21 +63,47 @@ namespace
 }
 const QList<Club *> *ClubController::clubs() const
 {
-    if(!m_tournament)
+    if(!tournament())
         return &NOCLUBS;
-    return &m_tournament->clubs();
+    return &tournament()->clubs();
+}
+
+void ClubController::add(int parentId)
+{
+    Q_UNUSED(parentId);
+
+    if(!tournament())
+        return;
+
+    createClub();
+}
+
+int ClubController::size() const
+{
+    if(!tournament())
+    {
+        return 0;
+    }
+
+    return tournament()->clubs().size();
+}
+
+int ClubController::size(int id) const
+{
+    // For now, just return the size.
+    return size();
 }
 
 Club* ClubController::findClub(int id)
 {
     Club* club = 0;
 
-    if(!m_tournament)
+    if(!tournament())
         return club;
 
-    for(int x = 0; x < m_tournament->clubs().size() && !club; x++)
+    for(int x = 0; x < tournament()->clubs().size() && !club; x++)
     {
-        Club* temp = m_tournament->clubs()[x];
+        Club* temp = tournament()->clubs()[x];
         if(temp->id() == id)
         {
             club = temp;
@@ -88,12 +112,12 @@ Club* ClubController::findClub(int id)
     return club;
 }
 
-int ClubController::findNextClubId()
+int ClubController::findNextId()
 {
     int nextId = 0;
-    if(m_tournament)
+    if(tournament())
     {
-        foreach (Club* club, m_tournament->clubs())
+        foreach (Club* club, tournament()->clubs())
         {
 
             nextId = std::max(nextId, club->id());

@@ -1,8 +1,10 @@
 #ifndef JUDOMASTERAPPLICATION_H
 #define JUDOMASTERAPPLICATION_H
 
+#include "BracketController.h"
 #include "ClubController.h"
 #include "CompetitorController.h"
+
 
 #include <QApplication>
 
@@ -13,11 +15,12 @@ public:
 
     ClubController* clubController()  {return &m_clubController;}
     CompetitorController *competitorController() {return &m_competitorController;}
+    BracketController *bracketController() {return &m_bracketController;}
 
 private:
     ClubController m_clubController;
     CompetitorController m_competitorController;
-
+    BracketController m_bracketController;
 };
 
 static JudoMasterApplication *JMApp() {return dynamic_cast<JudoMasterApplication *>(qApp);}

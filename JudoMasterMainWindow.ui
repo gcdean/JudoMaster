@@ -21,7 +21,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="generalTab">
        <attribute name="title">
@@ -140,8 +140,17 @@
       </widget>
       <widget class="QWidget" name="bracketTab">
        <attribute name="title">
-        <string>Tab 2</string>
+        <string>Tab 1!!!</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -216,6 +225,12 @@
    <class>ClubsEditor</class>
    <extends>QWidget</extends>
    <header>ClubsEditor.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BracketManager</class>
+   <extends>QWidget</extends>
+   <header location="global">BracketManager.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

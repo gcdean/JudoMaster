@@ -1,42 +1,48 @@
 #include "CompetitorController.h"
 #include "JMUtil.h"
 
+#include "Competitor.h"
+#include "Tournament.h"
+
 #include <QString>
 
 CompetitorController::CompetitorController(QObject *parent) :
-    QObject(parent)
+    BaseController(parent)
 {
-}
-
-void CompetitorController::setTournament(Tournament *tournament)
-{
-    m_tournament = tournament;
 }
 
 void CompetitorController::createClubCompetitor(int clubId)
 {
     int compId = findNextId();
     Competitor *competitor = new Competitor(compId, QString("Competitor"), QString("%1").arg(compId), JM::Female, 0, 0, JM::White, clubId);
-    m_tournament->competitors().append(competitor);
+    tournament()->competitors().append(competitor);
 
     emit competitorAdded(competitor);
 }
 
-int CompetitorController::numClubCompetitors(int clubId) const
+int CompetitorController::size() const
+{
+    if(!tournament())
+        return 0;
+
+    return tournament()->competitors().size();
+}
+
+int CompetitorController::size(int id) const
 {
     int numCompetitors = 0;
-    if(!m_tournament)
+    if(!tournament())
         return numCompetitors;
 
-    if(clubId == -1)
+    if(id == -1)
     {
-        numCompetitors = m_tournament->competitors().size();
+        numCompetitors = tournament()->competitors().size();
     }
     else
     {
-        foreach(Competitor *competitor, m_tournament->competitors())
+        foreach(Competitor *competitor, tournament()->competitors())
         {
-            if(competitor->clubId() == clubId)
+            if(competitor->clubId() == id)
             {
                 numCompetitors++;
             }
@@ -55,9 +61,9 @@ const QList<Competitor *> CompetitorController::clubCompetitors(int clubId) cons
     // CAN DELETE THIS
     QList<Competitor *> competitors;
 
-    if(m_tournament)
+    if(tournament())
     {
-        foreach(Competitor *competitor, m_tournament->competitors())
+        foreach(Competitor *competitor, tournament()->competitors())
         {
             if(competitor->clubId() == clubId)
             {
@@ -71,17 +77,17 @@ const QList<Competitor *> CompetitorController::clubCompetitors(int clubId) cons
 
 const QList<Competitor *> CompetitorController::competitors(int clubId) const
 {
-    if(!m_tournament)
+    if(!tournament())
     {
         return QList<Competitor *>();
     }
     if(clubId == -1)
-        return m_tournament->competitors();
+        return tournament()->competitors();
     else
     {
         QList<Competitor *> competitors;
 
-        foreach(Competitor *competitor, m_tournament->competitors())
+        foreach(Competitor *competitor, tournament()->competitors())
         {
             if(competitor->clubId() == clubId)
             {
@@ -98,9 +104,9 @@ const QList<Competitor *> CompetitorController::competitors(int clubId) const
 int CompetitorController::findNextId()
 {
     int id = 0;
-    if(m_tournament)
+    if(tournament())
     {
-        foreach(Competitor* competitor, m_tournament->competitors())
+        foreach(Competitor* competitor, tournament()->competitors())
         {
             id = std::max(id, competitor->id());
         }

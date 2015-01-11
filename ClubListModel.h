@@ -24,7 +24,7 @@ public:
 signals:
 
 public slots:
-    void clubAdded(Club *club);
+    void clubAdded(JMDataObj *club);
 
 };
 

@@ -1,4 +1,6 @@
 #include "CompetitorTableModel.h"
+
+#include "Competitor.h"
 #include "JudoMasterApplication.h"
 #include "JMUtil.h"
 
@@ -21,7 +23,7 @@ void CompetitorTableModel::setClubId(int id)
 int CompetitorTableModel::rowCount(const QModelIndex &) const
 {
     if(m_clubId != -1)
-        return JMApp()->competitorController()->numClubCompetitors(m_clubId);
+        return JMApp()->competitorController()->size(m_clubId);
     else
         return JMApp()->competitorController()->competitors().size();
 }
@@ -166,7 +168,7 @@ void CompetitorTableModel::addCompetitor(Competitor *competitor)
 {
    if(m_clubId == -1 || m_clubId == competitor->clubId())
    {
-       int numCompetitors = JMApp()->competitorController()->numClubCompetitors(m_clubId) - 1;
+       int numCompetitors = JMApp()->competitorController()->size(m_clubId) - 1;
        beginInsertRows(QModelIndex(), numCompetitors, numCompetitors);
        endInsertRows();
    }

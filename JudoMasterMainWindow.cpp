@@ -10,6 +10,7 @@
 #include <QDebug>
 
 #include "JudoMasterApplication.h"
+#include "CompetitorController.h"
 #include "Tournament.h"
 
 JudoMasterMainWindow::JudoMasterMainWindow(QWidget *parent) :
@@ -99,6 +100,7 @@ void JudoMasterMainWindow::newTournament()
 
     JMApp()->clubController()->setTournament(m_tournament);
     JMApp()->competitorController()->setTournament(m_tournament);
+    JMApp()->bracketController()->setTournament(m_tournament);
 
     updateControls();
 }
@@ -109,6 +111,7 @@ void JudoMasterMainWindow::close()
 
     JMApp()->clubController()->setTournament(0);
     JMApp()->competitorController()->setTournament(0);
+    JMApp()->bracketController()->setTournament(0);
 
     delete m_tournament;
     m_tournament = 0;
@@ -151,6 +154,7 @@ void JudoMasterMainWindow::loadFile(QString filename)
 
    JMApp()->clubController()->setTournament(m_tournament);
    JMApp()->competitorController()->setTournament(m_tournament);
+   JMApp()->bracketController()->setTournament(m_tournament);
 
 }
 

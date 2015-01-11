@@ -10,6 +10,8 @@
 #include "Club.h"
 #include "Competitor.h"
 
+class Bracket;
+
 class Tournament : public QObject
 {
     Q_OBJECT
@@ -25,6 +27,7 @@ public:
 
     QList<Club *>& clubs() {return m_clubs;}
     QList<Competitor *>& competitors() {return m_competitors;}
+    QList<Bracket *>& brackets() {return m_brackets;}
 
     void read(QJsonObject &json);
     void write(QJsonObject& json) const;
@@ -40,6 +43,7 @@ private:
 
     QList<Club *> m_clubs;
     QList<Competitor *> m_competitors;
+    QList <Bracket *> m_brackets;
 
 };
 

@@ -25,6 +25,7 @@ signals:
 
 private slots:
     void addClub();
+    void removeClub();
     void clubSelected(const QModelIndex &index);
     void tournamentChanged();
 

@@ -1,5 +1,7 @@
 #include "Tournament.h"
 
+#include "Bracket.h"
+
 #include <QJsonArray>
 #include <QJsonObject>
 
@@ -34,6 +36,14 @@ void Tournament::read(QJsonObject &json)
 
     }
 
+    // Read the brackets
+    QJsonArray brackets = json["brackets"].toArray();
+    for(int x = 0; x < brackets.size(); x++)
+    {
+        QJsonObject jobj = brackets[x].toObject();
+        Bracket *bracket = new Bracket(jobj);
+        m_brackets.append(bracket);
+    }
 }
 
 void Tournament::write(QJsonObject &json) const
@@ -63,5 +73,16 @@ void Tournament::write(QJsonObject &json) const
     }
 
     json["competitors"] = judokas;
+
+    // Brackets
+    QJsonArray brackets;
+    foreach(Bracket *bracket, m_brackets)
+    {
+        QJsonObject jobj;
+        bracket->write(jobj);
+        brackets.append(jobj);
+    }
+
+    json["brackets"] = brackets;
 }
 

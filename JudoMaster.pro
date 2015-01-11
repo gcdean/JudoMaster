@@ -11,6 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = JudoMaster
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -Wunused-parameter
+QMAKE_CXXFLAGS += -Wc++11-extensions
 
 SOURCES += main.cpp\
         JudoMasterMainWindow.cpp \
@@ -26,7 +28,12 @@ SOURCES += main.cpp\
     CompetitorTableModel.cpp \
     CompetitorController.cpp \
     Bracket.cpp \
-    JMUtil.cpp
+    JMUtil.cpp \
+    BracketEditor.cpp \
+    BaseController.cpp \
+    JMDataObj.cpp \
+    BracketController.cpp \
+    BracketManager.cpp
 
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
@@ -41,12 +48,19 @@ HEADERS  += JudoMasterMainWindow.h \
     CompetitorTableModel.h \
     CompetitorController.h \
     Bracket.h \
-    JMUtil.h
+    JMUtil.h \
+    BracketEditor.h \
+    BaseController.h \
+    JMDataObj.h \
+    BracketController.h \
+    BracketManager.h
 
 FORMS    += JudoMasterMainWindow.ui \
     ClubsEditor.ui \
     ClubEditor.ui \
-    CompetitorList.ui
+    CompetitorList.ui \
+    BracketEditor.ui \
+    BracketManager.ui
 
 RESOURCES += \
     Resources.qrc

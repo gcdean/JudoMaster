@@ -5,18 +5,17 @@
 #include "CompetitorTableModel.h"
 #include "JudoMasterApplication.h"
 
+#include <QAbstractTableModel>
+
 CompetitorList::CompetitorList(QWidget *parent) :
     QWidget(parent)
     , ui(new Ui::CompetitorList)
     , m_clubId(-1)
+    , m_controller(0)
 {
     ui->setupUi(this);
 
-    CompetitorTableModel *model = new CompetitorTableModel(ui->competitorTable);
-
-    ui->competitorTable->setModel(model);
-
-    connect(ui->addBtn, &QPushButton::clicked, this, &CompetitorList::addCompetitor);
+    connect(ui->addBtn, &QPushButton::clicked, this, &CompetitorList::add);
     connect(JMApp()->clubController(), &ClubController::tournamentChanged, this, &CompetitorList::tournamentChanged);
 }
 
@@ -34,9 +33,28 @@ void CompetitorList::setClubId(int id)
     ui->competitorTable->reset();
 }
 
-void CompetitorList::addCompetitor()
+void CompetitorList::setModel(QAbstractTableModel *model)
 {
-    JMApp()->competitorController()->createClubCompetitor(m_clubId);
+    model->setParent(ui->competitorTable);
+    ui->competitorTable->setModel(model);
+}
+
+void CompetitorList::setController(BaseController *controller)
+{
+    m_controller = controller;
+}
+
+void CompetitorList::add()
+{
+    if(m_controller)
+    {
+        m_controller->add(m_clubId);
+    }
+}
+
+void CompetitorList::remove()
+{
+    // Remove Selected items.
 }
 
 void CompetitorList::tournamentChanged()

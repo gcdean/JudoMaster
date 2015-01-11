@@ -5,7 +5,8 @@
 ClubListModel::ClubListModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    connect(JMApp()->clubController(), &ClubController::clubAdded, this, &ClubListModel::clubAdded);
+//    connect(JMApp()->clubController(), &ClubController::clubAdded, this, &ClubListModel::clubAdded);
+    connect(JMApp()->clubController(), &ClubController::addedDataObj, this, &ClubListModel::clubAdded);
 }
 
 Club* ClubListModel::club(const QModelIndex &index)
@@ -51,7 +52,7 @@ Qt::ItemFlags ClubListModel::flags(const QModelIndex &) const
 }
 
 
-void ClubListModel::clubAdded(Club *)
+void ClubListModel::clubAdded(JMDataObj *)
 {
     // The club has already been added.
     int numClubs = JMApp()->clubController()->clubs()->size();
