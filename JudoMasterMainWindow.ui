@@ -21,7 +21,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="generalTab">
        <attribute name="title">
@@ -144,11 +144,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
+         <widget class="BracketManager" name="widget" native="true"/>
         </item>
        </layout>
       </widget>

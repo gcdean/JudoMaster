@@ -31,7 +31,7 @@ namespace
     const QString LightMedHeavyStr("LightMedHeavy");
     QString weightTypeToStr(Bracket::WeightType type)
     {
-        if(type == Bracket::Absolute)
+        if(type == Bracket::IJF)
             return AbsoluteStr;
         return LightMedHeavyStr;
     }
@@ -39,7 +39,7 @@ namespace
     Bracket::WeightType weightTypeFromStr(QString typeStr)
     {
         if(typeStr.compare(AbsoluteStr, Qt::CaseInsensitive) == 0)
-            return Bracket::Absolute;
+            return Bracket::IJF;
 
         return Bracket::LightMediumHeavy;
     }

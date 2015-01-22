@@ -18,10 +18,15 @@ JudoMasterMainWindow::JudoMasterMainWindow(QWidget *parent) :
     , ui(new Ui::JudoMasterMainWindow)
     , m_tournament(0)
 {
-    ui->setupUi(this);
+    ui->setupUi(this                                            );
 
     m_saveDir = QDir::home();
 
+    qDebug() << "There are " << ui->tabWidget->count() << " tabs.";
+    for( auto i = 0; i < ui->tabWidget->count(); i++)
+    {
+        qDebug() << "Tab " << i << " name is: " << ui->tabWidget->tabText(i);
+    }
     ui->tabWidget->setTabText(0, QString("General"));
     ui->tabWidget->setTabText(1, QString("Brackets"));
 //    ui->actionSave->setEnabled(false);

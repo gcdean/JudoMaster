@@ -31,7 +31,7 @@ public:
 
     enum WeightType
     {
-        Absolute,
+        IJF,
         LightMediumHeavy
     };
 

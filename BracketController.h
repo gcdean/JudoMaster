@@ -4,6 +4,8 @@
 #include "BaseController.h"
 #include <QObject>
 
+class Bracket;
+
 class BracketController : public BaseController
 {
     Q_OBJECT
@@ -11,12 +13,16 @@ class BracketController : public BaseController
 public:
     BracketController(QObject *parent = 0);
 
+    const QList <Bracket *> *brackets() const;
+
     // Overrides
     int size() const override;
     int size(int id) const override;
 
     void add(int parentId) override;
     void remove(int id) override;
+
+signals:
 
 private:
     int findNextId() override;

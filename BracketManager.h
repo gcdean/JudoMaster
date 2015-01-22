@@ -15,6 +15,9 @@ public:
     explicit BracketManager(QWidget *parent = 0);
     ~BracketManager();
 
+private Q_SLOTS:
+    void addBracket();
+
 private:
     Ui::BracketManager *ui;
 };

@@ -3,16 +3,32 @@
 #include "Bracket.h"
 #include "Tournament.h"
 
+#include <QList>
+
+namespace
+{
+    const QList<Bracket *> NOBRACKETS;
+}
 
 BracketController::BracketController(QObject *parent)
     : BaseController(parent)
 {
 }
 
+const QList<Bracket *> *BracketController::brackets() const
+{
+    if(!tournament())
+        return &NOBRACKETS;
+
+    return &tournament()->brackets();
+}
 
 int BracketController::size() const
 {
-    return 0;
+    if(!tournament())
+        return 0;
+
+    return tournament()->brackets().size();
 }
 
 int BracketController::size(int id) const
