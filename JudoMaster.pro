@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     JMDataObj.cpp \
     BracketController.cpp \
     BracketManager.cpp \
-    BracketTableModel.cpp
+    BracketTableModel.cpp \
+    CompetitorItemDelegate.cpp
 
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
@@ -55,7 +56,8 @@ HEADERS  += JudoMasterMainWindow.h \
     JMDataObj.h \
     BracketController.h \
     BracketManager.h \
-    BracketTableModel.h
+    BracketTableModel.h \
+    CompetitorItemDelegate.h
 
 FORMS    += JudoMasterMainWindow.ui \
     ClubsEditor.ui \

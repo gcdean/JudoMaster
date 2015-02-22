@@ -8,6 +8,7 @@
 #include <QColor>
 #include <QDebug>
 #include <QHash>
+#include <QIcon>
 #include <QMimeData>
 
 CompetitorTableModel::CompetitorTableModel(BaseController *controller, QObject *parent) :
@@ -39,18 +40,11 @@ bool CompetitorTableModel::editable()
 int CompetitorTableModel::rowCount(const QModelIndex &) const
 {
     return m_controller->competitors(m_parentId).size();
-//      return m_controller->size(m_parentId);
-
-
-//    if(m_parentId != -1)
-//        return JMApp()->competitorController()->size(m_parentId);
-//    else
-//        return JMApp()->competitorController()->competitors().size();
 }
 
 int CompetitorTableModel::columnCount(const QModelIndex &) const
 {
-    return 6;
+    return competitor::MAX_COMPETITOR_ITEM;
 }
 
 QVariant CompetitorTableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -62,27 +56,27 @@ QVariant CompetitorTableModel::headerData(int section, Qt::Orientation orientati
     {
         switch(section)
         {
-            case 0:
+            case competitor::FirstName:
                 return QVariant("First");
             break;
 
-            case 1:
+            case competitor::LastName:
                 return QVariant("Last");
             break;
 
-            case 2:
+            case competitor::Gender:
                 return QVariant("Gender");
             break;
 
-            case 3:
+            case competitor::Age:
                 return QVariant("Age");
             break;
 
-            case 4:
+            case competitor::Weight:
                 return QVariant("Wt.");
             break;
 
-            case 5:
+            case competitor::Rank:
                 return QVariant("Rank");
             break;
 
@@ -97,44 +91,79 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
 {
     // Get the competitor.
     const QList<Competitor *> competitors = m_controller->competitors(m_parentId);
-//    const QList<Competitor *> competitors = JMApp()->competitorController()->competitors(m_parentId);
     const Competitor *judoka = competitors.at(index.row());
     switch(role)
     {
         case Qt::BackgroundRole:
-//            if(index.column() == 5)
-//            {
-//                return QVariant(rankToColor(judoka->rank()));
-//            }
             return QVariant(this->columnBackground(judoka, index.column()));
 
         break;
 
+        case Qt::DecorationRole:
+        {
+            switch(index.column())
+            {
+                case competitor::Rank:
+                {
+
+                    switch(judoka->rank())
+                    {
+                        case JM::White:
+                            return QIcon(":/images/white.png");
+                            break;
+                        case JM::Yellow:
+                            return QIcon(":/images/yellow.png");
+                            break;
+                        case JM::Orange:
+                            return QIcon(":/images/orange.png");
+                            break;
+                        case JM::Green:
+                            return QIcon(":/images/green.png");
+                            break;
+
+                        case JM::Blue:
+                            return QIcon(":/images/blue.png");
+                            break;
+                        case JM::Purple:
+                            return QIcon(":/images/purple.png");
+                            break;
+                        case JM::Brown:
+                            return QIcon(":/images/brown.png");
+                            break;
+                        case JM::Black:
+                            return QIcon(":/images/black.png");
+                            break;
+                    }
+                }
+            }
+
+            break;
+        }
         case Qt::DisplayRole:
         case Qt::EditRole:
             switch(index.column())
             {
-                case 0:
+                case competitor::FirstName:
                     return QVariant(judoka->firstName());
                 break;
 
-                case 1:
+                case competitor::LastName:
                     return QVariant(judoka->lastName());
                 break;
 
-                case 2:
+                case competitor::Gender:
                     return QVariant(genderToString(judoka->gender()));
                 break;
 
-                case 3:
+                case competitor::Age:
                     return QVariant(judoka->age());
                 break;
 
-                case 4:
+                case competitor::Weight:
                     return QVariant(judoka->weight());
                 break;
 
-                case 5:
+                case competitor::Rank:
                     return QVariant(rankToString(judoka->rank()));
 
                 break;
@@ -154,7 +183,7 @@ Qt::ItemFlags CompetitorTableModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     int col = index.column();
-    if(m_editable && (col == 0 || col == 1))
+    if(m_editable)
     {
         flags |= Qt::ItemIsEditable;
     }
@@ -170,20 +199,36 @@ bool CompetitorTableModel::setData(const QModelIndex &index, const QVariant &val
     bool updated = false;
 
     const QList<Competitor *> competitors = m_controller->competitors(m_parentId);
-//    const QList<Competitor *> competitors = JMApp()->competitorController()->competitors(m_parentId);
-    Competitor *competitor = competitors.at(index.row());
+    Competitor *judoka = competitors.at(index.row());
 
     switch(index.column())
     {
-        case 0: // First Name
-            competitor->setFirstName(value.toString());
+        case competitor::FirstName: // First Name
+            judoka->setFirstName(value.toString());
             updated = true;
         break;
 
-        case 1: // Last Name
-            competitor->setLastName(value.toString());
+        case competitor::LastName: // Last Name
+            judoka->setLastName(value.toString());
             updated = true;
         break;
+
+        case competitor::Gender:
+            judoka->setGender(genderFromString(value.toString()));
+        break;
+
+        case competitor::Age:
+            judoka->setAge(value.toInt());
+            break;
+
+        case competitor::Weight:
+            judoka->setWeight(value.toDouble());
+            break;
+
+        case competitor::Rank:
+            judoka->setRank(rankFromString(value.toString()));
+            break;
+
     }
 
     if(updated)
@@ -196,13 +241,11 @@ bool CompetitorTableModel::setData(const QModelIndex &index, const QVariant &val
 
 Qt::DropActions CompetitorTableModel::supportedDragActions() const
 {
-    qDebug() << "CompetitorTableMode::supportedDragActions( " << this << " )";
     return Qt::CopyAction;
 }
 
 Qt::DropActions CompetitorTableModel::supportedDropActions() const
 {
-    qDebug() << "CompetitorTableMode::supportedDropActions( " << this << " )";
     return Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
 }
 
@@ -231,7 +274,6 @@ QMimeData *CompetitorTableModel::mimeData(const QModelIndexList &indexes) const
         {
             competitorIds[competitor->id()] = 1;
             stream << competitor->id();
-            qDebug() << "CompetitorTableModel::mimeData() Adding id " << competitor->id() << " to the mime data";
         }
 
     }
@@ -243,12 +285,9 @@ QMimeData *CompetitorTableModel::mimeData(const QModelIndexList &indexes) const
 
 bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    qDebug() << "CompetitorTableModel::dropMimeData(data: " << data << ", action: " << action << ", row: " << row << ", col: " << column << ", parent: " << parent;
-
     if(action == Qt::IgnoreAction)
         return true;
 
-//    if(data->hasFormat("application/x-qabstractitemmodeldatalist"))
     if(data->hasFormat("application/jm.comp.list"))
     {
         qDebug() << "Valid Drop Format";
@@ -257,10 +296,8 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
 
         while (!stream.atEnd())
         {
-
             int compId;
             stream >> compId;
-            qDebug() << "Dropping Competitor Id: " << compId;
 
             // Find the Competitor
             // TODO - Needs to be reworked
@@ -291,10 +328,6 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
             }
         }
     }
-    else
-    {
-        qDebug() << "INVALID FORMAT";
-    }
     return false;
 }
 
@@ -303,7 +336,6 @@ void CompetitorTableModel::addCompetitor(Competitor *competitor)
    if(m_parentId == -1 || m_parentId == competitor->clubId())
    {
        int numCompetitors = m_controller->competitors(m_parentId).size() - 1;
-//       int numCompetitors = JMApp()->competitorController()->size(m_parentId) - 1;
        beginInsertRows(QModelIndex(), numCompetitors, numCompetitors);
        endInsertRows();
    }
@@ -313,27 +345,27 @@ QVariant CompetitorTableModel::columnBackground(const Competitor* judoka, int co
 {
     switch(col)
     {
-        case 0:
+        case competitor::FirstName:
             if(judoka->firstName().isEmpty())
                 return QVariant(QColor(Qt::red));
             break;
-        case 1:
+        case competitor::LastName:
             if(judoka->lastName().isEmpty())
                 return QVariant(QColor(Qt::red));
             break;
 
-        case 3: // Age
+        case competitor::Age: // Age
             if(judoka->age() <= 0)
                 return QVariant(QColor(Qt::red));
             break;
 
-        case 4: // Weight
+        case competitor::Weight: // Weight
             if(judoka->weight() <= 0.0)
                 return QVariant(QColor(Qt::red));
             break;
 
-        case 5:
-            return QVariant(rankToColor(judoka->rank()));
+//        case competitor::Rank:
+//            return QVariant(rankToColor(judoka->rank()));
     }
 
     return QVariant();

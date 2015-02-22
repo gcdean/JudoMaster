@@ -6,16 +6,23 @@
 class Bracket;
 class JMDataObj;
 
-enum BracketData
+namespace bracket
 {
-    Name,
-    Gender,
-    Type,
-    MinAge,
-    MaxAge,
-    MaxWeight,
-    MAX_BRACKET_ITEMS   // Last item in the enum.
-};
+    ///
+    /// \brief Used to access bracket properties.
+    ///
+    enum BracketData
+    {
+        Name,
+        Gender,
+        Type,
+        MinAge,
+        MaxAge,
+        MaxWeight,
+        MAX_BRACKET_ITEMS   // Last item in the enum.
+    };
+
+}   // Namespace bracket
 
 class BracketTableModel : public QAbstractTableModel
 {

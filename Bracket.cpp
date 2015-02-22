@@ -81,8 +81,6 @@ void Bracket::read(const QJsonObject &json)
     m_maxAge = json["maxAge"].toInt();
     m_maxWeight = json["maxWeight"].toDouble();
 
-    qDebug() << "Read Bracket name: " << m_name << ", min Age: " << m_minAge << ", max Age: " << m_maxAge << ", Weight: " << m_maxWeight;
-
     QJsonArray bracketMembers = json["bracketMembers"].toArray();
 
     for(int x = 0; x < bracketMembers.size(); x++)
@@ -90,7 +88,6 @@ void Bracket::read(const QJsonObject &json)
         int id = bracketMembers[x].toInt();
         // Now, find the competitor with the specified id.
         Competitor *competitor = dynamic_cast<Competitor *>(JMApp()->competitorController()->find(id));
-        qDebug() << "Bracket::read() - Searched for competitor id: " << id << ", Found: " << competitor;
         addCompetitor(competitor);
     }
 }

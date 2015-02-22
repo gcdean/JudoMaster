@@ -2,5 +2,13 @@
     <qresource prefix="/">
         <file>images/minus.png</file>
         <file>images/add.png</file>
+        <file>images/yellow.png</file>
+        <file>images/black.png</file>
+        <file>images/blue.png</file>
+        <file>images/brown.png</file>
+        <file>images/green.png</file>
+        <file>images/orange.png</file>
+        <file>images/purple.png</file>
+        <file>images/white.png</file>
     </qresource>
 </RCC>

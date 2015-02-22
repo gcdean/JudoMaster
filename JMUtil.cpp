@@ -99,15 +99,18 @@ QColor rankToColor(Rank rank)
         break;
 
         case Yellow:
-            return QColor(Qt::yellow);
+            return QColor(255, 252, 0);
+//            return QColor(Qt::yellow);
             break;
 
         case Orange:
-            return QColor(Qt::darkYellow);
+              return QColor(234, 134, 16);
+//            return QColor(Qt::darkYellow);
             break;
 
         case Green:
-            return QColor(Qt::green);
+            return QColor(51, 119, 42);
+//            return QColor(Qt::green);
             break;
 
         case Blue:
@@ -115,11 +118,13 @@ QColor rankToColor(Rank rank)
             break;
 
         case Purple:
-            return QColor(Qt::magenta);
+            return QColor(194, 56,215);
+//            return QColor(Qt::magenta);
             break;
 
         case Brown:
-            return QColor(Qt::darkRed);
+            return QColor(116, 19, 35);
+//            return QColor(Qt::darkRed);
             break;
 
         case Black:

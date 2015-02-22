@@ -22,8 +22,8 @@ public:
         QWidget *widget = 0;
         switch(index.column())
         {
-            case Gender:
-            case Type:
+            case bracket::Gender:
+            case bracket::Type:
                 widget =  new QComboBox(parent);
                 break;
 
@@ -39,7 +39,7 @@ public:
     {
         switch(index.column())
         {
-            case Gender:
+            case bracket::Gender:
             {
                 QComboBox *combo = dynamic_cast<QComboBox *>(editor);
                 if(combo)
@@ -56,7 +56,7 @@ public:
                 }
                 break;
             }
-            case Type:
+            case bracket::Type:
             {
                 QComboBox *combo = dynamic_cast<QComboBox *>(editor);
                 if(combo)
@@ -83,7 +83,7 @@ public:
     {
         switch(index.column())
         {
-            case Gender:
+            case bracket::Gender:
             {
                 QComboBox *combo = dynamic_cast<QComboBox *>(editor);
                 if(combo)
@@ -92,7 +92,7 @@ public:
                 }
                 break;
             }
-            case Type:
+            case bracket::Type:
             {
                 QComboBox *combo = dynamic_cast<QComboBox *>(editor);
                 if(combo)
@@ -133,11 +133,6 @@ BracketManager::BracketManager(QWidget *parent) :
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentChanged, this, &BracketManager::bracketChanged);
 
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);
-
-//    CompetitorTableModel *allCompTableModel = new CompetitorTableModel();
-//    allCompTableModel->setClubId(-1);
-//    ui->allCompetitors->setModel(allCompTableModel);
-//    ui->allCompetitors->setController(JMApp()->competitorController());
 
     connect(JMApp()->clubController(), &ClubController::tournamentChanged, this, &BracketManager::tournamentChanged);
 

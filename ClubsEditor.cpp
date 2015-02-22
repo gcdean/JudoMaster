@@ -2,6 +2,7 @@
 #include "ui_ClubsEditor.h"
 
 #include "ClubListModel.h"
+#include "CompetitorItemDelegate.h"
 #include "CompetitorTableModel.h"
 #include "JudoMasterApplication.h"
 
@@ -18,6 +19,7 @@ ClubsEditor::ClubsEditor(QWidget *parent) :
     ui->clubList->setModel(new ClubListModel(ui->clubList));
 
     ui->competitorsList->setModel(new CompetitorTableModel(JMApp()->competitorController()));
+    ui->competitorsList->setTableItemDelegate(new CompetitorItemDelegate);
     ui->competitorsList->setController(JMApp()->competitorController());
 
     connect(ui->addClubBtn, &QPushButton::clicked, this, &ClubsEditor::addClub);

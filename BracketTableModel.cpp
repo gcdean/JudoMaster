@@ -20,7 +20,7 @@ int BracketTableModel::rowCount(const QModelIndex &parent) const
 
 int BracketTableModel::columnCount(const QModelIndex &parent) const
 {
-   return MAX_BRACKET_ITEMS;
+   return bracket::MAX_BRACKET_ITEMS;
 }
 
 QVariant BracketTableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -39,22 +39,22 @@ QVariant BracketTableModel::headerData(int section, Qt::Orientation orientation,
 
         switch(section)
         {
-            case Name:
+            case bracket::Name:
                 return QVariant("Name");
 
-            case Gender:
+            case bracket::Gender:
                 return QVariant("Gender");
 
-            case Type://1:
+            case bracket::Type://1:
                 return QVariant("Type");
 
-            case MinAge://2:
+            case bracket::MinAge://2:
                 return QVariant("Min Age");
 
-            case MaxAge://3:
+            case bracket::MaxAge://3:
                 return QVariant("Max Age");
 
-           case MaxWeight://4:
+           case bracket::MaxWeight://4:
                 return QVariant("Max Weight");
 
            default:
@@ -76,15 +76,15 @@ QVariant BracketTableModel::data(const QModelIndex &index, int role) const
             int col = index.column();
             switch(col)
             {
-                case Name: // Name
+                case bracket::Name: // Name
                     return QVariant(selectedBracket->name());
                 break;
 
-                case Gender:
+                case bracket::Gender:
                     return QVariant(genderToString(selectedBracket->gender()));
                     break;
 
-                case Type: // Type
+                case bracket::Type: // Type
                     switch(selectedBracket->weightType())
                     {
                         case Bracket::IJF:
@@ -99,15 +99,15 @@ QVariant BracketTableModel::data(const QModelIndex &index, int role) const
 
                 break;
 
-                case MinAge: // Min Age
+                case bracket::MinAge: // Min Age
                     return QVariant(selectedBracket->minAge());
                 break;
 
-                case MaxAge: // Max Age
+                case bracket::MaxAge: // Max Age
                     return QVariant(selectedBracket->maxAge());
                 break;
 
-                case MaxWeight: // Max Weight
+                case bracket::MaxWeight: // Max Weight
                     return QVariant(selectedBracket->maxWeight());
                 break;
 
@@ -147,15 +147,15 @@ bool BracketTableModel::setData(const QModelIndex &index, const QVariant &value,
 
     switch(index.column())
     {
-        case Name: // First Name
+        case bracket::Name: // First Name
             bracket->setName(value.toString());
         break;
 
-        case Gender:
+        case bracket::Gender:
             bracket->setGender(genderFromString(value.toString()));
             break;
 
-        case Type: // Weight Type
+        case bracket::Type: // Weight Type
         {
             int t = value.toInt();
             if(t == 0)
@@ -165,15 +165,15 @@ bool BracketTableModel::setData(const QModelIndex &index, const QVariant &value,
             break;
         }
 
-        case MinAge: // Min Age
+        case bracket::MinAge: // Min Age
             bracket->setMinAge(value.toInt());
             break;
 
-        case MaxAge: // Max Age
+        case bracket::MaxAge: // Max Age
             bracket->setMaxAge(value.toInt());
             break;
 
-        case MaxWeight: // Max Weight
+        case bracket::MaxWeight: // Max Weight
             bracket->setMaxWeight(value.toDouble());
             break;
 
