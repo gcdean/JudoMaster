@@ -1,6 +1,11 @@
 #include "BaseController.h"
 
+#include "Bracket.h"
+#include "Competitor.h"
+#include "JudoMasterApplication.h"
 #include "Tournament.h"
+
+#include <QList>
 
 BaseController::BaseController(QObject *parent) :
     QObject(parent)
@@ -41,4 +46,21 @@ void BaseController::remove(int id)
 {
     Q_UNUSED(id);
     // Do Nothing.
+}
+
+JMDataObj* BaseController::find(int id)
+{
+    foreach (Bracket *bracket, tournament()->brackets())
+    {
+        if(bracket->id() == id)
+        {
+            return bracket;
+        }
+    }
+    return 0;
+}
+
+const QList<Competitor *> BaseController::competitors(int parentId) const
+{
+    return QList<Competitor *>();
 }

@@ -17,6 +17,9 @@ public:
 
 private Q_SLOTS:
     void addBracket();
+    void bracketChanged(const QModelIndex &current, const QModelIndex &previous);
+    void tournamentChanged();
+    void rowChanged ( const QModelIndex & current, const QModelIndex & previous );
 
 private:
     Ui::BracketManager *ui;

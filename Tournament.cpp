@@ -31,7 +31,8 @@ void Tournament::read(QJsonObject &json)
     for(int x = 0; x < competitors.size(); x++)
     {
         QJsonObject jobj = competitors[x].toObject();
-        Competitor *competitor = new Competitor(jobj);
+        Competitor *competitor = new Competitor();
+        competitor->read(jobj);
         m_competitors.append(competitor);
 
     }
@@ -41,7 +42,8 @@ void Tournament::read(QJsonObject &json)
     for(int x = 0; x < brackets.size(); x++)
     {
         QJsonObject jobj = brackets[x].toObject();
-        Bracket *bracket = new Bracket(jobj);
+        Bracket *bracket = new Bracket();
+        bracket->read(jobj);
         m_brackets.append(bracket);
     }
 }

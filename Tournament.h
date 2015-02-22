@@ -18,6 +18,8 @@ class Tournament : public QObject
 public:
     explicit Tournament(QObject *parent = 0);
 
+    QString fileName() const {return m_fileName;}
+    void setFileName(QString filename) {m_fileName = filename;}
     QString name() const {return m_name;}
     void setName(QString name) {m_name = name;}
     QDate date() const {return m_date;}
@@ -37,6 +39,7 @@ signals:
 public slots:
 
 private:
+    QString m_fileName;     // File name used to store the tournament.
     QString m_name;
     QDate m_date;
     QTime m_startTime;

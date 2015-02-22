@@ -17,7 +17,8 @@ ClubsEditor::ClubsEditor(QWidget *parent) :
 
     ui->clubList->setModel(new ClubListModel(ui->clubList));
 
-    ui->competitorsList->setModel(new CompetitorTableModel());
+    ui->competitorsList->setModel(new CompetitorTableModel(JMApp()->competitorController()));
+    ui->competitorsList->setController(JMApp()->competitorController());
 
     connect(ui->addClubBtn, &QPushButton::clicked, this, &ClubsEditor::addClub);
     connect(ui->removeClubBtn, &QPushButton::clicked, this, &ClubsEditor::removeClub);

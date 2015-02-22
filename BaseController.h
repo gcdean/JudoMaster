@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+class Competitor;
 class Tournament;
 class JMDataObj;
 
@@ -18,6 +19,10 @@ public:
 
     virtual void add(int parentId); // Creates and adds a new object to the model
     virtual void remove(int id);    // Remove the object with the specified id
+    virtual JMDataObj* find(int id);       // Should this go to the base class as a generic?
+
+
+    virtual const QList<Competitor *> competitors(int parentId = -1) const;
 
 signals:
     void tournamentChanged();

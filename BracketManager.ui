@@ -13,22 +13,57 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="CompetitorList" name="bracketList" native="true"/>
-   </item>
-   <item>
-    <widget class="BracketEditor" name="widget" native="true"/>
+    <widget class="QSplitter" name="splitter_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QFrame" name="bracketFrame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Brackets</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSplitter" name="splitter">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="CompetitorList" name="bracketList" native="true"/>
+         <widget class="CompetitorList" name="bracketCompetitors" native="true"/>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QFrame" name="allCompetitorFrame">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>All Competitors</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="CompetitorList" name="allCompetitors" native="true"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>BracketEditor</class>
-   <extends>QWidget</extends>
-   <header>BracketEditor.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>CompetitorList</class>
    <extends>QWidget</extends>

@@ -5,7 +5,9 @@
 #include "CompetitorTableModel.h"
 #include "JudoMasterApplication.h"
 
+#include <QAbstractItemDelegate>
 #include <QAbstractTableModel>
+#include <QTableView>
 
 CompetitorList::CompetitorList(QWidget *parent) :
     QWidget(parent)
@@ -29,14 +31,32 @@ void CompetitorList::setClubId(int id)
     m_clubId = id;
     CompetitorTableModel *model = dynamic_cast<CompetitorTableModel *>(ui->competitorTable->model());
 
-    model->setClubId(id);
+    if(model)
+    {
+        model->setParentId(id);
+    }
     ui->competitorTable->reset();
+}
+
+QAbstractTableModel* CompetitorList::tableModel()
+{
+    return dynamic_cast<QAbstractTableModel *>(ui->competitorTable->model());
+}
+
+QTableView* CompetitorList::tableView()
+{
+    return ui->competitorTable;
 }
 
 void CompetitorList::setModel(QAbstractTableModel *model)
 {
     model->setParent(ui->competitorTable);
     ui->competitorTable->setModel(model);
+}
+
+void CompetitorList::setTableItemDelegate(QAbstractItemDelegate *delegate)
+{
+    ui->competitorTable->setItemDelegate(delegate);
 }
 
 void CompetitorList::setController(BaseController *controller)

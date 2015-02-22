@@ -6,6 +6,17 @@
 class Bracket;
 class JMDataObj;
 
+enum BracketData
+{
+    Name,
+    Gender,
+    Type,
+    MinAge,
+    MaxAge,
+    MaxWeight,
+    MAX_BRACKET_ITEMS   // Last item in the enum.
+};
+
 class BracketTableModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -23,8 +34,7 @@ public:
 signals:
 
 public slots:
-    void addBracket(Bracket *bracket);
-    void addTest(JMDataObj *obj);
+    void addBracket(JMDataObj *bracket);
 
 };
 

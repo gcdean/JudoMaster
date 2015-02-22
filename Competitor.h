@@ -6,28 +6,20 @@
 #include <QObject>
 #include <QString>
 
+#include "JMDataObj.h"
 #include "JMUtil.h"
 
-class Competitor //: public QObject
+class Competitor : public JMDataObj
 {
-//    Q_OBJECT
-
-//    Q_PROPERTY(int id READ id)
-//    Q_PROPERTY(QString firstName READ firstName)
-//    Q_PROPERTY(QString lastName READ lastName)
-//    Q_PROPERTY(QChar gender READ gender)
-//    Q_PROPERTY(int age READ age)
-//    Q_PROPERTY(double weight READ weight)
-//    Q_PROPERTY(Rank rank READ rank )
-//    Q_PROPERTY(int clubId READ clubId)
 
 public:
 
     explicit Competitor(int id, QString firstName, QString lastName, JM::Gender gender, int age , double weight, JM::Rank rank, int clubId);
     Competitor(const Competitor& src);
-    Competitor(QJsonObject &json);
+    Competitor();
+//    Competitor(QJsonObject &json);
 
-    int id() const {return m_id;}
+//    int id() const {return m_id;}
     QString firstName() const {return m_firstName;}
     void setFirstName(QString name) {m_firstName = name;}
     QString lastName() const {return m_lastName;}
@@ -39,11 +31,14 @@ public:
     int clubId() const {return m_clubId;}
     void setClubId(int id) {m_clubId = id;}
 
-    void read(QJsonObject& json);
-    void write(QJsonObject& json) const;
+    virtual void read(const QJsonObject& json);
+\
+    void write(QJsonObject& json) const override;
+//    void read(QJsonObject& json) override;
+//    void write(QJsonObject& json) const override;
 
 private:
-    int m_id;
+//    int m_id;
     QString m_firstName;
     QString m_lastName;
     JM::Gender m_gender;

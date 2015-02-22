@@ -22,6 +22,8 @@ public:
     void add(int parentId) override;
     void remove(int id) override;
 
+    const QList<Competitor *> competitors(int parentId = -1) const override;
+
 signals:
 
 private:

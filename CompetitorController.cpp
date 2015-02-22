@@ -11,14 +11,39 @@ CompetitorController::CompetitorController(QObject *parent) :
 {
 }
 
-void CompetitorController::createClubCompetitor(int clubId)
+JMDataObj* CompetitorController::find(int id)
+{
+    // Real simple linear search for now.
+    foreach(Competitor* competitor, tournament()->competitors())
+    {
+        if(competitor->id() == id)
+        {
+            // Found it!
+            return competitor;
+        }
+    }
+
+    return 0;
+}
+
+void CompetitorController::add(int parentId)
 {
     int compId = findNextId();
-    Competitor *competitor = new Competitor(compId, QString("Competitor"), QString("%1").arg(compId), JM::Female, 0, 0, JM::White, clubId);
+    Competitor *competitor = new Competitor(compId, QString("Competitor"), QString("%1").arg(compId), JM::Female, 0, 0, JM::White, parentId);
     tournament()->competitors().append(competitor);
 
-    emit competitorAdded(competitor);
+    emit addedDataObj(competitor);
+
 }
+
+//void CompetitorController::createClubCompetitor(int clubId)
+//{
+//    int compId = findNextId();
+//    Competitor *competitor = new Competitor(compId, QString("Competitor"), QString("%1").arg(compId), JM::Female, 0, 0, JM::White, clubId);
+//    tournament()->competitors().append(competitor);
+
+//    emit competitorAdded(competitor);
+//}
 
 int CompetitorController::size() const
 {
@@ -85,6 +110,8 @@ const QList<Competitor *> CompetitorController::competitors(int clubId) const
         return tournament()->competitors();
     else
     {
+        // TODO: I think this should be moved to the Club Controller and this controller
+        // should only return all competitors.
         QList<Competitor *> competitors;
 
         foreach(Competitor *competitor, tournament()->competitors())

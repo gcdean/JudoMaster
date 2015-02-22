@@ -4,11 +4,14 @@
 #include <QWidget>
 
 class BaseController;
+class QAbstractItemDelegate;
 class QAbstractTableModel;
 
 namespace Ui {
 class CompetitorList;
 }
+
+class QTableView;
 
 class CompetitorList : public QWidget
 {
@@ -21,11 +24,16 @@ public:
     void setClubId(int id);
     void setController(BaseController *controller);
     void setModel(QAbstractTableModel* model);
+    QAbstractTableModel* tableModel();
+    QTableView* tableView();
+    void setTableItemDelegate(QAbstractItemDelegate *delegate);
+
+public slots:
+    void tournamentChanged();
 
 private slots:
     void add();
     void remove();
-    void tournamentChanged();
 
 private:
     Ui::CompetitorList *ui;

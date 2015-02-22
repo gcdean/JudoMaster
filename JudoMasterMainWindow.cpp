@@ -61,13 +61,14 @@ void JudoMasterMainWindow::nameChanged()
 
 void JudoMasterMainWindow::save()
 {
-    if(m_fileName.isEmpty())
+    if(m_tournament->fileName().isEmpty())
+//    if(m_fileName.isEmpty())
     {
         if(!getFilename())
             return;
     }
 
-    QFile saveFile(m_fileName);
+    QFile saveFile(m_tournament->fileName());
 
     if(!saveFile.open(QIODevice::WriteOnly))
     {
@@ -148,18 +149,22 @@ void JudoMasterMainWindow::loadFile(QString filename)
 
     QByteArray saveData = tournFile.readAll();
 
-    qDebug() << "Size of Save Data is: " << saveData.size();
+//    qDebug() << "Size of Save Data is: " << saveData.size();
     QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
 
-    qDebug() << "Is Doc Empty: " << loadDoc.isEmpty() << "\nData:\n" << loadDoc.toJson();
+//    qDebug() << "Is Doc Empty: " << loadDoc.isEmpty() << "\nData:\n" << loadDoc.toJson();
     m_tournament = new Tournament();
+    m_tournament->setFileName(filename);
+
+    JMApp()->clubController()->setTournament(m_tournament);
+    JMApp()->competitorController()->setTournament(m_tournament);
+    JMApp()->bracketController()->setTournament(m_tournament);
+
+
     QJsonObject jobj = loadDoc.object();
-    qDebug() << "Is JObject Empty: " << jobj.isEmpty() << ", It contains " << jobj.count() << " Items.";
+//    qDebug() << "Is JObject Empty: " << jobj.isEmpty() << ", It contains " << jobj.count() << " Items.";
     m_tournament->read(jobj);
 
-   JMApp()->clubController()->setTournament(m_tournament);
-   JMApp()->competitorController()->setTournament(m_tournament);
-   JMApp()->bracketController()->setTournament(m_tournament);
 
 }
 
@@ -175,6 +180,7 @@ bool JudoMasterMainWindow::getFilename()
     m_saveDir = finfo.absoluteDir();
     m_fileName = newfileName;
 
+    m_tournament->setFileName(newfileName);
     return true;
 }
 

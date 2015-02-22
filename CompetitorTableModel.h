@@ -3,15 +3,18 @@
 
 #include <QAbstractTableModel>
 
+class BaseController;
 class Competitor;
 
 class CompetitorTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    explicit CompetitorTableModel(QObject *parent = 0);
+    explicit CompetitorTableModel(BaseController* controller, QObject *parent = 0);
 
-    void setClubId(int id);
+    void setParentId(int id);
+    void setEditable(bool editable);
+    bool editable();
 
     // Overrides
     int rowCount(const QModelIndex &parent) const;
@@ -21,13 +24,24 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
 
+    // Drag Drop methods
+    Qt::DropActions supportedDragActions() const override;
+    Qt::DropActions supportedDropActions() const override;
+    QStringList mimeTypes() const override;
+    QMimeData* mimeData(const QModelIndexList &indexes) const override;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
 signals:
 
 public slots:
     void addCompetitor(Competitor *competitor);
 
-private:
-    int m_clubId;   // If the model is for competitors for a club
+private:    // Methods
+    QVariant columnBackground(const Competitor *judoka, int col) const;
+
+private:    // Data Members
+    int m_parentId;   // This is the id of the parent, club or bracket.
+    BaseController *m_controller;
+    bool m_editable;
 };
 
 #endif // COMPETITORTABLEMODEL_H

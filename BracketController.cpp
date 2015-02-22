@@ -3,6 +3,9 @@
 #include "Bracket.h"
 #include "Tournament.h"
 
+#include "JudoMasterApplication.h"  // DEBUG ONLY. DELETE
+#include "Competitor.h"             // DEBUG ONLY. DELETE
+
 #include <QList>
 
 namespace
@@ -48,6 +51,12 @@ void BracketController::add(int parentId)
     }
     int id = findNextId();
     Bracket *bracket = new Bracket(id);
+
+    // TODO - Remove Below Codel.
+    /// START DEBUG
+    Competitor* tc = dynamic_cast<Competitor *>(JMApp()->competitorController()->find(1));
+    bracket->addCompetitor(tc);
+    /// END DEBUG
     tournament()->brackets().append(bracket);
     emit addedDataObj(bracket);
 
@@ -56,6 +65,29 @@ void BracketController::add(int parentId)
 void BracketController::remove(int id)
 {
     Q_UNUSED(id);
+}
+
+const QList<Competitor *> BracketController::competitors(int parentId) const
+{
+    if(!tournament())
+        return QList<Competitor *>();
+
+    if(parentId != -1)
+    {
+        // First, find the bracket.
+        foreach(Bracket *bracket, tournament()->brackets())
+        {
+            if(bracket->id() == parentId)
+            {
+                return bracket->competitors();
+            }
+        }
+        return QList<Competitor *>();
+    }
+
+    const QList<Competitor *> allComps = JMApp()->competitorController()->competitors();
+
+    return allComps;
 }
 
 int BracketController::findNextId()

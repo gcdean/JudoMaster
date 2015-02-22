@@ -2,9 +2,14 @@
 #define BRACKET_H
 
 #include "JMDataObj.h"
+#include "JMUtil.h"
+
 
 #include <QJsonObject>
+#include <QList>
 #include <QString>
+
+class Competitor;
 
 /**
  * @brief The Bracket class
@@ -20,15 +25,6 @@ public:
     Bracket(const Bracket& src);
     Bracket(const QJsonObject &json);
 
-    /**
-     * @brief The BracketType enum
-     */
-    enum BracketType
-    {
-        Age,
-        Weight
-    };
-
     enum WeightType
     {
         IJF,
@@ -36,12 +32,13 @@ public:
     };
 
     void read(const QJsonObject& json) override;
+
     void write(QJsonObject& json) const override;
 
     void setName(QString name) {m_name = name;}
     QString name() const {return m_name;}
-    void setType(Bracket::BracketType type) {m_bracketType = type;}
-    Bracket::BracketType type() const {return m_bracketType;}
+    void setGender(JM::Gender gender);
+    JM::Gender gender() const;
     void setWeightType(Bracket::WeightType weightType) {m_weightType = weightType;}
     Bracket::WeightType weightType() const {return m_weightType;}
     void setMinAge(int minAge) {m_minAge = minAge;}
@@ -51,15 +48,20 @@ public:
     void setMaxWeight(double maxWeight) {m_maxWeight = maxWeight;}
     double maxWeight() const {return m_maxWeight;}
 
+    const QList<Competitor *> competitors() const;
+    void addCompetitor(Competitor *competitor);
+
 private:
     QString m_name;
-    BracketType m_bracketType;
+    JM::Gender m_gender;
     WeightType m_weightType;
 
     int m_minAge;
     int m_maxAge;
 
     double m_maxWeight;
+
+    QList<Competitor *> m_competitors;
 };
 
 #endif // BRACKET_H

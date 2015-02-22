@@ -1,7 +1,8 @@
 #include "Competitor.h"
 
 Competitor::Competitor(int id, QString firstName, QString lastName, JM::Gender gender, int age , double weight, JM::Rank rank, int clubId) :
-     m_id(id)
+     JMDataObj(id)
+//    , m_id(id)
     , m_firstName(firstName)
     , m_lastName(lastName)
     , m_gender(gender)
@@ -12,9 +13,9 @@ Competitor::Competitor(int id, QString firstName, QString lastName, JM::Gender g
 {
 }
 
-Competitor::Competitor(const Competitor &src)
+Competitor::Competitor(const Competitor &src) : JMDataObj(src.id())
 {
-    m_id = src.id();
+//    m_id = src.id();
     m_firstName = src.firstName();
     m_lastName = src.lastName();
     m_gender = src.gender();
@@ -24,14 +25,23 @@ Competitor::Competitor(const Competitor &src)
     m_clubId = src.clubId();
 }
 
-Competitor::Competitor(QJsonObject &json)
+Competitor::Competitor()
+    : JMDataObj(-1)
 {
-    read(json);
+
 }
 
-void Competitor::read(QJsonObject &json)
+//Competitor::Competitor(QJsonObject &json)
+//    : JMDataObj(json)
+//{
+////    read(json);
+//}
+
+void Competitor::read(const QJsonObject &json)
 {
-    m_id = json["id"].toInt();
+    JMDataObj::read(json);
+
+//    m_id = json["id"].toInt();
     m_firstName = json["fname"].toString();
     m_lastName = json["lname"].toString();
     m_gender = genderFromString(json["gender"].toString());
@@ -46,7 +56,8 @@ void Competitor::read(QJsonObject &json)
 
 void Competitor::write(QJsonObject &json) const
 {
-    json["id"] = m_id;
+    JMDataObj::write(json);
+//    json["id"] = m_id;
     json["fname"] = m_firstName;
     json["lname"] = m_lastName;
     json["gender"] = genderToString(m_gender);
