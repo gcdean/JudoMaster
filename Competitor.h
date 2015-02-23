@@ -19,16 +19,11 @@ namespace competitor
         Age,
         Weight,
         Rank,
+        JudoAssociation,
+        JudoNumber,
         MAX_COMPETITOR_ITEM
     };
 
-    enum JudoAssociation
-    {
-        USJA,
-        USJF,
-        USJI,
-        Other
-    };
 }
 
 class Competitor : public JMDataObj
@@ -54,7 +49,12 @@ public:
     void setRank(JM::Rank rank) {m_rank = rank;}
     int clubId() const {return m_clubId;}
     void setClubId(int id) {m_clubId = id;}
-    competitor::JudoAssociation judoAssociation() {return m_judoAssociaiton;}
+    QString registrationNumber() const {return m_judoAssocNum;}
+    void setRegistrationNumber(QString regNumber) {m_judoAssocNum = regNumber;}
+    JM::JudoAssociation judoAssociation() const {return m_judoAssociaiton;}
+    void setJudoAssociation(JM::JudoAssociation assoc) {m_judoAssociaiton = assoc;}
+    QString otherAssocName() const {return m_otherJudoAssocName;}
+    void setOtherAssocName(QString name) {m_otherJudoAssocName = name;}
 
     virtual void read(const QJsonObject& json);
 
@@ -72,7 +72,7 @@ private:
     // Needed for printing registration sheets.
     QString m_judoAssocNum;
     // Need Judo Assoc Enum.
-    competitor::JudoAssociation m_judoAssociaiton;
+    JM::JudoAssociation m_judoAssociaiton;
     QString m_otherJudoAssocName;
 };
 

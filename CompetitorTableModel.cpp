@@ -13,8 +13,8 @@
 
 CompetitorTableModel::CompetitorTableModel(BaseController *controller, QObject *parent) :
     QAbstractTableModel(parent)
-    , m_controller(controller)
     , m_parentId(-1)
+    , m_controller(controller)
     , m_editable(true)
 {
     connect(JMApp()->competitorController(), &CompetitorController::competitorAdded, this, &CompetitorTableModel::addCompetitor);
@@ -79,6 +79,12 @@ QVariant CompetitorTableModel::headerData(int section, Qt::Orientation orientati
             case competitor::Rank:
                 return QVariant("Rank");
             break;
+
+            case competitor::JudoAssociation:
+                return QVariant("Assoc");
+
+            case competitor::JudoNumber:
+                return QVariant("Reg #");
 
         default:
             return QVariant();
@@ -168,6 +174,12 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
 
                 break;
 
+                case competitor::JudoAssociation:
+                    return QVariant(judoAssocToString(judoka->judoAssociation()));
+
+                case competitor::JudoNumber:
+                    return QVariant(judoka->registrationNumber());
+
             }
 
         break;
@@ -182,7 +194,6 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags CompetitorTableModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    int col = index.column();
     if(m_editable)
     {
         flags |= Qt::ItemIsEditable;
@@ -229,6 +240,16 @@ bool CompetitorTableModel::setData(const QModelIndex &index, const QVariant &val
             judoka->setRank(rankFromString(value.toString()));
             break;
 
+        case competitor::JudoAssociation:
+        {
+            JM::JudoAssociation ja = judoAssocFromString(value.toString());
+            if(ja == JM::Other)
+                judoka->setOtherAssocName(value.toString());
+            judoka->setJudoAssociation(ja);
+            break;
+        }
+        case competitor::JudoNumber:
+            judoka->setRegistrationNumber(value.toString());
     }
 
     if(updated)
@@ -302,8 +323,8 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
             // Find the Competitor
             // TODO - Needs to be reworked
             const QList<Competitor *> competitors = m_controller->competitors();
-            const Competitor *competitor = 0;
-            foreach(const Competitor *c, competitors)
+            Competitor *competitor = 0;
+            foreach(Competitor *c, competitors)
             {
                 if(c->id() == compId)
                 {
@@ -320,9 +341,11 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
                 {
                     // Now add the competitor to the bracket.
                     // TODO: Add the Competitor to the right row based on the drop location.
-                    bracket->addCompetitor(new Competitor(*competitor));
-                    beginInsertRows(QModelIndex(), bracket->competitors().size(), bracket->competitors().size());
-                    endInsertRows();
+                    if(bracket->addCompetitor(competitor))
+                    {
+                        beginInsertRows(QModelIndex(), bracket->competitors().size(), bracket->competitors().size());
+                        endInsertRows();
+                    }
                     return true;
                 }
             }

@@ -130,13 +130,15 @@ const QList<Competitor *> Bracket::competitors() const
     return m_competitors;
 }
 
-void Bracket::addCompetitor(Competitor *competitor)
+bool Bracket::addCompetitor( Competitor *competitor)
 {
     if(0 == competitor)
-        return;
+        return false;
 
     if(m_competitors.indexOf(competitor) < 0)
     {
         m_competitors.append(competitor);
+        return true;
     }
+    return false;
 }

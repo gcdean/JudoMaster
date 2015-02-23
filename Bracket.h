@@ -48,8 +48,8 @@ public:
     void setMaxWeight(double maxWeight) {m_maxWeight = maxWeight;}
     double maxWeight() const {return m_maxWeight;}
 
-    const QList<Competitor *> competitors() const;
-    void addCompetitor(Competitor *competitor);
+    const QList< Competitor *> competitors() const;
+    bool addCompetitor(Competitor *competitor);
 
 private:
     QString m_name;

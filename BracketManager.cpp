@@ -178,14 +178,12 @@ void BracketManager::tournamentChanged()
 {
     qDebug() << "BracketManager::tournamentChanged()";
     ui->bracketList->setModel(new BracketTableModel());
-//    connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentChanged, this, &BracketManager::bracketChanged);
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);
 
     CompetitorTableModel *allCompTableModel = new CompetitorTableModel(JMApp()->competitorController());
     allCompTableModel->setParentId(-1);
     allCompTableModel->setEditable(false);
     ui->allCompetitors->setModel(allCompTableModel);
-
 }
 
 void BracketManager::rowChanged(const QModelIndex &current, const QModelIndex &previous)

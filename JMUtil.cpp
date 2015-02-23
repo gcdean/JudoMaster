@@ -15,6 +15,11 @@ namespace
     const QString FemaleStr("Female");
     const QString MaleStr("Male");
     const QString NotApplicableStr("Not Applicable");
+
+    const QString USJAStr("USJA");
+    const QString USJFStr("USJF");
+    const QString USJIStr("USJI");
+    const QString OtherStr("Other");
 }
 
 using namespace JM;
@@ -161,4 +166,41 @@ Gender genderFromString(QString genderStr)
         return Male;
 
     return NotApplicable;
+}
+
+
+QString judoAssocToString(const JudoAssociation assoc)
+{
+    switch(assoc)
+    {
+        case USJA:
+            return USJAStr;
+        case USJF:
+            return USJFStr;
+        case USJI:
+            return USJIStr;
+        default:
+            return OtherStr;
+    }
+}
+
+
+JudoAssociation judoAssocFromString(const QString assoc)
+{
+    if(assoc.compare(USJAStr, Qt::CaseInsensitive) == 0)
+    {
+        return USJA;
+    }
+    else if (assoc.compare(USJFStr, Qt::CaseInsensitive) == 0)
+    {
+        return USJF;
+    }
+    else if (assoc.compare(USJIStr, Qt::CaseInsensitive) == 0)
+    {
+        return USJI;
+    }
+    else
+    {
+        return Other;
+    }
 }
