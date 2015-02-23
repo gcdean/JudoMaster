@@ -35,7 +35,10 @@ SOURCES += main.cpp\
     BracketController.cpp \
     BracketManager.cpp \
     BracketTableModel.cpp \
-    CompetitorItemDelegate.cpp
+    CompetitorItemDelegate.cpp \
+    commands/BaseCommand.cpp \
+    commands/PrintBracketsCommand.cpp \
+    actions/PrintBracketsAction.cpp
 
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
@@ -57,7 +60,10 @@ HEADERS  += JudoMasterMainWindow.h \
     BracketController.h \
     BracketManager.h \
     BracketTableModel.h \
-    CompetitorItemDelegate.h
+    CompetitorItemDelegate.h \
+    commands/BaseCommand.h \
+    commands/PrintBrancketsCommand.h \
+    actions/PrintBracketsAction.h
 
 FORMS    += JudoMasterMainWindow.ui \
     ClubsEditor.ui \

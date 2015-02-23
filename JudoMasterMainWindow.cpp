@@ -1,6 +1,13 @@
 #include "JudoMasterMainWindow.h"
 #include "ui_JudoMasterMainWindow.h"
 
+#include "Bracket.h"
+#include "CompetitorController.h"
+#include "JudoMasterApplication.h"
+#include "Tournament.h"
+#include "actions/PrintBracketsAction.h"
+#include "commands/PrintBrancketsCommand.h"
+
 #include <QDate>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -9,34 +16,32 @@
 
 #include <QDebug>
 
-#include "JudoMasterApplication.h"
-#include "CompetitorController.h"
-#include "Tournament.h"
+
 
 JudoMasterMainWindow::JudoMasterMainWindow(QWidget *parent) :
     QMainWindow(parent)
     , ui(new Ui::JudoMasterMainWindow)
+    , m_printBracketsAction(0)
     , m_tournament(0)
 {
     ui->setupUi(this                                            );
 
     m_saveDir = QDir::home();
 
-    qDebug() << "There are " << ui->tabWidget->count() << " tabs.";
-    for( auto i = 0; i < ui->tabWidget->count(); i++)
-    {
-        qDebug() << "Tab " << i << " name is: " << ui->tabWidget->tabText(i);
-    }
+
     ui->tabWidget->setTabText(0, QString("General"));
     ui->tabWidget->setTabText(1, QString("Brackets"));
-//    ui->actionSave->setEnabled(false);
-//    ui->actionSave_As->setEnabled(false);
+
+    m_printBracketsAction = new PrintBracketsAction(this);
+    ui->menuPrint->addAction(m_printBracketsAction);
 
     connect(ui->actionNew, &QAction::triggered, this, &JudoMasterMainWindow::newTournament);
     connect(ui->actionSave_As, &QAction::triggered, this, &JudoMasterMainWindow::saveAs);
     connect(ui->actionSave, &QAction::triggered, this, &JudoMasterMainWindow::save);
     connect(ui->actionClose, &QAction::triggered, this, &JudoMasterMainWindow::close);
     connect(ui->actionOpen, &QAction::triggered, this, &JudoMasterMainWindow::open);
+    connect(ui->actionPrint_Registration, &QAction::triggered, this, &JudoMasterMainWindow::printRegistration);
+    connect(m_printBracketsAction, &QAction::triggered, this, &JudoMasterMainWindow::printBrackets);
 
     connect(ui->tournamentName, &QLineEdit::editingFinished, this, &JudoMasterMainWindow::nameChanged);
 
@@ -135,6 +140,18 @@ void JudoMasterMainWindow::open()
 
     loadFile(openFileName);
     updateControls();
+}
+
+void JudoMasterMainWindow::printBrackets()
+{
+    QList<Bracket *> brackets;
+   PrintBracketsCommand cmd(brackets);
+   cmd.run();
+}
+
+void JudoMasterMainWindow::printRegistration()
+{
+    qDebug() << "Print Registration";
 }
 
 void JudoMasterMainWindow::loadFile(QString filename)

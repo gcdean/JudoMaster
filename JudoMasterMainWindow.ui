@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>848</width>
-    <height>535</height>
+    <width>987</width>
+    <height>659</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -157,7 +157,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>848</width>
+     <width>987</width>
      <height>22</height>
     </rect>
    </property>
@@ -165,6 +165,12 @@
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="menuPrint">
+     <property name="title">
+      <string>Print</string>
+     </property>
+     <addaction name="actionPrint_Registration"/>
+    </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
@@ -172,6 +178,7 @@
     <addaction name="actionClose"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
+    <addaction name="menuPrint"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -212,6 +219,16 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="printBrackets">
+   <property name="text">
+    <string>Print Brackets</string>
+   </property>
+  </action>
+  <action name="actionPrint_Registration">
+   <property name="text">
+    <string>Print Registration...</string>
    </property>
   </action>
  </widget>

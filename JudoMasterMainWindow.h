@@ -10,6 +10,8 @@ namespace Ui {
 class JudoMasterMainWindow;
 }
 
+class PrintBracketsAction;
+
 class JudoMasterMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -25,6 +27,8 @@ public slots:
     void newTournament();
     void close();
     void open();
+    void printBrackets();
+    void printRegistration();
 
 private:
     bool getFilename();
@@ -34,6 +38,7 @@ private:
 private:
     Ui::JudoMasterMainWindow *ui;
 
+    PrintBracketsAction* m_printBracketsAction;
     Tournament* m_tournament;
     QString m_fileName;
     QDir m_saveDir;
