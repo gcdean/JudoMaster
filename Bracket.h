@@ -31,7 +31,7 @@ public:
         LightMediumHeavy
     };
 
-    void read(const QJsonObject& json) override;
+    void read(const QJsonObject& json, const QList<Competitor *> competitors);
 
     void write(QJsonObject& json) const override;
 

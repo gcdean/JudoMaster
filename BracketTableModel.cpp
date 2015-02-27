@@ -29,6 +29,7 @@ QVariant BracketTableModel::headerData(int section, Qt::Orientation orientation,
     {
         if(role == Qt::DisplayRole)
         {
+            qDebug() << "BracketTableModel::headerData() - Returning Vertical: " << section;
             return QVariant(section);
         }
 //        return QVariant();

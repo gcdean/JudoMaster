@@ -173,14 +173,14 @@ void JudoMasterMainWindow::loadFile(QString filename)
     m_tournament = new Tournament();
     m_tournament->setFileName(filename);
 
-    JMApp()->clubController()->setTournament(m_tournament);
-    JMApp()->competitorController()->setTournament(m_tournament);
-    JMApp()->bracketController()->setTournament(m_tournament);
-
 
     QJsonObject jobj = loadDoc.object();
 //    qDebug() << "Is JObject Empty: " << jobj.isEmpty() << ", It contains " << jobj.count() << " Items.";
     m_tournament->read(jobj);
+
+    JMApp()->clubController()->setTournament(m_tournament);
+    JMApp()->competitorController()->setTournament(m_tournament);
+    JMApp()->bracketController()->setTournament(m_tournament);
 
 
 }

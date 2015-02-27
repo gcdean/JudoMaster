@@ -119,11 +119,13 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->bracketList->setModel(new BracketTableModel());
     ui->bracketList->setController(JMApp()->bracketController());
 
+    ui->allCompetitors->setDisplayEditButtons(false);
     ui->allCompetitors->tableView()->setDragEnabled(true);
     ui->allCompetitors->tableView()->setDragDropMode(QAbstractItemView::DragOnly);
     ui->allCompetitors->tableView()->setDropIndicatorShown(true);
     ui->allCompetitors->tableView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
+    ui->bracketCompetitors->setDisplayEditButtons(false);
     ui->bracketCompetitors->setModel(new CompetitorTableModel(JMApp()->bracketController()));
     //ui->bracketCompetitors->tableView()->setDragDropMode(QAbstractItemView::DropOnly);
     ui->bracketCompetitors->tableView()->setAcceptDrops(true);
@@ -134,7 +136,7 @@ BracketManager::BracketManager(QWidget *parent) :
 
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);
 
-    connect(JMApp()->clubController(), &ClubController::tournamentChanged, this, &BracketManager::tournamentChanged);
+    connect(JMApp()->bracketController(), &ClubController::tournamentChanged, this, &BracketManager::tournamentChanged);
 
 }
 
@@ -184,6 +186,7 @@ void BracketManager::tournamentChanged()
     allCompTableModel->setParentId(-1);
     allCompTableModel->setEditable(false);
     ui->allCompetitors->setModel(allCompTableModel);
+    qDebug() << "THere are " << allCompTableModel->rowCount(QModelIndex()) << " rows.";
 }
 
 void BracketManager::rowChanged(const QModelIndex &current, const QModelIndex &previous)

@@ -28,6 +28,8 @@ public:
     QTableView* tableView();
     void setTableItemDelegate(QAbstractItemDelegate *delegate);
 
+    bool displayEditButtons();
+    void setDisplayEditButtons(bool display);
 public slots:
     void tournamentChanged();
 

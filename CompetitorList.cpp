@@ -59,6 +59,16 @@ void CompetitorList::setTableItemDelegate(QAbstractItemDelegate *delegate)
     ui->competitorTable->setItemDelegate(delegate);
 }
 
+bool CompetitorList::displayEditButtons()
+{
+    return ui->editButtons->isVisible();
+}
+
+void CompetitorList::setDisplayEditButtons(bool display)
+{
+    ui->editButtons->setVisible(display);
+}
+
 void CompetitorList::setController(BaseController *controller)
 {
     m_controller = controller;

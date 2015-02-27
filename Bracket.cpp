@@ -71,7 +71,7 @@ Bracket::Bracket(const QJsonObject &json)
     // The base class constructor will call read
 }
 
-void Bracket::read(const QJsonObject &json)
+void Bracket::read(const QJsonObject &json, const QList<Competitor *>competitors)
 {
     JMDataObj::read(json);
     m_name = json["name"].toString();
@@ -87,8 +87,15 @@ void Bracket::read(const QJsonObject &json)
     {
         int id = bracketMembers[x].toInt();
         // Now, find the competitor with the specified id.
-        Competitor *competitor = dynamic_cast<Competitor *>(JMApp()->competitorController()->find(id));
-        addCompetitor(competitor);
+        foreach(Competitor *competitor, competitors)
+        {
+            if(id == competitor->id())
+            {
+                addCompetitor(competitor);
+                break;
+            }
+        }
+
     }
 }
 

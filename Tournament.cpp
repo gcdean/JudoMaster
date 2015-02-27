@@ -43,7 +43,7 @@ void Tournament::read(QJsonObject &json)
     {
         QJsonObject jobj = brackets[x].toObject();
         Bracket *bracket = new Bracket();
-        bracket->read(jobj);
+        bracket->read(jobj, m_competitors);
         m_brackets.append(bracket);
     }
 }
