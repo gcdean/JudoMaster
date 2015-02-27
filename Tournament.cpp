@@ -13,7 +13,7 @@ Tournament::Tournament(QObject *parent) :
 void Tournament::read(QJsonObject &json)
 {
     m_name = json["name"].toString();
-    m_date = QDate::fromString(json["date"].toString(), "dd.mm.yyyy");
+    m_date = QDate::fromString(json["date"].toString(), "dd.MM.yyyy");
     m_startTime = QTime::fromString(json["name"].toString(), "HH.mm");
 
     // Read the clubs
@@ -51,7 +51,8 @@ void Tournament::read(QJsonObject &json)
 void Tournament::write(QJsonObject &json) const
 {
     json["name"] = m_name;
-    json["date"] = m_date.toString("dd.mm.yyyy");
+    QString temp = m_date.toString("dd.MM.yyyy");
+    json["date"] = temp;
     json["starttime"] = m_startTime.toString("HH.mm");
 
     // Clubs

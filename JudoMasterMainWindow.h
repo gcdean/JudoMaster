@@ -22,6 +22,8 @@ public:
 
 public slots:
     void nameChanged();
+    void dateChanged(const QDate& date);
+    void timeChanged(const QTime& time);
     void save();
     void saveAs();
     void newTournament();

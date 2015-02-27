@@ -44,6 +44,8 @@ JudoMasterMainWindow::JudoMasterMainWindow(QWidget *parent) :
     connect(m_printBracketsAction, &QAction::triggered, this, &JudoMasterMainWindow::printBrackets);
 
     connect(ui->tournamentName, &QLineEdit::editingFinished, this, &JudoMasterMainWindow::nameChanged);
+    connect(ui->tournamentDate, &QDateTimeEdit::dateChanged, this, &JudoMasterMainWindow::dateChanged);
+    connect(ui->startTime, &QDateTimeEdit::timeChanged, this, &JudoMasterMainWindow::timeChanged);
 
     connect(JMApp(), &QCoreApplication::aboutToQuit, this, &JudoMasterMainWindow::close);
     updateControls();
@@ -63,6 +65,27 @@ void JudoMasterMainWindow::nameChanged()
 
     m_tournament->setName(ui->tournamentName->text());
 }
+
+void JudoMasterMainWindow::dateChanged(const QDate &date)
+{
+    if(!m_tournament)
+    {
+        return;
+    }
+
+    m_tournament->setDate(date);
+}
+
+void JudoMasterMainWindow::timeChanged(const QTime &time)
+{
+    if(!m_tournament)
+    {
+        return;
+    }
+
+    m_tournament->setStartTime(time);
+}
+
 
 void JudoMasterMainWindow::save()
 {

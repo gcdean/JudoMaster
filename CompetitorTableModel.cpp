@@ -346,7 +346,6 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
                         beginInsertRows(QModelIndex(), bracket->competitors().size(), bracket->competitors().size());
                         endInsertRows();
                     }
-                    return true;
                 }
             }
         }
