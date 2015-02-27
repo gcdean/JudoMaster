@@ -52,11 +52,6 @@ void BracketController::add(int parentId)
     int id = findNextId();
     Bracket *bracket = new Bracket(id);
 
-    // TODO - Remove Below Codel.
-    /// START DEBUG
-    Competitor* tc = dynamic_cast<Competitor *>(JMApp()->competitorController()->find(1));
-    bracket->addCompetitor(tc);
-    /// END DEBUG
     tournament()->brackets().append(bracket);
     emit addedDataObj(bracket);
 
