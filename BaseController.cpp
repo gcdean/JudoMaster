@@ -2,6 +2,7 @@
 
 #include "Bracket.h"
 #include "Competitor.h"
+#include "CompetitorFilter.h"
 #include "JudoMasterApplication.h"
 #include "Tournament.h"
 
@@ -63,4 +64,31 @@ JMDataObj* BaseController::find(int id)
 const QList<Competitor *> BaseController::competitors(int parentId) const
 {
     return QList<Competitor *>();
+}
+
+const QList<Competitor *> BaseController::competitors(const CompetitorFilter &filter, int parentId) const
+{
+    const QList<Competitor *> allCompetitors = competitors(parentId);
+
+    QList <Competitor *>filteredCompetitors;
+
+    // Now Filter
+    foreach(Competitor *competitor, allCompetitors)
+    {
+        bool add = true;
+        if(filter.minAge() > 0 && competitor->age() < filter.minAge())
+            add = false;
+        if(filter.maxAge() > 0 && competitor->age() > filter.maxAge())
+            add = false;
+        if(filter.minWeight() > 0.0 && competitor->weight() < filter.minWeight())
+            add = false;
+        if(filter.maxWeight() > 0.0 && competitor->weight() > filter.maxWeight())
+            add = false;
+
+        if(add)
+            filteredCompetitors.append(competitor);
+    }
+
+    // TODO This is wrong in that a local object is being returned.
+    return filteredCompetitors;
 }

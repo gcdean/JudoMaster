@@ -1,6 +1,8 @@
 #ifndef COMPETITORTABLEMODEL_H
 #define COMPETITORTABLEMODEL_H
 
+#include "CompetitorFilter.h"
+
 #include <QAbstractTableModel>
 
 class BaseController;
@@ -13,6 +15,7 @@ public:
     explicit CompetitorTableModel(BaseController* controller, QObject *parent = 0);
 
     void setParentId(int id);
+    void setFilter(const CompetitorFilter& filter);
     void setEditable(bool editable);
     bool editable();
 
@@ -42,6 +45,7 @@ private:    // Data Members
     int m_parentId;   // This is the id of the parent, club or bracket.
     BaseController *m_controller;
     bool m_editable;
+    CompetitorFilter m_filter;
 };
 
 #endif // COMPETITORTABLEMODEL_H

@@ -4,6 +4,7 @@
 #include <QObject>
 
 class Competitor;
+class CompetitorFilter;
 class Tournament;
 class JMDataObj;
 
@@ -23,6 +24,7 @@ public:
 
 
     virtual const QList<Competitor *> competitors(int parentId = -1) const;
+    virtual const QList<Competitor *> competitors(const CompetitorFilter& filter, int parentId = -1) const;
 
 signals:
     void tournamentChanged();

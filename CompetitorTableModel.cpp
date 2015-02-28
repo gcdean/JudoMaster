@@ -16,6 +16,7 @@ CompetitorTableModel::CompetitorTableModel(BaseController *controller, QObject *
     , m_parentId(-1)
     , m_controller(controller)
     , m_editable(true)
+    , m_filter()
 {
     connect(JMApp()->competitorController(), &CompetitorController::competitorAdded, this, &CompetitorTableModel::addCompetitor);
 }
@@ -24,6 +25,13 @@ void CompetitorTableModel::setParentId(int id)
 {
     beginResetModel();
     m_parentId = id;
+    endResetModel();
+}
+
+void CompetitorTableModel::setFilter(const CompetitorFilter &filter)
+{
+    beginResetModel();
+    m_filter = filter;
     endResetModel();
 }
 
@@ -39,7 +47,7 @@ bool CompetitorTableModel::editable()
 
 int CompetitorTableModel::rowCount(const QModelIndex &) const
 {
-    return m_controller->competitors(m_parentId).size();
+    return m_controller->competitors(m_filter, m_parentId).size();
 }
 
 int CompetitorTableModel::columnCount(const QModelIndex &) const
@@ -96,7 +104,7 @@ QVariant CompetitorTableModel::headerData(int section, Qt::Orientation orientati
 QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
 {
     // Get the competitor.
-    const QList<Competitor *> competitors = m_controller->competitors(m_parentId);
+    const QList<Competitor *> competitors = m_controller->competitors(m_filter, m_parentId);
     const Competitor *judoka = competitors.at(index.row());
     switch(role)
     {
@@ -209,7 +217,7 @@ bool CompetitorTableModel::setData(const QModelIndex &index, const QVariant &val
 {
     bool updated = false;
 
-    const QList<Competitor *> competitors = m_controller->competitors(m_parentId);
+    const QList<Competitor *> competitors = m_controller->competitors(m_filter, m_parentId);
     Competitor *judoka = competitors.at(index.row());
 
     switch(index.column())
@@ -280,7 +288,7 @@ QStringList CompetitorTableModel::mimeTypes() const
 
 QMimeData *CompetitorTableModel::mimeData(const QModelIndexList &indexes) const
 {
-    const QList<Competitor *> competitors = m_controller->competitors(m_parentId);
+    const QList<Competitor *> competitors = m_controller->competitors(m_filter, m_parentId);
     QMimeData *mimeData = new QMimeData();
     QByteArray encodedData;
 
@@ -309,6 +317,7 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
     if(action == Qt::IgnoreAction)
         return true;
 
+    bool success = false;
     if(data->hasFormat("application/jm.comp.list"))
     {
         qDebug() << "Valid Drop Format";
@@ -344,20 +353,21 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
                     if(bracket->addCompetitor(competitor))
                     {
                         beginInsertRows(QModelIndex(), bracket->competitors().size(), bracket->competitors().size());
+                        success = true;
                         endInsertRows();
                     }
                 }
             }
         }
     }
-    return false;
+    return success;
 }
 
 void CompetitorTableModel::addCompetitor(Competitor *competitor)
 {
    if(m_parentId == -1 || m_parentId == competitor->clubId())
    {
-       int numCompetitors = m_controller->competitors(m_parentId).size() - 1;
+       int numCompetitors = m_controller->competitors(m_filter, m_parentId).size() - 1;
        beginInsertRows(QModelIndex(), numCompetitors, numCompetitors);
        endInsertRows();
    }

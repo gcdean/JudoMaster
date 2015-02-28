@@ -2,6 +2,7 @@
 #include "ui_BracketManager.h"
 
 #include "BracketTableModel.h"
+#include "CompetitorFilter.h"
 #include "CompetitorTableModel.h"
 #include "JMUtil.h"
 #include "JudoMasterApplication.h"
@@ -133,9 +134,9 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->bracketCompetitors->tableView()->setDropIndicatorShown(true);
 
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentChanged, this, &BracketManager::bracketChanged);
-
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);
 
+    connect(ui->allCompetitorsFilter, &CompetitorFilterWidget::applyFilter, this, &BracketManager::competitorFilterChanged);
     connect(JMApp()->bracketController(), &ClubController::tournamentChanged, this, &BracketManager::tournamentChanged);
 
 }
@@ -213,5 +214,14 @@ void BracketManager::rowChanged(const QModelIndex &current, const QModelIndex &p
         }
     }
     qDebug() << "BracketManager::rowChanged() - end";
+
+}
+
+void BracketManager::competitorFilterChanged(const CompetitorFilter &filter)
+{
+    qDebug() << "BracketManager::competitorFilterChanged() minAge: " << filter.minAge() << ", maxAge: " << filter.maxAge() << ", minWeight: " << filter.minWeight() << ", maxWeight: " << filter.maxWeight();
+
+    CompetitorTableModel* cmodel = dynamic_cast<CompetitorTableModel *>(ui->allCompetitors->tableModel());
+    cmodel->setFilter(filter);
 
 }

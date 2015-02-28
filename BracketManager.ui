@@ -46,13 +46,16 @@
       </layout>
      </widget>
      <widget class="QFrame" name="allCompetitorFrame">
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,1">
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
           <string>All Competitors</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <widget class="CompetitorFilterWidget" name="allCompetitorsFilter" native="true"/>
        </item>
        <item>
         <widget class="CompetitorList" name="allCompetitors" native="true"/>
@@ -68,6 +71,12 @@
    <class>CompetitorList</class>
    <extends>QWidget</extends>
    <header location="global">CompetitorList.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CompetitorFilterWidget</class>
+   <extends>QWidget</extends>
+   <header>CompetitorFilterWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
