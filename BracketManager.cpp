@@ -9,6 +9,7 @@
 
 #include <QComboBox>
 #include <QDebug>
+#include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 #include <QTableView>
 
@@ -120,6 +121,7 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->bracketList->setModel(new BracketTableModel());
     ui->bracketList->setController(JMApp()->bracketController());
 
+    ui->allCompetitors->tableView()->setSortingEnabled(true);
     ui->allCompetitors->setDisplayEditButtons(false);
     ui->allCompetitors->tableView()->setDragEnabled(true);
     ui->allCompetitors->tableView()->setDragDropMode(QAbstractItemView::DragOnly);
@@ -183,11 +185,14 @@ void BracketManager::tournamentChanged()
     ui->bracketList->setModel(new BracketTableModel());
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);
 
-    CompetitorTableModel *allCompTableModel = new CompetitorTableModel(JMApp()->competitorController());
+    CompetitorTableModel *allCompTableModel = new CompetitorTableModel(JMApp()->competitorController(), this);
     allCompTableModel->setParentId(-1);
     allCompTableModel->setEditable(false);
-    ui->allCompetitors->setModel(allCompTableModel);
-    qDebug() << "THere are " << allCompTableModel->rowCount(QModelIndex()) << " rows.";
+
+    QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(allCompTableModel);
+
+    ui->allCompetitors->tableView()->setModel(proxyModel);
 }
 
 void BracketManager::rowChanged(const QModelIndex &current, const QModelIndex &previous)
@@ -221,7 +226,8 @@ void BracketManager::competitorFilterChanged(const CompetitorFilter &filter)
 {
     qDebug() << "BracketManager::competitorFilterChanged() minAge: " << filter.minAge() << ", maxAge: " << filter.maxAge() << ", minWeight: " << filter.minWeight() << ", maxWeight: " << filter.maxWeight();
 
-    CompetitorTableModel* cmodel = dynamic_cast<CompetitorTableModel *>(ui->allCompetitors->tableModel());
+    QSortFilterProxyModel* proxyModel = dynamic_cast<QSortFilterProxyModel *>(ui->allCompetitors->tableView()->model());
+    CompetitorTableModel* cmodel = dynamic_cast<CompetitorTableModel *>(proxyModel->sourceModel());
     cmodel->setFilter(filter);
 
 }

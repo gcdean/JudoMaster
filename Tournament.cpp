@@ -14,7 +14,7 @@ void Tournament::read(QJsonObject &json)
 {
     m_name = json["name"].toString();
     m_date = QDate::fromString(json["date"].toString(), "dd.MM.yyyy");
-    m_startTime = QTime::fromString(json["name"].toString(), "HH.mm");
+    m_startTime = QTime::fromString(json["starttime"].toString(), "HH.mm");
 
     // Read the clubs
     QJsonArray clubs = json["clubs"].toArray();

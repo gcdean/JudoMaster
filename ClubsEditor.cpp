@@ -9,6 +9,8 @@
 #include <QAbstractListModel>
 
 #include <QDebug>
+#include <QSortFilterProxyModel>
+#include <QTableView>
 
 ClubsEditor::ClubsEditor(QWidget *parent) :
     QWidget(parent)
@@ -18,14 +20,18 @@ ClubsEditor::ClubsEditor(QWidget *parent) :
 
     ui->clubList->setModel(new ClubListModel(ui->clubList));
 
-    ui->competitorsList->setModel(new CompetitorTableModel(JMApp()->competitorController()));
+    CompetitorTableModel *sourceModel = new CompetitorTableModel(JMApp()->competitorController(), this);
+    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(sourceModel);
+
+    ui->competitorsList->tableView()->setSortingEnabled(true);
+    ui->competitorsList->tableView()->setModel(proxyModel);
     ui->competitorsList->setTableItemDelegate(new CompetitorItemDelegate);
     ui->competitorsList->setController(JMApp()->competitorController());
 
     connect(ui->addClubBtn, &QPushButton::clicked, this, &ClubsEditor::addClub);
     connect(ui->removeClubBtn, &QPushButton::clicked, this, &ClubsEditor::removeClub);
     connect(this, &ClubsEditor::clubAdded, ui->clubEditor, &ClubEditor::editClub);
-    //connect(ui->clubList, &QListView::clicked, this, &ClubsEditor::clubSelected);
     connect(this, &ClubsEditor::clubSelect, ui->clubEditor, &ClubEditor::editClub);
 
     connect(ui->clubList->selectionModel(), &QItemSelectionModel::currentChanged, this, &ClubsEditor::clubSelected);

@@ -7,6 +7,7 @@
 #include "Tournament.h"
 #include "actions/PrintBracketsAction.h"
 #include "commands/PrintBrancketsCommand.h"
+#include "commands/PrintRegistrationCommand.h"
 
 #include <QDate>
 #include <QFileDialog>
@@ -174,7 +175,8 @@ void JudoMasterMainWindow::printBrackets()
 
 void JudoMasterMainWindow::printRegistration()
 {
-    qDebug() << "Print Registration";
+    PrintRegistrationCommand cmd(this);
+    cmd.run();
 }
 
 void JudoMasterMainWindow::loadFile(QString filename)

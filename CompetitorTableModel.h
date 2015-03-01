@@ -46,6 +46,7 @@ private:    // Data Members
     BaseController *m_controller;
     bool m_editable;
     CompetitorFilter m_filter;
+
 };
 
 #endif // COMPETITORTABLEMODEL_H

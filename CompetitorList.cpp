@@ -7,6 +7,7 @@
 
 #include <QAbstractItemDelegate>
 #include <QAbstractTableModel>
+#include <QSortFilterProxyModel>
 #include <QTableView>
 
 CompetitorList::CompetitorList(QWidget *parent) :
@@ -31,6 +32,14 @@ void CompetitorList::setClubId(int id)
     m_clubId = id;
     CompetitorTableModel *model = dynamic_cast<CompetitorTableModel *>(ui->competitorTable->model());
 
+    if(!model)
+    {
+        QSortFilterProxyModel* proxyModel = dynamic_cast<QSortFilterProxyModel *>(ui->competitorTable->model());
+        if(proxyModel)
+        {
+            model = dynamic_cast<CompetitorTableModel*>(proxyModel->sourceModel());
+        }
+    }
     if(model)
     {
         model->setParentId(id);

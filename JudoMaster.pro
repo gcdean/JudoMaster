@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -40,7 +40,8 @@ SOURCES += main.cpp\
     commands/PrintBracketsCommand.cpp \
     actions/PrintBracketsAction.cpp \
     CompetitorFilterWidget.cpp \
-    CompetitorFilter.cpp
+    CompetitorFilter.cpp \
+    commands/PrintRegistrationCommand.cpp
 
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
@@ -67,7 +68,8 @@ HEADERS  += JudoMasterMainWindow.h \
     commands/PrintBrancketsCommand.h \
     actions/PrintBracketsAction.h \
     CompetitorFilterWidget.h \
-    CompetitorFilter.h
+    CompetitorFilter.h \
+    commands/PrintRegistrationCommand.h
 
 FORMS    += JudoMasterMainWindow.ui \
     ClubsEditor.ui \
