@@ -16,10 +16,6 @@ namespace
     const QString MaleStr("Male");
     const QString NotApplicableStr("Not Applicable");
 
-    const QString USJAStr("USJA");
-    const QString USJFStr("USJF");
-    const QString USJIStr("USJI");
-    const QString OtherStr("Other");
 }
 
 using namespace JM;
@@ -105,17 +101,14 @@ QColor rankToColor(Rank rank)
 
         case Yellow:
             return QColor(255, 252, 0);
-//            return QColor(Qt::yellow);
             break;
 
         case Orange:
               return QColor(234, 134, 16);
-//            return QColor(Qt::darkYellow);
             break;
 
         case Green:
             return QColor(51, 119, 42);
-//            return QColor(Qt::green);
             break;
 
         case Blue:
@@ -124,12 +117,10 @@ QColor rankToColor(Rank rank)
 
         case Purple:
             return QColor(194, 56,215);
-//            return QColor(Qt::magenta);
             break;
 
         case Brown:
             return QColor(116, 19, 35);
-//            return QColor(Qt::darkRed);
             break;
 
         case Black:
@@ -166,41 +157,4 @@ Gender genderFromString(QString genderStr)
         return Male;
 
     return NotApplicable;
-}
-
-
-QString judoAssocToString(const JudoAssociation assoc)
-{
-    switch(assoc)
-    {
-        case USJA:
-            return USJAStr;
-        case USJF:
-            return USJFStr;
-        case USJI:
-            return USJIStr;
-        default:
-            return OtherStr;
-    }
-}
-
-
-JudoAssociation judoAssocFromString(const QString assoc)
-{
-    if(assoc.compare(USJAStr, Qt::CaseInsensitive) == 0)
-    {
-        return USJA;
-    }
-    else if (assoc.compare(USJFStr, Qt::CaseInsensitive) == 0)
-    {
-        return USJF;
-    }
-    else if (assoc.compare(USJIStr, Qt::CaseInsensitive) == 0)
-    {
-        return USJI;
-    }
-    else
-    {
-        return Other;
-    }
 }

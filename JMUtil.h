@@ -35,23 +35,12 @@ enum Gender
     NotApplicable
 };
 
-/**
- * @brief The JudoAssociation enum - Used for competitor registration
- */
-enum JudoAssociation
-{
-    USJA,
-    USJF,
-    USJI,
-    Other
-};
 
 
 }
 
 Q_DECLARE_METATYPE(JM::Rank)
 Q_DECLARE_METATYPE(JM::Gender)
-Q_DECLARE_METATYPE(JM::JudoAssociation)
 
 QString rankToString(JM::Rank rank);
 JM::Rank rankFromString(QString rankStr);
@@ -59,8 +48,5 @@ QColor rankToColor(JM::Rank rank);
 
 QString genderToString(JM::Gender gender);
 JM::Gender genderFromString(QString genderStr);
-
-QString judoAssocToString(const JM::JudoAssociation assoc) ;
-JM::JudoAssociation judoAssocFromString(const QString assoc) ;
 
 #endif // JMUTIL_H

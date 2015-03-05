@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     actions/PrintBracketsAction.cpp \
     CompetitorFilterWidget.cpp \
     CompetitorFilter.cpp \
-    commands/PrintRegistrationCommand.cpp
+    commands/PrintRegistrationCommand.cpp \
+    BracketCompetitorTableModel.cpp
 
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
@@ -69,7 +70,8 @@ HEADERS  += JudoMasterMainWindow.h \
     actions/PrintBracketsAction.h \
     CompetitorFilterWidget.h \
     CompetitorFilter.h \
-    commands/PrintRegistrationCommand.h
+    commands/PrintRegistrationCommand.h \
+    BracketCompetitorTableModel.h
 
 FORMS    += JudoMasterMainWindow.ui \
     ClubsEditor.ui \

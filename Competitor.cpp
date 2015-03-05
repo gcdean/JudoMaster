@@ -2,7 +2,6 @@
 
 Competitor::Competitor(int id, QString firstName, QString lastName, JM::Gender gender, int age , double weight, JM::Rank rank, int clubId) :
      JMDataObj(id)
-//    , m_id(id)
     , m_firstName(firstName)
     , m_lastName(lastName)
     , m_gender(gender)
@@ -15,7 +14,6 @@ Competitor::Competitor(int id, QString firstName, QString lastName, JM::Gender g
 
 Competitor::Competitor(const Competitor &src) : JMDataObj(src.id())
 {
-//    m_id = src.id();
     m_firstName = src.firstName();
     m_lastName = src.lastName();
     m_gender = src.gender();
@@ -45,9 +43,6 @@ void Competitor::read(const QJsonObject &json)
 
     m_clubId = json["clubid"].toInt();
 
-    m_judoAssociaiton = judoAssocFromString(json["assoc"].toString());
-    m_judoAssocNum = json["assoc_num"].toString();
-    m_otherJudoAssocName = json["assoc_other"].toString();
 }
 
 void Competitor::write(QJsonObject &json) const
@@ -62,7 +57,4 @@ void Competitor::write(QJsonObject &json) const
     json["rank"] = rankToString(m_rank);
     json["clubid"] = m_clubId;
 
-    json["assoc"] = judoAssocToString(m_judoAssociaiton);
-    json["assoc_num"] = m_judoAssocNum;
-    json["assoc_other"] = m_otherJudoAssocName;
 }

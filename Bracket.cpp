@@ -137,14 +137,28 @@ const QList<Competitor *> Bracket::competitors() const
     return m_competitors;
 }
 
-bool Bracket::addCompetitor( Competitor *competitor)
+/**
+ * @brief Bracket::addCompetitor - Add a competitor to the bracket
+ * @param competitor - The competitor to add
+ * @param location - The location within the list. -1 is append.
+ * @return
+ */
+bool Bracket::addCompetitor(Competitor *competitor, int location)
 {
     if(0 == competitor)
         return false;
 
     if(m_competitors.indexOf(competitor) < 0)
     {
-        m_competitors.append(competitor);
+        // We can add the competitor, now find out where.
+        if(location == -1 || location > m_competitors.size())
+        {
+            m_competitors.append(competitor);
+        }
+        else
+        {
+            m_competitors.insert(location, competitor);
+        }
         return true;
     }
     return false;

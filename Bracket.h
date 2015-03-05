@@ -49,7 +49,7 @@ public:
     double maxWeight() const {return m_maxWeight;}
 
     const QList< Competitor *> competitors() const;
-    bool addCompetitor(Competitor *competitor);
+    bool addCompetitor(Competitor *competitor, int location = -1);
 
 private:
     QString m_name;

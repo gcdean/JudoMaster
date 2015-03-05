@@ -88,12 +88,6 @@ QVariant CompetitorTableModel::headerData(int section, Qt::Orientation orientati
                 return QVariant("Rank");
             break;
 
-            case competitor::JudoAssociation:
-                return QVariant("Assoc");
-
-            case competitor::JudoNumber:
-                return QVariant("Reg #");
-
         default:
             return QVariant();
         }
@@ -182,12 +176,6 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
 
                 break;
 
-                case competitor::JudoAssociation:
-                    return QVariant(judoAssocToString(judoka->judoAssociation()));
-
-                case competitor::JudoNumber:
-                    return QVariant(judoka->registrationNumber());
-
             }
 
         break;
@@ -248,16 +236,6 @@ bool CompetitorTableModel::setData(const QModelIndex &index, const QVariant &val
             judoka->setRank(rankFromString(value.toString()));
             break;
 
-        case competitor::JudoAssociation:
-        {
-            JM::JudoAssociation ja = judoAssocFromString(value.toString());
-            if(ja == JM::Other)
-                judoka->setOtherAssocName(value.toString());
-            judoka->setJudoAssociation(ja);
-            break;
-        }
-        case competitor::JudoNumber:
-            judoka->setRegistrationNumber(value.toString());
     }
 
     if(updated)
@@ -280,7 +258,7 @@ Qt::DropActions CompetitorTableModel::supportedDropActions() const
 
 QStringList CompetitorTableModel::mimeTypes() const
 {
-    QStringList types;
+    QStringList types = QAbstractTableModel::mimeTypes();
     types << "application/jm.comp.list";
 
     return types;
@@ -289,7 +267,14 @@ QStringList CompetitorTableModel::mimeTypes() const
 QMimeData *CompetitorTableModel::mimeData(const QModelIndexList &indexes) const
 {
     const QList<Competitor *> competitors = m_controller->competitors(m_filter, m_parentId);
-    QMimeData *mimeData = new QMimeData();
+//    QMimeData *mimeData = new QMimeData();
+    QMimeData *mimeData = QAbstractTableModel::mimeData(indexes);
+
+    if(mimeData->hasFormat("application/x-qabstractitemmodeldatalist"))
+    {
+        qDebug() << "HAVE MODLE DATA LIST INFO.";
+    }
+
     QByteArray encodedData;
 
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
@@ -318,6 +303,16 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
         return true;
 
     bool success = false;
+    foreach(QString fmt, data->formats())
+    {
+        qDebug() << "CompetitorTableModel::dropMimeData Format: " << fmt;
+    }
+
+    if(data->hasFormat("application/x-qabstractitemmodeldatalist"))
+    {
+        qDebug() << "ITEM MODEL DATA FOUND!!!";
+    }
+
     if(data->hasFormat("application/jm.comp.list"))
     {
         qDebug() << "Valid Drop Format";
@@ -349,8 +344,7 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
                 if(bracket)
                 {
                     // Now add the competitor to the bracket.
-                    // TODO: Add the Competitor to the right row based on the drop location.
-                    if(bracket->addCompetitor(competitor))
+                    if(bracket->addCompetitor(competitor, parent.row()))
                     {
                         beginInsertRows(QModelIndex(), bracket->competitors().size(), bracket->competitors().size());
                         success = true;
@@ -396,8 +390,6 @@ QVariant CompetitorTableModel::columnBackground(const Competitor* judoka, int co
                 return QVariant(QColor(Qt::red));
             break;
 
-//        case competitor::Rank:
-//            return QVariant(rankToColor(judoka->rank()));
     }
 
     return QVariant();
