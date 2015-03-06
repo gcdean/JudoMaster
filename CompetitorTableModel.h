@@ -38,6 +38,10 @@ signals:
 public slots:
     void addCompetitor(Competitor *competitor);
 
+protected:
+    BaseController* controller()  {return m_controller;}
+    int parentId() const {return m_parentId;}
+
 private:    // Methods
     QVariant columnBackground(const Competitor *judoka, int col) const;
 

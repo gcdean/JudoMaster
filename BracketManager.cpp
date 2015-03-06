@@ -1,6 +1,7 @@
 #include "BracketManager.h"
 #include "ui_BracketManager.h"
 
+#include "BracketCompetitorTableModel.h"
 #include "BracketTableModel.h"
 #include "CompetitorFilter.h"
 #include "CompetitorTableModel.h"
@@ -129,11 +130,12 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->allCompetitors->tableView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     ui->bracketCompetitors->setDisplayEditButtons(false);
-    ui->bracketCompetitors->setModel(new CompetitorTableModel(JMApp()->bracketController()));
-    //ui->bracketCompetitors->tableView()->setDragDropMode(QAbstractItemView::DropOnly);
+    ui->bracketCompetitors->setModel(new BracketCompetitorTableModel(JMApp()->bracketController()));
+    ui->bracketCompetitors->tableView()->setDragDropMode(QAbstractItemView::DragDrop);
     ui->bracketCompetitors->tableView()->setAcceptDrops(true);
     ui->bracketCompetitors->tableView()->viewport()->setAcceptDrops(true);
     ui->bracketCompetitors->tableView()->setDropIndicatorShown(true);
+    ui->bracketCompetitors->tableView()->setSortingEnabled(false);
 
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentChanged, this, &BracketManager::bracketChanged);
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);

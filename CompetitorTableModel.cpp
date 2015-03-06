@@ -258,7 +258,7 @@ Qt::DropActions CompetitorTableModel::supportedDropActions() const
 
 QStringList CompetitorTableModel::mimeTypes() const
 {
-    QStringList types = QAbstractTableModel::mimeTypes();
+    QStringList types;// = QAbstractTableModel::mimeTypes();
     types << "application/jm.comp.list";
 
     return types;
@@ -269,11 +269,6 @@ QMimeData *CompetitorTableModel::mimeData(const QModelIndexList &indexes) const
     const QList<Competitor *> competitors = m_controller->competitors(m_filter, m_parentId);
 //    QMimeData *mimeData = new QMimeData();
     QMimeData *mimeData = QAbstractTableModel::mimeData(indexes);
-
-    if(mimeData->hasFormat("application/x-qabstractitemmodeldatalist"))
-    {
-        qDebug() << "HAVE MODLE DATA LIST INFO.";
-    }
 
     QByteArray encodedData;
 
@@ -349,6 +344,10 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
                         beginInsertRows(QModelIndex(), bracket->competitors().size(), bracket->competitors().size());
                         success = true;
                         endInsertRows();
+                    }
+                    else
+                    {
+                        // The add failed, maybe it's a move.
                     }
                 }
             }

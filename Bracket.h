@@ -50,6 +50,7 @@ public:
 
     const QList< Competitor *> competitors() const;
     bool addCompetitor(Competitor *competitor, int location = -1);
+    void moveCompetitor(int srcRow, int destRow);
 
 private:
     QString m_name;

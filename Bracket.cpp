@@ -163,3 +163,8 @@ bool Bracket::addCompetitor(Competitor *competitor, int location)
     }
     return false;
 }
+
+void Bracket::moveCompetitor(int srcRow, int destRow)
+{
+    m_competitors.move(srcRow, destRow);
+}
