@@ -121,6 +121,7 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->bracketList->setTableItemDelegate(new BracketTypeItemDelegate());
     ui->bracketList->setModel(new BracketTableModel());
     ui->bracketList->setController(JMApp()->bracketController());
+    ui->bracketList->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     ui->allCompetitors->tableView()->setSortingEnabled(true);
     ui->allCompetitors->setDisplayEditButtons(false);
@@ -128,6 +129,7 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->allCompetitors->tableView()->setDragDropMode(QAbstractItemView::DragOnly);
     ui->allCompetitors->tableView()->setDropIndicatorShown(true);
     ui->allCompetitors->tableView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->allCompetitors->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     ui->bracketCompetitors->setDisplayEditButtons(false);
     ui->bracketCompetitors->setModel(new BracketCompetitorTableModel(JMApp()->bracketController()));
@@ -136,6 +138,7 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->bracketCompetitors->tableView()->viewport()->setAcceptDrops(true);
     ui->bracketCompetitors->tableView()->setDropIndicatorShown(true);
     ui->bracketCompetitors->tableView()->setSortingEnabled(false);
+    ui->bracketCompetitors->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentChanged, this, &BracketManager::bracketChanged);
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);
