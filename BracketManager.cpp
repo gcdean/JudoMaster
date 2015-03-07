@@ -133,7 +133,7 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->allCompetitors->tableView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->allCompetitors->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    ui->bracketCompetitors->setDisplayEditButtons(true);
+    ui->bracketCompetitors->setDisplayEditButtons(false);
     ui->bracketCompetitors->setModel(new BracketCompetitorTableModel(JMApp()->bracketController()));
     ui->bracketCompetitors->tableView()->setDragDropMode(QAbstractItemView::DragDrop);
     ui->bracketCompetitors->tableView()->setAcceptDrops(true);

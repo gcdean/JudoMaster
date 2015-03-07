@@ -2,6 +2,7 @@
 
 #include "Bracket.h"
 #include "Competitor.h"
+#include "JMDataObj.h"
 #include "JudoMasterApplication.h"
 #include "JMUtil.h"
 
@@ -18,7 +19,7 @@ CompetitorTableModel::CompetitorTableModel(BaseController *controller, QObject *
     , m_editable(true)
     , m_filter()
 {
-    connect(JMApp()->competitorController(), &CompetitorController::competitorAdded, this, &CompetitorTableModel::addCompetitor);
+    connect(JMApp()->competitorController(), &CompetitorController::addedDataObj, this, &CompetitorTableModel::addCompetitor);
 }
 
 void CompetitorTableModel::setParentId(int id)
@@ -374,14 +375,11 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
     return success;
 }
 
-void CompetitorTableModel::addCompetitor(Competitor *competitor)
+void CompetitorTableModel::addCompetitor(JMDataObj *competitor)
 {
-   if(m_parentId == -1 || m_parentId == competitor->clubId())
-   {
-       int numCompetitors = m_controller->competitors(m_filter, m_parentId).size() - 1;
-       beginInsertRows(QModelIndex(), numCompetitors, numCompetitors);
-       endInsertRows();
-   }
+   int numCompetitors = m_controller->competitors(m_filter, m_parentId).size() - 1;
+   beginInsertRows(QModelIndex(), numCompetitors, numCompetitors);
+   endInsertRows();
 }
 
 QVariant CompetitorTableModel::columnBackground(const Competitor* judoka, int col) const

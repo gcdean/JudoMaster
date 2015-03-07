@@ -59,7 +59,58 @@ void BracketController::add(int parentId)
 
 void BracketController::remove(int id)
 {
-    Q_UNUSED(id);
+    if(!tournament())
+    {
+        return;
+    }
+
+    Bracket* bracket = dynamic_cast<Bracket *>(find(id));
+    if(bracket)
+    {
+        emit removedDataObj(bracket);
+        tournament()->brackets().removeOne(bracket);
+    }
+}
+
+void BracketController::removeIndex(int index)
+{
+    if(!tournament() || index < 0 || index >= tournament()->brackets().size())
+    {
+        return;
+    }
+
+    emit removedDataObj(tournament()->brackets().at(index));
+    tournament()->brackets().removeAt(index);
+}
+
+
+
+JMDataObj* BracketController::find(int id)
+{
+    foreach (Bracket *bracket, tournament()->brackets())
+    {
+        if(bracket->id() == id)
+        {
+            return bracket;
+        }
+    }
+
+    return 0;
+}
+
+int BracketController::indexOf(int id)
+{
+    int index = 0;
+    foreach (Bracket *bracket, tournament()->brackets())
+    {
+        if(bracket->id() == id)
+        {
+            return index;
+        }
+        index++;
+    }
+
+    return -1;
 }
 
 const QList<Competitor *> BracketController::competitors(int parentId) const

@@ -49,16 +49,19 @@ void BaseController::remove(int id)
     // Do Nothing.
 }
 
+void BaseController::removeIndex(int index)
+{
+    Q_UNUSED(index);
+}
+
 JMDataObj* BaseController::find(int id)
 {
-    foreach (Bracket *bracket, tournament()->brackets())
-    {
-        if(bracket->id() == id)
-        {
-            return bracket;
-        }
-    }
     return 0;
+}
+
+int BaseController::indexOf(int id)
+{
+    return -1;
 }
 
 const QList<Competitor *> BaseController::competitors(int parentId) const

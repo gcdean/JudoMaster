@@ -7,6 +7,7 @@
 
 class BaseController;
 class Competitor;
+class JMDataObj;
 
 class CompetitorTableModel : public QAbstractTableModel
 {
@@ -36,7 +37,7 @@ public:
 signals:
 
 public slots:
-    void addCompetitor(Competitor *competitor);
+    void addCompetitor(JMDataObj *competitor);
 
 protected:
     BaseController* controller()  {return m_controller;}

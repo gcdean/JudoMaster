@@ -10,6 +10,8 @@
 #include <QSortFilterProxyModel>
 #include <QTableView>
 
+#include <QDebug>
+
 CompetitorList::CompetitorList(QWidget *parent) :
     QWidget(parent)
     , ui(new Ui::CompetitorList)
@@ -19,6 +21,7 @@ CompetitorList::CompetitorList(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->addBtn, &QPushButton::clicked, this, &CompetitorList::add);
+    connect(ui->deleteBtn, &QPushButton::clicked, this, &CompetitorList::remove);
     connect(JMApp()->clubController(), &ClubController::tournamentChanged, this, &CompetitorList::tournamentChanged);
 }
 
@@ -94,6 +97,16 @@ void CompetitorList::add()
 void CompetitorList::remove()
 {
     // Remove Selected items.
+    if(m_controller)
+    {
+        QModelIndexList lst = ui->competitorTable->selectionModel()->selectedRows();
+        foreach(const QModelIndex& index, lst)
+        {
+            qDebug() << "CompetitorList::remove() - Row: " << index.row();
+            m_controller->removeIndex(index.row());
+        }
+
+    }
 }
 
 void CompetitorList::tournamentChanged()

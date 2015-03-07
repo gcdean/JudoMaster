@@ -11,6 +11,7 @@ BracketTableModel::BracketTableModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
     connect(JMApp()->bracketController(), &BracketController::addedDataObj, this, &BracketTableModel::addBracket);
+    connect(JMApp()->bracketController(), &BracketController::removedDataObj, this, &BracketTableModel::removeBracket);
 }
 
 int BracketTableModel::rowCount(const QModelIndex &parent) const
@@ -239,8 +240,14 @@ bool BracketTableModel::setData(const QModelIndex &index, const QVariant &value,
 void BracketTableModel::addBracket(JMDataObj *bracket)
 {
     Q_UNUSED(bracket);
-    qDebug() << "BracketTableModel::addBracket() Num Brackets: " << JMApp()->bracketController()->size();
     int numBrackets = JMApp()->bracketController()->size() - 1;
     beginInsertRows(QModelIndex(), numBrackets, numBrackets);
     endInsertRows();
+}
+
+void BracketTableModel::removeBracket(JMDataObj *bracket)
+{
+    int row = JMApp()->bracketController()->indexOf(bracket->id());
+    beginRemoveRows(QModelIndex(), row, row);
+    endRemoveRows();
 }

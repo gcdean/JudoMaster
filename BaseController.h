@@ -20,7 +20,9 @@ public:
 
     virtual void add(int parentId); // Creates and adds a new object to the model
     virtual void remove(int id);    // Remove the object with the specified id
+    virtual void removeIndex(int index);    // Remove item at given index.
     virtual JMDataObj* find(int id);       // Should this go to the base class as a generic?
+    virtual int indexOf(int id);
 
 
     virtual const QList<Competitor *> competitors(int parentId = -1) const;
@@ -29,6 +31,7 @@ public:
 signals:
     void tournamentChanged();
     void addedDataObj(JMDataObj *obj);
+    void removedDataObj(JMDataObj *obj);
 
 public slots:
 

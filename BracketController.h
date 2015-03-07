@@ -19,8 +19,14 @@ public:
     int size() const override;
     int size(int id) const override;
 
+    // BaseController interface
     void add(int parentId) override;
     void remove(int id) override;
+    void removeIndex(int index) override;
+    JMDataObj *find(int id) override;
+    int indexOf(int id);
+
+
 
     const QList<Competitor *> competitors(int parentId = -1) const override;
 
@@ -28,6 +34,7 @@ signals:
 
 private:
     int findNextId() override;
+
 };
 
 #endif // BRACKETCONTROLLER_H

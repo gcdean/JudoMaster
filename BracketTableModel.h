@@ -45,6 +45,7 @@ signals:
 
 public slots:
     void addBracket(JMDataObj *bracket);
+    void removeBracket(JMDataObj *bracket);
 
 };
 
