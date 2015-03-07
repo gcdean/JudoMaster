@@ -88,6 +88,11 @@ QVariant CompetitorTableModel::headerData(int section, Qt::Orientation orientati
                 return QVariant("Rank");
             break;
 
+            case competitor::NumDivs:
+                return QVariant("Divs");
+
+            case competitor::Notes:
+                return QVariant("Notes");
         default:
             return QVariant();
         }
@@ -176,6 +181,12 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
 
                 break;
 
+                case competitor::NumDivs:
+                    return QVariant(judoka->numBrackets());
+
+                case competitor::Notes:
+                    return QVariant(judoka->notes());
+
             }
 
         break;
@@ -236,6 +247,13 @@ bool CompetitorTableModel::setData(const QModelIndex &index, const QVariant &val
             judoka->setRank(rankFromString(value.toString()));
             break;
 
+        case competitor::NumDivs:
+            judoka->setNumBrackets(value.toInt());
+            break;
+
+        case competitor::Notes:
+            judoka->setNotes(value.toString());
+            break;
     }
 
     if(updated)

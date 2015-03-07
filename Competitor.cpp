@@ -9,6 +9,8 @@ Competitor::Competitor(int id, QString firstName, QString lastName, JM::Gender g
     , m_weight(weight)
     , m_rank(rank)
     , m_clubId(clubId)
+    , m_numBrackets(1)
+    , m_notes()
 {
 }
 
@@ -21,6 +23,8 @@ Competitor::Competitor(const Competitor &src) : JMDataObj(src.id())
     m_weight = src.weight();
     m_rank = src.rank();
     m_clubId = src.clubId();
+    m_numBrackets = src.numBrackets();
+    m_notes = src.notes();
 }
 
 Competitor::Competitor()
@@ -40,6 +44,8 @@ void Competitor::read(const QJsonObject &json)
     m_weight = json["weight"].toDouble();
 
     m_rank = rankFromString(json["rank"].toString());
+    m_numBrackets = json["numBrackets"].toInt();
+    m_notes = json["notes"].toString();
 
     m_clubId = json["clubid"].toInt();
 
@@ -55,6 +61,8 @@ void Competitor::write(QJsonObject &json) const
     json["weight"] = m_weight;
 
     json["rank"] = rankToString(m_rank);
+    json["numBrackets"] = m_numBrackets;
+    json["notes"] = m_notes;
     json["clubid"] = m_clubId;
 
 }

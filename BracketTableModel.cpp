@@ -58,6 +58,14 @@ QVariant BracketTableModel::headerData(int section, Qt::Orientation orientation,
            case bracket::MaxWeight://4:
                 return QVariant("Max Weight");
 
+           case bracket::AllowChokes:
+                return QVariant("Chokes");
+
+            case bracket::AllowArmBars:
+                return QVariant("Armbars");
+
+            case bracket::MatNum:
+                return QVariant("Mat");
            default:
             return QVariant();
         }
@@ -86,17 +94,7 @@ QVariant BracketTableModel::data(const QModelIndex &index, int role) const
                     break;
 
                 case bracket::Type: // Type
-                    switch(selectedBracket->weightType())
-                    {
-                        case Bracket::IJF:
-                            return QVariant("IJF");
-
-                        case Bracket::LightMediumHeavy:
-                            return QVariant("Light/Med/Hvy");
-
-                        default:
-                            return QVariant("Unknown Type");
-                    }
+                    return QVariant(bracket::weightTypeToStr(selectedBracket->weightType()));
 
                 break;
 
@@ -112,10 +110,40 @@ QVariant BracketTableModel::data(const QModelIndex &index, int role) const
                     return QVariant(selectedBracket->maxWeight());
                 break;
 
+                case bracket::AllowChokes:
+                    return QVariant(selectedBracket->chokesAllowed());
+
+                case bracket::AllowArmBars:
+                    return QVariant(selectedBracket->armbarsAllowed());
+
+                case bracket::MatNum:
+                    return QVariant(selectedBracket->matNumber());
                 default:
                     return QVariant("Unknown");
             }
         }
+            break;
+
+        case Qt::CheckStateRole:
+            switch(index.column())
+            {
+                case bracket::AllowChokes:
+                {
+                    if(selectedBracket->chokesAllowed())
+                        return Qt::Checked;
+                    else
+                        return Qt::Unchecked;
+
+                }
+                case bracket::AllowArmBars:
+                {
+                    if(selectedBracket->armbarsAllowed())
+                        return Qt::Checked;
+                    else
+                        return Qt::Unchecked;
+                }
+            }
+
             break;
 
         case Qt::UserRole:
@@ -129,12 +157,21 @@ QVariant BracketTableModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags BracketTableModel::flags(const QModelIndex &index) const
 {
 
-    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-//    int col = index.column();
-//    if(col == 0)
+    Qt::ItemFlags flags = QAbstractTableModel::flags(index);
+
+//    flags |= Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+    switch (index.column())
     {
-        flags |= Qt::ItemIsEditable;
+        case bracket::AllowChokes:
+        case bracket::AllowArmBars:
+            flags |= Qt::ItemIsUserCheckable;
+        break;
+        default:
+        break;
     }
+
+    flags |= Qt::ItemIsEditable;
 
     return flags;
 }
@@ -159,10 +196,7 @@ bool BracketTableModel::setData(const QModelIndex &index, const QVariant &value,
         case bracket::Type: // Weight Type
         {
             int t = value.toInt();
-            if(t == 0)
-                bracket->setWeightType(Bracket::IJF);
-            else if(t == 1)
-                bracket->setWeightType(Bracket::LightMediumHeavy);
+            bracket->setWeightType((Bracket::WeightType)t);
             break;
         }
 
@@ -176,6 +210,18 @@ bool BracketTableModel::setData(const QModelIndex &index, const QVariant &value,
 
         case bracket::MaxWeight: // Max Weight
             bracket->setMaxWeight(value.toDouble());
+            break;
+
+        case bracket::AllowChokes:
+            bracket->setChokesAllowed(value.toBool());
+            break;
+
+        case bracket::AllowArmBars:
+            bracket->setArmbarsAllowed(value.toBool());
+            break;
+
+        case bracket::MatNum:
+            bracket->setMatNumber(value.toInt());
             break;
 
         default:

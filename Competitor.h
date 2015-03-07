@@ -19,6 +19,8 @@ namespace competitor
         Age,
         Weight,
         Rank,
+        NumDivs,
+        Notes,
         MAX_COMPETITOR_ITEM
     };
 
@@ -47,6 +49,10 @@ public:
     void setRank(JM::Rank rank) {m_rank = rank;}
     int clubId() const {return m_clubId;}
     void setClubId(int id) {m_clubId = id;}
+    int numBrackets() const {return m_numBrackets;}
+    void setNumBrackets(int num) {m_numBrackets = num;}
+    QString notes() const { return m_notes;}
+    void setNotes(QString notes) {m_notes = notes;}
 
     virtual void read(const QJsonObject& json);
 
@@ -59,6 +65,8 @@ private:
     int m_age;
     double m_weight;
     JM::Rank m_rank;
+    int m_numBrackets;
+    QString m_notes;
     int m_clubId;
 };
 

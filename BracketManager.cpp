@@ -1,6 +1,7 @@
 #include "BracketManager.h"
 #include "ui_BracketManager.h"
 
+#include "Bracket.h"
 #include "BracketCompetitorTableModel.h"
 #include "BracketTableModel.h"
 #include "CompetitorFilter.h"
@@ -8,6 +9,7 @@
 #include "JMUtil.h"
 #include "JudoMasterApplication.h"
 
+#include <QCheckBox>
 #include <QComboBox>
 #include <QDebug>
 #include <QSortFilterProxyModel>
@@ -64,15 +66,15 @@ public:
                 QComboBox *combo = dynamic_cast<QComboBox *>(editor);
                 if(combo)
                 {
+                    combo->addItem("Light");
+                    combo->addItem("Medium");
+                    combo->addItem("Heavy");
+                    combo->addItem("Super Heavy");
                     combo->addItem("IFJ");
-                    combo->addItem("Light/Medium/Heavy");
 
                     // Need to select the right one.
                     QVariant var = index.model()->data(index);
-                    if(var.toString() == "IJF")
-                        combo->setCurrentIndex(0);
-                    else
-                        combo->setCurrentIndex(1);
+                    combo->setCurrentIndex(bracket::weightTypeFromStr(var.toString()));
                 }
                 break;
             }
@@ -131,7 +133,7 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->allCompetitors->tableView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->allCompetitors->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    ui->bracketCompetitors->setDisplayEditButtons(false);
+    ui->bracketCompetitors->setDisplayEditButtons(true);
     ui->bracketCompetitors->setModel(new BracketCompetitorTableModel(JMApp()->bracketController()));
     ui->bracketCompetitors->tableView()->setDragDropMode(QAbstractItemView::DragDrop);
     ui->bracketCompetitors->tableView()->setAcceptDrops(true);

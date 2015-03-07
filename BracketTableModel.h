@@ -19,6 +19,9 @@ namespace bracket
         MinAge,
         MaxAge,
         MaxWeight,
+        AllowChokes,
+        AllowArmBars,
+        MatNum,
         MAX_BRACKET_ITEMS   // Last item in the enum.
     };
 

@@ -11,34 +11,69 @@
 #include <QString>
 
 
-namespace
+namespace bracket
 {
     const QString AbsoluteStr("IJF");
-    const QString LightMedHeavyStr("LightMedHeavy");
+    const QString LightStr("Light");
+    const QString MediumStr("Medium");
+    const QString HeavyStr("Heavy");
+    const QString SuperHeavyStr("Super Heavy");
     QString weightTypeToStr(Bracket::WeightType type)
     {
-        if(type == Bracket::IJF)
-            return AbsoluteStr;
-        return LightMedHeavyStr;
+        switch(type)
+        {
+            case Bracket::Light:
+                return LightStr;
+                break;
+            case Bracket::Medium:
+                return MediumStr;
+                break;
+            case Bracket::Heavy:
+                return HeavyStr;
+                break;
+            case Bracket::SuperHeavy:
+                return SuperHeavyStr;
+                break;
+            case Bracket::IJF:
+                return AbsoluteStr;
+                break;
+        }
+
     }
 
     Bracket::WeightType weightTypeFromStr(QString typeStr)
     {
+        if(typeStr.compare(LightStr, Qt::CaseInsensitive) == 0)
+            return Bracket::Light;
+        if(typeStr.compare(MediumStr, Qt::CaseInsensitive) == 0)
+            return Bracket::Medium;
+        if(typeStr.compare(HeavyStr, Qt::CaseInsensitive) == 0)
+            return Bracket::Heavy;
+        if(typeStr.compare(SuperHeavyStr, Qt::CaseInsensitive) == 0)
+            return Bracket::SuperHeavy;
         if(typeStr.compare(AbsoluteStr, Qt::CaseInsensitive) == 0)
             return Bracket::IJF;
 
-        return Bracket::LightMediumHeavy;
     }
 }
+
+using namespace bracket;
 
 Bracket::Bracket()
     : JMDataObj(-1)
     , m_name("")
     , m_gender(JM::Male)
-    , m_weightType(Bracket::LightMediumHeavy)
+    , m_weightType(Bracket::Light)
     , m_minAge(0)
     , m_maxAge(0)
     , m_maxWeight(0.0)
+    , m_chokesAllowed(false)
+    , m_armbarsAllowed(false)
+    , m_matNumber(0)
+    , m_firstPlace()
+    , m_secondPlace()
+    , m_thirdPlace_1()
+    , m_thirdPlace_2()
 {    
 }
 
@@ -46,10 +81,17 @@ Bracket::Bracket(int id)
     : JMDataObj(id)
     , m_name("")
     , m_gender(JM::Male)
-    , m_weightType(Bracket::LightMediumHeavy)
+    , m_weightType(Bracket::Light)
     , m_minAge(0)
     , m_maxAge(0)
     , m_maxWeight(0.0)
+    , m_chokesAllowed(false)
+    , m_armbarsAllowed(false)
+    , m_matNumber(0)
+    , m_firstPlace()
+    , m_secondPlace()
+    , m_thirdPlace_1()
+    , m_thirdPlace_2()
 {
 
 }
@@ -63,6 +105,13 @@ Bracket::Bracket(const Bracket &src)
     m_minAge = src.minAge();
     m_maxAge = src.maxAge();
     m_maxWeight = src.maxWeight();
+    m_chokesAllowed = src.chokesAllowed();
+    m_armbarsAllowed = src.armbarsAllowed();
+    m_matNumber = src.matNumber();
+    m_firstPlace = src.firstPlace();
+    m_secondPlace = src.secondPlace();
+    m_thirdPlace_1 = src.thirdPlace1();
+    m_thirdPlace_2 = src.thirdPlace2();
 }
 
 Bracket::Bracket(const QJsonObject &json)
@@ -80,6 +129,13 @@ void Bracket::read(const QJsonObject &json, const QList<Competitor *>competitors
     m_minAge = json["minAge"].toInt();
     m_maxAge = json["maxAge"].toInt();
     m_maxWeight = json["maxWeight"].toDouble();
+    m_chokesAllowed = json["chokesAllowed"].toBool();
+    m_armbarsAllowed = json["armbarsAllowed"].toBool();
+    m_matNumber = json["matNumber"].toInt();
+    m_firstPlace = json["firstPlace"].toString();
+    m_secondPlace = json["secondPlace"].toString();
+    m_thirdPlace_1 = json["thirdPlace1"].toString();
+    m_thirdPlace_2 = json["thirdPlace2"].toString();
 
     QJsonArray bracketMembers = json["bracketMembers"].toArray();
 
@@ -108,6 +164,13 @@ void Bracket::write(QJsonObject &json) const
     json["minAge"] = m_minAge;
     json["maxAge"] = m_maxAge;
     json["maxWeight"] = m_maxWeight;
+    json["chokesAllowed"] = m_chokesAllowed;
+    json["armbarsAllowed"] = m_armbarsAllowed;
+    json["matNumber"] = m_matNumber;
+    json["firstPlace"] = m_firstPlace;
+    json["secondPlace"] = m_secondPlace;
+    json["thirdPlace1"] = m_thirdPlace_1;
+    json["thirdPlace2"] = m_thirdPlace_2;
 
     // Write out the list of competitor ids.
     QJsonArray bracketMembers;

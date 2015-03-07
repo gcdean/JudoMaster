@@ -27,8 +27,11 @@ public:
 
     enum WeightType
     {
-        IJF,
-        LightMediumHeavy
+        Light,
+        Medium,
+        Heavy,
+        SuperHeavy,
+        IJF
     };
 
     void read(const QJsonObject& json, const QList<Competitor *> competitors);
@@ -47,6 +50,20 @@ public:
     int maxAge() const {return m_maxAge;}
     void setMaxWeight(double maxWeight) {m_maxWeight = maxWeight;}
     double maxWeight() const {return m_maxWeight;}
+    void setChokesAllowed(bool allowed) {m_chokesAllowed = allowed;}
+    bool chokesAllowed() const {return m_chokesAllowed;}
+    void setArmbarsAllowed(bool allowed) {m_armbarsAllowed = allowed;}
+    bool armbarsAllowed() const {return m_armbarsAllowed;}
+    void setMatNumber(int number) {m_matNumber = number;}
+    int matNumber() const {return m_matNumber;}
+    void setFirstPlace(const QString& firstPlace) {m_firstPlace = firstPlace;}
+    QString firstPlace() const {return m_firstPlace;}
+    void setSecondPlace(const QString& place) {m_secondPlace = place;}
+    QString secondPlace() const{return m_secondPlace;}
+    void setThirdPlace1(const QString& place) {m_thirdPlace_1 = place;}
+    QString thirdPlace1() const {return m_thirdPlace_1;}
+    void setThirdPlace2(const QString& place) {m_thirdPlace_2 = place;}
+    QString thirdPlace2() const {return m_thirdPlace_2;}
 
     const QList< Competitor *> competitors() const;
     bool addCompetitor(Competitor *competitor, int location = -1);
@@ -59,10 +76,23 @@ private:
 
     int m_minAge;
     int m_maxAge;
+    bool m_chokesAllowed;
+    bool m_armbarsAllowed;
+    int m_matNumber;
+    QString m_firstPlace;
+    QString m_secondPlace;
+    QString m_thirdPlace_1;
+    QString m_thirdPlace_2;
 
     double m_maxWeight;
 
     QList<Competitor *> m_competitors;
 };
+
+namespace bracket
+{
+    QString weightTypeToStr(Bracket::WeightType type);
+    Bracket::WeightType weightTypeFromStr(QString typeStr);
+}
 
 #endif // BRACKET_H
