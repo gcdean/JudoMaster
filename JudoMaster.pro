@@ -12,7 +12,8 @@ TARGET = JudoMaster
 TEMPLATE = app
 
 QMAKE_CXXFLAGS += -Wunused-parameter
-QMAKE_CXXFLAGS += -Wc++11-extensions
+QMAKE_CXXFLAGS += -std=c++11
+#QMAKE_CXXFLAGS += -Wc++11-extensions
 
 SOURCES += main.cpp\
         JudoMasterMainWindow.cpp \
