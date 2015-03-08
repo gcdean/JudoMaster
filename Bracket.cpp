@@ -227,6 +227,14 @@ bool Bracket::addCompetitor(Competitor *competitor, int location)
     return false;
 }
 
+void Bracket::removeCompetitor(int index)
+{
+    if(index < 0 || index >= m_competitors.size())
+        return;
+
+    m_competitors.removeAt(index);
+}
+
 void Bracket::moveCompetitor(int srcRow, int destRow)
 {
     m_competitors.move(srcRow, destRow);

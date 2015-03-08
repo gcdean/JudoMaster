@@ -3,6 +3,7 @@
 #include "BaseController.h"
 #include "Bracket.h"
 #include "JMDataObj.h"
+#include "JudoMasterApplication.h"
 
 #include <QDebug>
 #include <QMimeData>
@@ -11,7 +12,7 @@
 BracketCompetitorTableModel::BracketCompetitorTableModel(BaseController *controller, QObject *parent)
     : CompetitorTableModel(controller, parent)
 {
-
+    connect(JMApp()->bracketController(), &BracketController::competitorRemoved, this, &BracketCompetitorTableModel::removeCompetitor);
 }
 
 BracketCompetitorTableModel::~BracketCompetitorTableModel()
@@ -88,5 +89,12 @@ bool BracketCompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAc
     }
 
     return CompetitorTableModel::dropMimeData(data, action, row, column, parent);
+}
+
+void BracketCompetitorTableModel::removeCompetitor(int index)
+{
+    qDebug() << "BracketCompetitorTableModel::removeCompetitor(" << index << ")";
+    beginRemoveRows(QModelIndex(), index, index);
+    endRemoveRows();
 }
 

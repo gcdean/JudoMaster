@@ -36,11 +36,37 @@
        </item>
        <item>
         <widget class="QSplitter" name="splitter">
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
          <widget class="CompetitorList" name="bracketList" native="true"/>
          <widget class="CompetitorList" name="bracketCompetitors" native="true"/>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="removeBtn">
+         <property name="minimumSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="Resources.qrc">
+           <normaloff>:/images/minus.png</normaloff>:/images/minus.png</iconset>
+         </property>
         </widget>
        </item>
       </layout>
@@ -80,6 +106,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="Resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

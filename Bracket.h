@@ -67,6 +67,7 @@ public:
 
     const QList< Competitor *> competitors() const;
     bool addCompetitor(Competitor *competitor, int location = -1);
+    void removeCompetitor(int index);
     void moveCompetitor(int srcRow, int destRow);
 
 private:

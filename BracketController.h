@@ -26,11 +26,12 @@ public:
     JMDataObj *find(int id) override;
     int indexOf(int id);
 
-
+    void removeCompetitorFromBracket(int bracketId, int competitorId);
 
     const QList<Competitor *> competitors(int parentId = -1) const override;
 
 signals:
+    void competitorRemoved(int index);
 
 private:
     int findNextId() override;

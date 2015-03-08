@@ -4,6 +4,7 @@
 #include "Bracket.h"
 #include "BracketCompetitorTableModel.h"
 #include "BracketTableModel.h"
+#include "Competitor.h"
 #include "CompetitorFilter.h"
 #include "CompetitorTableModel.h"
 #include "JMUtil.h"
@@ -117,6 +118,7 @@ public:
 BracketManager::BracketManager(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::BracketManager)
+    , m_currentBracket(0)
 {
     ui->setupUi(this);
 
@@ -142,12 +144,10 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->bracketCompetitors->tableView()->setSortingEnabled(false);
     ui->bracketCompetitors->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentChanged, this, &BracketManager::bracketChanged);
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);
-
     connect(ui->allCompetitorsFilter, &CompetitorFilterWidget::applyFilter, this, &BracketManager::competitorFilterChanged);
     connect(JMApp()->bracketController(), &ClubController::tournamentChanged, this, &BracketManager::tournamentChanged);
-
+    connect(ui->removeBtn, &QPushButton::clicked, this, &BracketManager::removeCompetitorFromBracket);
 }
 
 BracketManager::~BracketManager()
@@ -160,35 +160,8 @@ void BracketManager::addBracket()
     qDebug() << "ADD A BRACKET";
 }
 
-void BracketManager::bracketChanged(const QModelIndex &current, const QModelIndex &previous)
-{
-    qDebug() << "BracketManager::bracketChanged() - start";
-    if(current.row() == previous.row())
-    {
-        qDebug() << "    Row has not changed. Do Nothing.";
-        return;
-    }
-    BracketTableModel* model = dynamic_cast<BracketTableModel *>(ui->bracketList->tableModel());
-    if(model)
-    {
-        // Get the index of the selected item.
-        // Get the bracket id of the selected item.
-        QVariant qv = model->data(current, Qt::UserRole);
-
-        // Set the id in the competitor list.
-        if(qv.isValid())
-        {
-            CompetitorTableModel* cmodel = dynamic_cast<CompetitorTableModel *>(ui->bracketCompetitors->tableModel());
-            qDebug() << "    Setting id in bracket competitors to: " << qv.toInt();
-            cmodel->setParentId(qv.toInt());
-        }
-    }
-    qDebug() << "BracketManager::bracketChanged() - end";
-}
-
 void BracketManager::tournamentChanged()
 {
-    qDebug() << "BracketManager::tournamentChanged()";
     ui->bracketList->setModel(new BracketTableModel());
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);
 
@@ -204,12 +177,11 @@ void BracketManager::tournamentChanged()
 
 void BracketManager::rowChanged(const QModelIndex &current, const QModelIndex &previous)
 {
-    qDebug() << "BracketManager::rowChanged() - start";
     if(current.row() == previous.row())
     {
-        qDebug() << "    Row has not changed. Do Nothing.";
         return;
     }
+
     BracketTableModel* model = dynamic_cast<BracketTableModel *>(ui->bracketList->tableModel());
     if(model)
     {
@@ -220,12 +192,11 @@ void BracketManager::rowChanged(const QModelIndex &current, const QModelIndex &p
         // Set the id in the competitor list.
         if(qv.isValid())
         {
+            m_currentBracket = dynamic_cast<Bracket *>(JMApp()->bracketController()->find(qv.toInt()));
             CompetitorTableModel* cmodel = dynamic_cast<CompetitorTableModel *>(ui->bracketCompetitors->tableModel());
-            qDebug() << "    Setting id in bracket competitors to: " << qv.toInt();
             cmodel->setParentId(qv.toInt());
         }
     }
-    qDebug() << "BracketManager::rowChanged() - end";
 
 }
 
@@ -237,4 +208,17 @@ void BracketManager::competitorFilterChanged(const CompetitorFilter &filter)
     CompetitorTableModel* cmodel = dynamic_cast<CompetitorTableModel *>(proxyModel->sourceModel());
     cmodel->setFilter(filter);
 
+}
+
+void BracketManager::removeCompetitorFromBracket()
+{
+    if(!m_currentBracket)
+        return;
+
+    QModelIndexList lst = ui->bracketCompetitors->tableView()->selectionModel()->selectedRows();
+    foreach(const QModelIndex& index, lst)
+    {
+        Competitor *competitor = m_currentBracket->competitors().at(index.row());
+        JMApp()->bracketController()->removeCompetitorFromBracket(m_currentBracket->id(), competitor->id());
+    }
 }

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+class Bracket;
 class CompetitorFilter;
 
 namespace Ui {
@@ -19,13 +20,14 @@ public:
 
 private Q_SLOTS:
     void addBracket();
-    void bracketChanged(const QModelIndex &current, const QModelIndex &previous);
     void tournamentChanged();
     void rowChanged ( const QModelIndex & current, const QModelIndex & previous );
     void competitorFilterChanged(const CompetitorFilter& filter);
+    void removeCompetitorFromBracket();
 
 private:
     Ui::BracketManager *ui;
+    Bracket *m_currentBracket;
 };
 
 #endif // BRACKETMANAGER_H

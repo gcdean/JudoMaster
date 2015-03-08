@@ -1,11 +1,13 @@
 #include "BracketController.h"
 
 #include "Bracket.h"
+#include "Competitor.h"
 #include "Tournament.h"
 
 #include "JudoMasterApplication.h"  // DEBUG ONLY. DELETE
 #include "Competitor.h"             // DEBUG ONLY. DELETE
 
+#include <QDebug>
 #include <QList>
 
 namespace
@@ -111,6 +113,26 @@ int BracketController::indexOf(int id)
     }
 
     return -1;
+}
+
+void BracketController::removeCompetitorFromBracket(int bracketId, int competitorId)
+{
+    qDebug() << "BracketController - Remove competitor " << competitorId << " from Bracket " << bracketId;
+    Bracket *bracket = dynamic_cast<Bracket *>(find(bracketId));
+    if(bracket)
+    {
+        int index = 0;
+        foreach(Competitor *competitor, bracket->competitors())
+        {
+            if(competitor->id() == competitorId)
+            {
+                bracket->removeCompetitor(index);
+                emit competitorRemoved(index);
+                break;
+            }
+            index++;
+        }
+    }
 }
 
 const QList<Competitor *> BracketController::competitors(int parentId) const
