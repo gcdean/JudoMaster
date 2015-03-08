@@ -94,6 +94,33 @@ int ClubController::size(int id) const
     return size();
 }
 
+void ClubController::remove(int id)
+{
+    removeIndex(indexOf(id));
+}
+
+void ClubController::removeIndex(int index)
+{
+    if(index < 0 || index >= tournament()->clubs().size())
+        return;
+
+    emit removedDataObj(tournament()->clubs().at(index));
+    tournament()->clubs().removeAt(index);
+}
+
+int ClubController::indexOf(int id)
+{
+    int index = 0;
+    foreach(const Club* club, tournament()->clubs())
+    {
+        if(id == club->id())
+            return index;
+        index++;
+    }
+
+    return -1;
+}
+
 Club* ClubController::findClub(int id)
 {
     Club* club = 0;

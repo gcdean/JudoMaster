@@ -62,6 +62,7 @@ void ClubsEditor::removeClub()
     {
         QModelIndex index = selected[x];
         qDebug() << "Removing Row: " << index.row();
+        JMApp()->clubController()->removeIndex(index.row());
     }
 }
 

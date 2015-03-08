@@ -5,8 +5,8 @@
 ClubListModel::ClubListModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-//    connect(JMApp()->clubController(), &ClubController::clubAdded, this, &ClubListModel::clubAdded);
     connect(JMApp()->clubController(), &ClubController::addedDataObj, this, &ClubListModel::clubAdded);
+    connect(JMApp()->clubController(), &ClubController::removedDataObj, this, &ClubListModel::clubRemoved);
 }
 
 Club* ClubListModel::club(const QModelIndex &index)
@@ -58,4 +58,17 @@ void ClubListModel::clubAdded(JMDataObj *)
     int numClubs = JMApp()->clubController()->clubs()->size();
     beginInsertRows(QModelIndex(), numClubs - 1, numClubs);
     endInsertRows();
+}
+
+void ClubListModel::clubRemoved(JMDataObj *club)
+{
+    // Find the club that's being removed.
+    // Find the index.
+    int row = JMApp()->clubController()->indexOf(club->id());
+    if(row >= 0)
+    {
+        beginRemoveRows(QModelIndex(), row, row);
+        endRemoveRows();
+    }
+
 }

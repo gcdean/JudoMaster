@@ -21,9 +21,13 @@ public:
     void removeClub(int clubId);
     const QList <Club *> *clubs() const;
 
+    // BaseController interface
     void add(int parentId) override;
     int size() const /*override*/;
     int size(int id) const /*override*/;
+    void remove(int id);
+    void removeIndex(int index);
+    int indexOf(int id);
 
 signals:
     void clubAdded(Club* club);
@@ -39,6 +43,8 @@ private:
 
 private:
     Tournament *m_tournament;
+
+
 };
 
 #endif // CLUBCONTROLLER_H
