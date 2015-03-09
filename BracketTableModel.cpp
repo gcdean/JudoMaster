@@ -16,11 +16,13 @@ BracketTableModel::BracketTableModel(QObject *parent) :
 
 int BracketTableModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     return JMApp()->bracketController()->size();
 }
 
 int BracketTableModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
    return bracket::MAX_BRACKET_ITEMS;
 }
 
@@ -30,7 +32,6 @@ QVariant BracketTableModel::headerData(int section, Qt::Orientation orientation,
     {
         if(role == Qt::DisplayRole)
         {
-            qDebug() << "BracketTableModel::headerData() - Returning Vertical: " << section;
             return QVariant(section);
         }
         return QVariant();
@@ -81,6 +82,7 @@ QVariant BracketTableModel::data(const QModelIndex &index, int role) const
     switch(role)
     {
         case Qt::DisplayRole:
+        case Qt::EditRole:
         {
 
             int col = index.column();
@@ -169,10 +171,9 @@ Qt::ItemFlags BracketTableModel::flags(const QModelIndex &index) const
             flags |= Qt::ItemIsUserCheckable;
         break;
         default:
-        break;
+            flags |= Qt::ItemIsEditable;
     }
 
-    flags |= Qt::ItemIsEditable;
 
     return flags;
 }

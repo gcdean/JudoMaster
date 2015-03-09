@@ -6,6 +6,7 @@
 #include "JudoMasterApplication.h"
 #include "Tournament.h"
 
+#include <QDebug>
 #include <QList>
 
 BaseController::BaseController(QObject *parent) :
@@ -75,6 +76,7 @@ const QList<Competitor *> BaseController::competitors(const CompetitorFilter &fi
 
     QList <Competitor *>filteredCompetitors;
 
+//    qDebug() << "There are " << allCompetitors.size() << " Prior to filtering";
     // Now Filter
     foreach(Competitor *competitor, allCompetitors)
     {
@@ -87,6 +89,11 @@ const QList<Competitor *> BaseController::competitors(const CompetitorFilter &fi
             add = false;
         if(filter.maxWeight() > 0.0 && competitor->weight() > filter.maxWeight())
             add = false;
+        if(filter.lastName().size() > 0)
+        {
+            if(!competitor->lastName().startsWith(filter.lastName(), Qt::CaseInsensitive))
+                add = false;
+        }
 
         if(add)
             filteredCompetitors.append(competitor);
