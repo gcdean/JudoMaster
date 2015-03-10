@@ -15,11 +15,13 @@ class ClubController : public BaseController
 public:
     explicit ClubController(QObject *parent = 0);
 
-    void createClub();
+    Club *createClub();
 
     void updateClub(Club& club);
     void removeClub(int clubId);
     const QList <Club *> *clubs() const;
+
+    Club *findClubByName(QString name);
 
     // BaseController interface
     void add(int parentId) override;
@@ -28,6 +30,7 @@ public:
     void remove(int id);
     void removeIndex(int index);
     int indexOf(int id);
+    virtual JMDataObj *find(int id);
 
 signals:
     void clubAdded(Club* club);
@@ -37,13 +40,9 @@ signals:
 public slots:
 
 private:
-    void addClub(Club& club);
+    Club *addClub(Club& club);
     Club* findClub(int id);
     int findNextId() override;
-
-private:
-    Tournament *m_tournament;
-
 
 };
 

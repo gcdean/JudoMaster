@@ -1,6 +1,13 @@
 #include "ClubListModel.h"
+
+
+
+#include "commands/MergeClubsCommand.h"
 #include "ClubController.h"
 #include "JudoMasterApplication.h"
+
+#include <QDebug>
+#include <QMimeData>
 
 ClubListModel::ClubListModel(QObject *parent) :
     QAbstractListModel(parent)
@@ -30,6 +37,8 @@ QVariant ClubListModel::data(const QModelIndex &index, int role) const
             return QVariant(club->clubName());
         break;
 
+        case Qt::UserRole:
+            return QVariant(club->id());
         default:
             return QVariant();
     }
@@ -48,7 +57,7 @@ QVariant ClubListModel::headerData(int , Qt::Orientation , int role) const
 
 Qt::ItemFlags ClubListModel::flags(const QModelIndex &) const
 {
-    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 }
 
 
@@ -71,4 +80,60 @@ void ClubListModel::clubRemoved(JMDataObj *club)
         endRemoveRows();
     }
 
+}
+
+//QStringList ClubListModel::mimeTypes() const
+//{
+//    qDebug() << "ClubListModel::mimeTypes";
+//    return QAbstractListModel::mimeTypes();
+//}
+
+//QMimeData *ClubListModel::mimeData(const QModelIndexList &indexes) const
+//{
+//    qDebug() << "ClubListModel::mimeData";
+//    return QAbstractListModel::mimeData(indexes);
+//}
+
+bool ClubListModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    if(mimeData->hasFormat("application/x-qabstractitemmodeldatalist"))
+    {
+        QByteArray encoded = mimeData->data("application/x-qabstractitemmodeldatalist");
+        QDataStream stream(&encoded, QIODevice::ReadOnly);
+
+        int destRow = parent.row();
+        while (!stream.atEnd())
+        {
+            int srcRow, srcCol;
+            QMap<int,  QVariant> roleDataMap;
+            stream >> srcRow >> srcCol >> roleDataMap;
+            qDebug() << "Dropping " << srcRow << " Onto " << parent.row();
+
+            QModelIndex srcIndex = index(srcRow);
+            QModelIndex destIndex = index(destRow);
+
+            int srcClubId = data(srcIndex, Qt::UserRole).toInt();
+            int destClubId = data(destIndex, Qt::UserRole).toInt();
+
+            Club *srcClub = dynamic_cast<Club *>(JMApp()->clubController()->find(srcClubId));
+            Club *destClub = dynamic_cast<Club *>(JMApp()->clubController()->find(destClubId));
+
+            MergeClubsCommand mergeCmd(srcClub, destClub);
+            mergeCmd.run();
+        }
+    }
+
+    return QAbstractListModel::dropMimeData(mimeData, action, row, column, parent);
+}
+
+Qt::DropActions ClubListModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
+//    return QAbstractListModel::supportedDropActions();
+}
+
+Qt::DropActions ClubListModel::supportedDragActions() const
+{
+    return Qt::MoveAction;
+//    return QAbstractListModel::supportedDragActions();
 }
