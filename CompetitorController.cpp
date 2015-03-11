@@ -23,7 +23,7 @@ Competitor *CompetitorController::createCompetitor(QString firstName, QString la
     return competitor;
 }
 
-JMDataObj* CompetitorController::find(int id)
+JMDataObj* CompetitorController::find(int id) const
 {
     // Real simple linear search for now.
     foreach(Competitor* competitor, tournament()->competitors())

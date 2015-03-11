@@ -63,7 +63,9 @@ void ClubController::removeClub(int clubId)
 namespace
 {
     const QList<Club *> NOCLUBS;
+    const QList<Competitor *> NOCOMPETITORS;
 }
+
 const QList<Club *> *ClubController::clubs() const
 {
     if(!tournament())
@@ -185,7 +187,7 @@ int ClubController::findNextId()
 }
 
 
-JMDataObj *ClubController::find(int id)
+JMDataObj *ClubController::find(int id) const
 {
     foreach(Club *club, tournament()->clubs())
     {
@@ -194,4 +196,16 @@ JMDataObj *ClubController::find(int id)
     }
 
     return 0;
+}
+
+const QList<Competitor *> ClubController::competitors(int parentId) const
+{
+    Club *club = dynamic_cast<Club *>(find(parentId));
+
+    if(club)
+    {
+        return club->competitors();
+    }
+
+    return NOCOMPETITORS;
 }

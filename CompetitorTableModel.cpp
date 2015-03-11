@@ -48,8 +48,6 @@ bool CompetitorTableModel::editable()
 
 int CompetitorTableModel::rowCount(const QModelIndex &) const
 {
-//    qDebug() << "There are " << m_controller->competitors().size() << " Competitors.";
-//    qDebug() << "    Returning " << m_controller->competitors(m_filter, m_parentId).size() << " Competitors";
     return m_controller->competitors(m_filter, m_parentId).size();
 }
 

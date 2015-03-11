@@ -87,7 +87,7 @@ void BracketController::removeIndex(int index)
 
 
 
-JMDataObj* BracketController::find(int id)
+JMDataObj* BracketController::find(int id) const
 {
     foreach (Bracket *bracket, tournament()->brackets())
     {

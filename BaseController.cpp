@@ -55,7 +55,7 @@ void BaseController::removeIndex(int index)
     Q_UNUSED(index);
 }
 
-JMDataObj* BaseController::find(int id)
+JMDataObj* BaseController::find(int id) const
 {
     return 0;
 }

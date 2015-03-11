@@ -24,7 +24,7 @@ public:
 
     const QList<Competitor *> clubCompetitors(int clubId) const;
     const QList<Competitor *> competitors(int parentId = -1) const override;
-    JMDataObj* find(int id) override;
+    JMDataObj* find(int id) const override;
     void add(int parentId) override;
 
 signals:

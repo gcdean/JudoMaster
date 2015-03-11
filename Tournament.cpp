@@ -16,16 +16,6 @@ void Tournament::read(QJsonObject &json)
     m_date = QDate::fromString(json["date"].toString(), "dd.MM.yyyy");
     m_startTime = QTime::fromString(json["starttime"].toString(), "HH.mm");
 
-    // Read the clubs
-    QJsonArray clubs = json["clubs"].toArray();
-    for(int x = 0; x < clubs.size(); x++)
-    {
-        QJsonObject jobj = clubs[x].toObject();
-        Club *club = new Club();
-        club->read(jobj);
-        m_clubs.append(club);
-    }
-
     // Read the competitors
     QJsonArray competitors = json["competitors"].toArray();
     for(int x = 0; x < competitors.size(); x++)
@@ -35,6 +25,16 @@ void Tournament::read(QJsonObject &json)
         competitor->read(jobj);
         m_competitors.append(competitor);
 
+    }
+
+    // Read the clubs
+    QJsonArray clubs = json["clubs"].toArray();
+    for(int x = 0; x < clubs.size(); x++)
+    {
+        QJsonObject jobj = clubs[x].toObject();
+        Club *club = new Club();
+        club->read(jobj, m_competitors);
+        m_clubs.append(club);
     }
 
     // Read the brackets

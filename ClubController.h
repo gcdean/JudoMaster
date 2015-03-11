@@ -30,7 +30,8 @@ public:
     void remove(int id);
     void removeIndex(int index);
     int indexOf(int id);
-    virtual JMDataObj *find(int id);
+    virtual JMDataObj *find(int id) const override;
+    virtual const QList<Competitor *> competitors(int parentId = -1) const;
 
 signals:
     void clubAdded(Club* club);

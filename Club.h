@@ -37,12 +37,14 @@ public:
     QString zip() const {return m_zip;}
     void setZip(QString zip) {m_zip = zip;}
 
-    const QList<Competitor> competitors() const;
+    const QList<Competitor *> competitors() const;
 
-    void addCompetitor(Competitor competitor);
+    void addCompetitor(Competitor *competitor);
 
     void read(const QJsonObject &json) override;
+    void read(const QJsonObject& json, const QList<Competitor *> competitors);
     void write(QJsonObject &json) const override;
+
 
 private:
     QString m_clubName;
@@ -54,7 +56,7 @@ private:
     QString m_state;
     QString m_zip;
 
-    QList<Competitor> m_competitors;
+    QList<Competitor *> m_competitors;
 };
 
 #endif // CLUB_H
