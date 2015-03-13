@@ -293,10 +293,18 @@ void JudoMasterMainWindow::importFile(QString filename)
                     notes += QString("belt: %1").arg(belt);
                 }
                 auto mf = genderFromString(gender);
-                Competitor *competitor = JMApp()->competitorController()->createCompetitor(fname,lname, mf, age.toInt(), weight.toDouble(), rank, club->id());
-                // TODO add the following to the constructor.
-                competitor->setNumBrackets(numDivs);
-                competitor->setNotes(notes);
+
+                // See if the competitor is already added (from previous import)
+                Competitor *competitor = JMApp()->competitorController()->findByName(fname, lname);
+
+                if(!competitor)
+                {
+                    // Competitor not found, so add.
+                    competitor = JMApp()->competitorController()->createCompetitor(fname,lname, mf, age.toInt(), weight.toDouble(), rank, club->id());
+                    // TODO add the following to the constructor.
+                    competitor->setNumBrackets(numDivs);
+                    competitor->setNotes(notes);
+                }
 
             }
         } while (!line.isNull());

@@ -22,6 +22,8 @@ public:
     int size() const /*override*/;
     int size(int id) const /*override*/;
 
+    Competitor *findByName(QString firstName, QString lastName);
+
     const QList<Competitor *> clubCompetitors(int clubId) const;
     const QList<Competitor *> competitors(int parentId = -1) const override;
     JMDataObj* find(int id) const override;
