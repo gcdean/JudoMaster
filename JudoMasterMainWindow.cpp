@@ -266,6 +266,7 @@ void JudoMasterMainWindow::importFile(QString filename)
                 numDivs += div1.isEmpty() ? 0 : 1;
                 numDivs += div2.isEmpty() ? 0 : 1;
                 numDivs += div3.isEmpty() ? 0 : 1;
+
                 QString notes = QString("div0: (%1), div1: (%2), div2: (%3), div3: (%4)").arg(div0).arg(div1).arg(div2).arg(div3);
 //                qDebug() << "First: " << fname << ", Last: " << lname << ", Gender: " << gender << ", Age: " << age << ", Weight: " << weight
 //                         << ", belt: " << belt << ", club: " << clubName << ", num Divs: " << numDivs;
@@ -293,6 +294,8 @@ void JudoMasterMainWindow::importFile(QString filename)
                 }
                 auto mf = genderFromString(gender);
                 Competitor *competitor = JMApp()->competitorController()->createCompetitor(fname,lname, mf, age.toInt(), weight.toDouble(), rank, club->id());
+                // TODO add the following to the constructor.
+                competitor->setNumBrackets(numDivs);
                 competitor->setNotes(notes);
 
             }

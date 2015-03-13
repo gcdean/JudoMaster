@@ -60,6 +60,9 @@ QVariant BracketTableModel::headerData(int section, Qt::Orientation orientation,
            case bracket::MaxWeight://4:
                 return QVariant("Max Weight");
 
+            case bracket::Time:
+                return QVariant("Match Len");
+
            case bracket::AllowChokes:
                 return QVariant("Chokes");
 
@@ -68,6 +71,8 @@ QVariant BracketTableModel::headerData(int section, Qt::Orientation orientation,
 
             case bracket::MatNum:
                 return QVariant("Mat");
+            case bracket::Competitors:
+                return QVariant("# Comp");
            default:
             return QVariant();
         }
@@ -113,6 +118,9 @@ QVariant BracketTableModel::data(const QModelIndex &index, int role) const
                     return QVariant(selectedBracket->maxWeight());
                 break;
 
+                case bracket::Time:
+                    return QVariant(selectedBracket->time());
+
                 case bracket::AllowChokes:
                     return QVariant(selectedBracket->chokesAllowed());
 
@@ -121,6 +129,8 @@ QVariant BracketTableModel::data(const QModelIndex &index, int role) const
 
                 case bracket::MatNum:
                     return QVariant(selectedBracket->matNumber());
+                case bracket::Competitors:
+                    return QVariant(selectedBracket->competitors().size());
                 default:
                     return QVariant("Unknown");
             }
@@ -170,6 +180,8 @@ Qt::ItemFlags BracketTableModel::flags(const QModelIndex &index) const
         case bracket::AllowArmBars:
             flags |= Qt::ItemIsUserCheckable;
         break;
+        case bracket::Competitors:
+            break;
         default:
             flags |= Qt::ItemIsEditable;
     }
@@ -212,6 +224,10 @@ bool BracketTableModel::setData(const QModelIndex &index, const QVariant &value,
 
         case bracket::MaxWeight: // Max Weight
             bracket->setMaxWeight(value.toDouble());
+            break;
+
+        case bracket::Time:
+            bracket->setTime(value.toInt());
             break;
 
         case bracket::AllowChokes:

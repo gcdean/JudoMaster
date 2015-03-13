@@ -19,8 +19,6 @@ bool MergeClubsCommand::run()
     if(!m_srcClub || !m_destClub)
         return false;
 
-    qDebug() << "Merging " << m_srcClub->clubName() << " with " << m_destClub->clubName();
-
     // Confirm the Merge
     if(QMessageBox::No == QMessageBox::question(0, "Merge Clubs", QString("Are you sure you want to merge %1 with %2").arg(m_srcClub->clubName()).arg(m_destClub->clubName())))
     {
