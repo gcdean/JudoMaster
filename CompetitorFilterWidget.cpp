@@ -24,9 +24,10 @@ void CompetitorFilterWidget::clearFilters()
     ui->maxAge->setValue(0);
     ui->minWt->setValue(0);
     ui->maxWt->setValue(0);
+    ui->lastName->setText(QString());
 }
 
 void CompetitorFilterWidget::apply()
 {
-    emit applyFilter(CompetitorFilter(ui->minAge->value(), ui->maxAge->value(), ui->minWt->value(), ui->maxWt->value()));
+    emit applyFilter(CompetitorFilter(ui->minAge->value(), ui->maxAge->value(), ui->minWt->value(), ui->maxWt->value(), ui->lastName->text()));
 }

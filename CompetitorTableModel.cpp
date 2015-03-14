@@ -59,7 +59,35 @@ int CompetitorTableModel::columnCount(const QModelIndex &) const
 QVariant CompetitorTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if(orientation == Qt::Vertical)
+    {
+
+        switch(role)
+        {
+            case Qt::TextColorRole:
+            {
+                QModelIndex idx = index(section, 0);
+                QVariant qv = data(idx, Qt::UserRole);
+                const QList<Bracket *> brackets = JMApp()->bracketController()->competitorBrackets(qv.toInt());
+                if(brackets.size() == 0)
+                {
+                    return QVariant(QColor(Qt::red));
+                }
+            }
+            break;
+            case Qt::DisplayRole:
+            {
+                return QVariant(section);
+            }
+            break;
+
+            default:
+                return QVariant();
+        }
+
         return QVariant();
+
+    }
+
 
     if(role == Qt::DisplayRole)
     {
@@ -404,6 +432,19 @@ QVariant CompetitorTableModel::columnBackground(const Competitor* judoka, int co
             if(judoka->weight() <= 0.0)
                 return QVariant(QColor(Qt::red));
             break;
+
+        case competitor::NumDivs:
+        {
+            const QList<Bracket *> brackets = JMApp()->bracketController()->competitorBrackets(judoka->id());
+            if(brackets.size() == 0)
+                return QVariant(QColor(Qt::red));
+            else if(brackets.size() < judoka->numBrackets())
+                return QVariant(QColor(Qt::yellow));
+            else if(brackets.size() > judoka->numBrackets())
+                return QVariant(QColor(Qt::cyan));
+
+        }
+        break;
 
     }
 

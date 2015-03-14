@@ -24,6 +24,7 @@ private Q_SLOTS:
     void rowChanged ( const QModelIndex & current, const QModelIndex & previous );
     void competitorFilterChanged(const CompetitorFilter& filter);
     void removeCompetitorFromBracket();
+    void viewCompetitor(int logicalIndex);
 
 private:
     Ui::BracketManager *ui;

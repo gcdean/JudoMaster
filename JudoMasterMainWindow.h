@@ -31,11 +31,13 @@ public slots:
     void open();
     void printBrackets();
     void printRegistration();
+    void import();
 
 private:
     bool getFilename();
     void updateControls();
     void loadFile(QString filename);
+    void importFile(QString filename);
 
 private:
     Ui::JudoMasterMainWindow *ui;

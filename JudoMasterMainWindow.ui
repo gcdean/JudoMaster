@@ -215,9 +215,11 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="actionClose"/>
+    <addaction name="actionImport"/>
+    <addaction name="separator"/>
+    <addaction name="menuPrint"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
-    <addaction name="menuPrint"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -268,6 +270,11 @@
   <action name="actionPrint_Registration">
    <property name="text">
     <string>Print Registration...</string>
+   </property>
+  </action>
+  <action name="actionImport">
+   <property name="text">
+    <string>Import...</string>
    </property>
   </action>
  </widget>

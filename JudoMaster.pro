@@ -43,7 +43,8 @@ SOURCES += main.cpp\
     CompetitorFilterWidget.cpp \
     CompetitorFilter.cpp \
     commands/PrintRegistrationCommand.cpp \
-    BracketCompetitorTableModel.cpp
+    BracketCompetitorTableModel.cpp \
+    commands/MergeClubsCommand.cpp
 
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
@@ -72,7 +73,8 @@ HEADERS  += JudoMasterMainWindow.h \
     CompetitorFilterWidget.h \
     CompetitorFilter.h \
     commands/PrintRegistrationCommand.h \
-    BracketCompetitorTableModel.h
+    BracketCompetitorTableModel.h \
+    commands/MergeClubsCommand.h
 
 FORMS    += JudoMasterMainWindow.ui \
     ClubsEditor.ui \

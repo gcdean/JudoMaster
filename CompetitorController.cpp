@@ -1,7 +1,7 @@
 #include "CompetitorController.h"
-#include "JMUtil.h"
 
 #include "Competitor.h"
+#include "JMUtil.h"
 #include "Tournament.h"
 
 #include <QString>
@@ -11,7 +11,19 @@ CompetitorController::CompetitorController(QObject *parent) :
 {
 }
 
-JMDataObj* CompetitorController::find(int id)
+Competitor *CompetitorController::createCompetitor(QString firstName, QString lastName, JM::Gender gender, int age, double weight, JM::Rank rank, int clubId)
+{
+    int compId = findNextId();
+    Competitor *competitor = new Competitor(compId, firstName, lastName, gender, age, weight, rank, clubId);
+
+    tournament()->competitors().append(competitor);
+
+    emit addedDataObj(competitor);
+
+    return competitor;
+}
+
+JMDataObj* CompetitorController::find(int id) const
 {
     // Real simple linear search for now.
     foreach(Competitor* competitor, tournament()->competitors())
@@ -33,7 +45,6 @@ void CompetitorController::add(int parentId)
     tournament()->competitors().append(competitor);
 
     emit addedDataObj(competitor);
-
 }
 
 //void CompetitorController::createClubCompetitor(int clubId)
@@ -76,6 +87,28 @@ int CompetitorController::size(int id) const
 
     return numCompetitors;
 }
+
+/**
+ * @brief CompetitorController::findByName - Search for a match on both fist and last name.
+ * A case insensitive search will be done
+ * @param firstName
+ * @param lastName
+ * @return The found competitor, or null if not found.
+ */
+Competitor *CompetitorController::findByName(QString firstName, QString lastName)
+{
+    foreach(Competitor *competitor, tournament()->competitors())
+    {
+        if(competitor->firstName().compare(firstName, Qt::CaseInsensitive) == 0 && competitor->lastName().compare(lastName, Qt::CaseInsensitive) == 0)
+        {
+            // Found it.
+            return competitor;
+        }
+    }
+
+    return 0;
+}
+
 /**
  * @brief Returns the list of competitors for a specified club
  * @param clubId

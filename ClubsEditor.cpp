@@ -19,6 +19,15 @@ ClubsEditor::ClubsEditor(QWidget *parent) :
     ui->setupUi(this);
 
     ui->clubList->setModel(new ClubListModel(ui->clubList));
+    qDebug() << "Drag Enabled: " << ui->clubList->dragEnabled()
+             << ", AcceptsDrops: " << ui->clubList->acceptDrops()
+             << ", DragDropMode: " << ui->clubList->dragDropMode();
+//    ui->clubList->setDragEnabled(true);
+//    ui->clubList->setDragDropMode(QAbstractItemView::InternalMove);
+//    ui->clubList->setDropIndicatorShown(true);
+//    ui->clubList->setAcceptDrops(true);
+//    ui->clubList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
 
     CompetitorTableModel *sourceModel = new CompetitorTableModel(JMApp()->competitorController(), this);
     QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);

@@ -48,6 +48,8 @@ public:
     int minAge() const {return m_minAge;}
     void setMaxAge(int maxAge) {m_maxAge = maxAge;}
     int maxAge() const {return m_maxAge;}
+    int time() const {return m_time;}
+    void setTime(int time) {m_time = time;}
     void setMaxWeight(double maxWeight) {m_maxWeight = maxWeight;}
     double maxWeight() const {return m_maxWeight;}
     void setChokesAllowed(bool allowed) {m_chokesAllowed = allowed;}
@@ -77,6 +79,7 @@ private:
 
     int m_minAge;
     int m_maxAge;
+    int m_time;
     bool m_chokesAllowed;
     bool m_armbarsAllowed;
     int m_matNumber;

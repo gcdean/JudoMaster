@@ -1,5 +1,7 @@
 #include "Club.h"
 
+#include "JudoMasterApplication.h"
+
 Club::Club()
     : JMDataObj(-1)
 {
@@ -37,15 +39,15 @@ Club::Club(const Club &src)
     m_competitors.append(src.competitors());
 }
 
-const QList<Competitor> Club::competitors() const
+const QList<Competitor *> Club::competitors() const
 {
     return m_competitors;
 }
 
-void Club::addCompetitor(Competitor competitor)
+void Club::addCompetitor(Competitor *competitor)
 {
     // Validate
-    competitor.setClubId(id());
+    competitor->setClubId(id());
     m_competitors.append(competitor);
 }
 
@@ -60,6 +62,18 @@ void Club::read(const QJsonObject &json)
     m_city = json["city"].toString();
     m_state = json["state"].toString();
     m_zip = json["zip"].toString();
+}
+
+void Club::read(const QJsonObject &json, const QList<Competitor *> competitors)
+{
+    read(json);
+
+    // Now add competitors
+    foreach (Competitor *competitor, competitors)
+    {
+        if(competitor->clubId() == id())
+            m_competitors.append(competitor);
+    }
 }
 
 void Club::write(QJsonObject &json) const

@@ -18,6 +18,7 @@ namespace bracket
     const QString MediumStr("Medium");
     const QString HeavyStr("Heavy");
     const QString SuperHeavyStr("Super Heavy");
+    const QString UnknownWeightType("Unknown");
     QString weightTypeToStr(Bracket::WeightType type)
     {
         switch(type)
@@ -37,6 +38,9 @@ namespace bracket
             case Bracket::IJF:
                 return AbsoluteStr;
                 break;
+
+        default:
+            return UnknownWeightType;
         }
 
     }
@@ -54,6 +58,7 @@ namespace bracket
         if(typeStr.compare(AbsoluteStr, Qt::CaseInsensitive) == 0)
             return Bracket::IJF;
 
+        qDebug() << "WARNING!!! Unknown Weight Type Specified: [" << typeStr << "]";
     }
 }
 
@@ -66,6 +71,7 @@ Bracket::Bracket()
     , m_weightType(Bracket::Light)
     , m_minAge(0)
     , m_maxAge(0)
+    , m_time(3)
     , m_maxWeight(0.0)
     , m_chokesAllowed(false)
     , m_armbarsAllowed(false)
@@ -84,6 +90,7 @@ Bracket::Bracket(int id)
     , m_weightType(Bracket::Light)
     , m_minAge(0)
     , m_maxAge(0)
+    , m_time(3)
     , m_maxWeight(0.0)
     , m_chokesAllowed(false)
     , m_armbarsAllowed(false)
@@ -104,6 +111,7 @@ Bracket::Bracket(const Bracket &src)
     m_weightType = src.weightType();
     m_minAge = src.minAge();
     m_maxAge = src.maxAge();
+    m_time = src.time();
     m_maxWeight = src.maxWeight();
     m_chokesAllowed = src.chokesAllowed();
     m_armbarsAllowed = src.armbarsAllowed();
@@ -128,6 +136,9 @@ void Bracket::read(const QJsonObject &json, const QList<Competitor *>competitors
     m_weightType = weightTypeFromStr(json["weightType"].toString());
     m_minAge = json["minAge"].toInt();
     m_maxAge = json["maxAge"].toInt();
+    m_time = json["time"].toInt();
+    if(m_time == 0)     // Default to 3 min.
+        m_time = 3;
     m_maxWeight = json["maxWeight"].toDouble();
     m_chokesAllowed = json["chokesAllowed"].toBool();
     m_armbarsAllowed = json["armbarsAllowed"].toBool();
@@ -163,6 +174,7 @@ void Bracket::write(QJsonObject &json) const
     json["weightType"] = weightTypeToStr(m_weightType);
     json["minAge"] = m_minAge;
     json["maxAge"] = m_maxAge;
+    json["time"] = m_time;
     json["maxWeight"] = m_maxWeight;
     json["chokesAllowed"] = m_chokesAllowed;
     json["armbarsAllowed"] = m_armbarsAllowed;

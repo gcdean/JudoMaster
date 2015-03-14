@@ -87,7 +87,7 @@ void BracketController::removeIndex(int index)
 
 
 
-JMDataObj* BracketController::find(int id)
+JMDataObj* BracketController::find(int id) const
 {
     foreach (Bracket *bracket, tournament()->brackets())
     {
@@ -156,6 +156,25 @@ const QList<Competitor *> BracketController::competitors(int parentId) const
     const QList<Competitor *> allComps = JMApp()->competitorController()->competitors();
 
     return allComps;
+}
+
+const QList<Bracket *> BracketController::competitorBrackets(int competitorId) const
+{
+    // Find the brackets that the specified competitor is in.
+    QList <Bracket *> brackets;
+    foreach(Bracket *bracket, tournament()->brackets())
+    {
+        foreach(Competitor *competitor, bracket->competitors())
+        {
+            if(competitorId == competitor->id())
+            {
+                brackets.append(bracket);
+                break;
+            }
+        }
+    }
+
+    return brackets;
 }
 
 int BracketController::findNextId()

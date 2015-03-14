@@ -126,6 +126,8 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->bracketList->setModel(new BracketTableModel());
     ui->bracketList->setController(JMApp()->bracketController());
     ui->bracketList->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->bracketList->tableView()->verticalHeader()->setVisible(true);
+
 
     ui->allCompetitors->tableView()->setSortingEnabled(true);
     ui->allCompetitors->setDisplayEditButtons(false);
@@ -134,6 +136,7 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->allCompetitors->tableView()->setDropIndicatorShown(true);
     ui->allCompetitors->tableView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->allCompetitors->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->allCompetitors->tableView()->verticalHeader()->setVisible(true);
 
     ui->bracketCompetitors->setDisplayEditButtons(false);
     ui->bracketCompetitors->setModel(new BracketCompetitorTableModel(JMApp()->bracketController()));
@@ -148,6 +151,7 @@ BracketManager::BracketManager(QWidget *parent) :
     connect(ui->allCompetitorsFilter, &CompetitorFilterWidget::applyFilter, this, &BracketManager::competitorFilterChanged);
     connect(JMApp()->bracketController(), &ClubController::tournamentChanged, this, &BracketManager::tournamentChanged);
     connect(ui->removeBtn, &QPushButton::clicked, this, &BracketManager::removeCompetitorFromBracket);
+    connect(ui->allCompetitors->tableView()->verticalHeader(), &QHeaderView::sectionDoubleClicked, this, &BracketManager::viewCompetitor);
 }
 
 BracketManager::~BracketManager()
@@ -164,6 +168,7 @@ void BracketManager::tournamentChanged()
 {
     ui->bracketList->setModel(new BracketTableModel());
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);
+    ui->bracketList->tableView()->resizeColumnsToContents();
 
     CompetitorTableModel *allCompTableModel = new CompetitorTableModel(JMApp()->competitorController(), this);
     allCompTableModel->setParentId(-1);
@@ -173,6 +178,7 @@ void BracketManager::tournamentChanged()
     proxyModel->setSourceModel(allCompTableModel);
 
     ui->allCompetitors->tableView()->setModel(proxyModel);
+    ui->allCompetitors->tableView()->resizeColumnsToContents();
 }
 
 void BracketManager::rowChanged(const QModelIndex &current, const QModelIndex &previous)
@@ -220,5 +226,21 @@ void BracketManager::removeCompetitorFromBracket()
     {
         Competitor *competitor = m_currentBracket->competitors().at(index.row());
         JMApp()->bracketController()->removeCompetitorFromBracket(m_currentBracket->id(), competitor->id());
+    }
+}
+
+void BracketManager::viewCompetitor(int logicalIndex)
+{
+    qDebug() << "BracketManager::viewCompetitor() - index: " << logicalIndex;
+    QAbstractItemModel *model = ui->allCompetitors->tableView()->model();
+    QModelIndex index = model->index(logicalIndex, 0);
+    QVariant qv = model->data(index);
+    if(qv.isValid())
+    {
+        qDebug() << "    Text is: " << qv.toString();
+    }
+    else
+    {
+        qDebug() << "    UNKNOWN";
     }
 }

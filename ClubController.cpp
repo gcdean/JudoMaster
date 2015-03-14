@@ -3,27 +3,30 @@
 #include "Club.h"
 #include "Tournament.h"
 
+#include <QDebug>
+
 ClubController::ClubController(QObject *parent) :
     BaseController(parent)
 {
 }
 
-void ClubController::createClub()
+Club *ClubController::createClub()
 {
     int clubId = findNextId();
     Club club(clubId, QString("<Club %1>").arg(clubId), QString("<coach %1>").arg(clubId));
-    addClub(club);
+    return addClub(club);
 }
 
-void ClubController::addClub(Club &club)
+Club* ClubController::addClub(Club &club)
 {
     if(!tournament())
-        return;
+        return 0;
 
     Club *newClub = new Club(club);
     tournament()->clubs().append(newClub);
-    //emit clubAdded(newClub);
     emit addedDataObj(newClub);
+
+    return newClub;
 }
 
 void ClubController::updateClub(Club& club)
@@ -60,12 +63,38 @@ void ClubController::removeClub(int clubId)
 namespace
 {
     const QList<Club *> NOCLUBS;
+    const QList<Competitor *> NOCOMPETITORS;
 }
+
 const QList<Club *> *ClubController::clubs() const
 {
     if(!tournament())
         return &NOCLUBS;
     return &tournament()->clubs();
+}
+
+Club *ClubController::findClubByName(QString name)
+{
+    if(!tournament())
+        return 0;
+
+    int firstSpace = name.indexOf(' ');
+    if(firstSpace != -1)
+    {
+        qDebug() << "Truncating (" << name << ")";
+        name.truncate(firstSpace);
+        qDebug() << "Truncated Name is: (" << name << ")";
+    }
+
+    foreach(Club *club, tournament()->clubs())
+    {
+        if(club->clubName().startsWith(name, Qt::CaseInsensitive))
+        {
+            return club;
+        }
+    }
+
+    return 0;
 }
 
 void ClubController::add(int parentId)
@@ -155,4 +184,28 @@ int ClubController::findNextId()
     nextId++;
 
     return nextId;
+}
+
+
+JMDataObj *ClubController::find(int id) const
+{
+    foreach(Club *club, tournament()->clubs())
+    {
+        if(id == club->id())
+            return club;
+    }
+
+    return 0;
+}
+
+const QList<Competitor *> ClubController::competitors(int parentId) const
+{
+    Club *club = dynamic_cast<Club *>(find(parentId));
+
+    if(club)
+    {
+        return club->competitors();
+    }
+
+    return NOCOMPETITORS;
 }

@@ -23,12 +23,13 @@ public:
     void add(int parentId) override;
     void remove(int id) override;
     void removeIndex(int index) override;
-    JMDataObj *find(int id) override;
+    JMDataObj *find(int id) const override;
     int indexOf(int id);
 
     void removeCompetitorFromBracket(int bracketId, int competitorId);
 
     const QList<Competitor *> competitors(int parentId = -1) const override;
+    const QList<Bracket *> competitorBrackets(int competitorId) const;
 
 signals:
     void competitorRemoved(int index);
