@@ -18,6 +18,7 @@ namespace bracket
     const QString MediumStr("Medium");
     const QString HeavyStr("Heavy");
     const QString SuperHeavyStr("Super Heavy");
+    const QString UnknownWeightType("Unknown");
     QString weightTypeToStr(Bracket::WeightType type)
     {
         switch(type)
@@ -37,6 +38,9 @@ namespace bracket
             case Bracket::IJF:
                 return AbsoluteStr;
                 break;
+
+        default:
+            return UnknownWeightType;
         }
 
     }
@@ -54,6 +58,7 @@ namespace bracket
         if(typeStr.compare(AbsoluteStr, Qt::CaseInsensitive) == 0)
             return Bracket::IJF;
 
+        qDebug() << "WARNING!!! Unknown Weight Type Specified: [" << typeStr << "]";
     }
 }
 

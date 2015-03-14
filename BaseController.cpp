@@ -17,9 +17,11 @@ BaseController::BaseController(QObject *parent) :
 
 void BaseController::setTournament(Tournament *tournament)
 {
-    m_tournament = tournament;
-    emit tournamentChanged();
-
+    if(m_tournament != tournament)
+    {
+        m_tournament = tournament;
+        emit tournamentChanged();
+    }
 }
 
 Tournament *BaseController::tournament() const
