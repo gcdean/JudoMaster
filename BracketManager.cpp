@@ -3,6 +3,7 @@
 
 #include "Bracket.h"
 #include "BracketCompetitorTableModel.h"
+#include "BracketEditor.h"
 #include "BracketTableModel.h"
 #include "Competitor.h"
 #include "CompetitorFilter.h"
@@ -75,7 +76,7 @@ public:
 
                     // Need to select the right one.
                     QVariant var = index.model()->data(index);
-                    combo->setCurrentIndex(bracket::weightTypeFromStr(var.toString()));
+                    combo->setCurrentIndex(Bracket::weightTypeFromStr(var.toString()));
                 }
                 break;
             }
@@ -103,7 +104,6 @@ public:
                 QComboBox *combo = dynamic_cast<QComboBox *>(editor);
                 if(combo)
                 {
-                    int idx = combo->currentIndex();
                     model->setData(index, QVariant(combo->currentIndex()));
                 }
                 break;
@@ -123,10 +123,12 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->setupUi(this);
 
     ui->bracketList->setTableItemDelegate(new BracketTypeItemDelegate());
-    ui->bracketList->setModel(new BracketTableModel());
+    m_bracketModel = new BracketTableModel(this);
+    ui->bracketList->setModel(m_bracketModel);
     ui->bracketList->setController(JMApp()->bracketController());
     ui->bracketList->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->bracketList->tableView()->verticalHeader()->setVisible(true);
+    ui->bracketList->tableView()->setSortingEnabled(false);
 
 
     ui->allCompetitors->tableView()->setSortingEnabled(true);
@@ -152,11 +154,14 @@ BracketManager::BracketManager(QWidget *parent) :
     connect(JMApp()->bracketController(), &ClubController::tournamentChanged, this, &BracketManager::tournamentChanged);
     connect(ui->removeBtn, &QPushButton::clicked, this, &BracketManager::removeCompetitorFromBracket);
     connect(ui->allCompetitors->tableView()->verticalHeader(), &QHeaderView::sectionDoubleClicked, this, &BracketManager::viewCompetitor);
+    connect(ui->bracketList->tableView()->verticalHeader(), &QHeaderView::sectionDoubleClicked, this, &BracketManager::editBracket);
+
 }
 
 BracketManager::~BracketManager()
 {
     delete ui;
+    delete m_bracketModel;
 }
 
 void BracketManager::addBracket()
@@ -243,4 +248,15 @@ void BracketManager::viewCompetitor(int logicalIndex)
     {
         qDebug() << "    UNKNOWN";
     }
+}
+
+void BracketManager::editBracket(int logicalIndex)
+{
+    qDebug() << "BracketManager::editBracket(" << logicalIndex << ")";
+    QModelIndex modelIndex = m_bracketModel->index(logicalIndex, 0);
+    QVariant qv = m_bracketModel->data(modelIndex, Qt::UserRole);
+    Bracket *bracket = dynamic_cast<Bracket *>(JMApp()->bracketController()->find(qv.toInt()));
+
+    BracketEditor be(bracket, this);
+    be.exec();
 }

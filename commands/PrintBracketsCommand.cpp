@@ -35,5 +35,6 @@ bool PrintBracketsCommand::run()
         qDebug() << "Print All Brackets";
     }
 
+    return true;
 }
 

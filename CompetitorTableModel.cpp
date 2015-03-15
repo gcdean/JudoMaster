@@ -229,6 +229,7 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags CompetitorTableModel::flags(const QModelIndex &index) const
 {
+    Q_UNUSED(index);
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     if(m_editable)
     {
@@ -243,6 +244,8 @@ Qt::ItemFlags CompetitorTableModel::flags(const QModelIndex &index) const
 
 bool CompetitorTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    Q_UNUSED(role);
+
     bool updated = false;
 
     const QList<Competitor *> competitors = m_controller->competitors(m_filter, m_parentId);
@@ -341,6 +344,9 @@ QMimeData *CompetitorTableModel::mimeData(const QModelIndexList &indexes) const
 
 bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
+    Q_UNUSED(row);
+    Q_UNUSED(column);
+
     if(action == Qt::IgnoreAction)
         return true;
 
@@ -405,6 +411,7 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
 
 void CompetitorTableModel::addCompetitor(JMDataObj *competitor)
 {
+    Q_UNUSED(competitor);
    int numCompetitors = m_controller->competitors(m_filter, m_parentId).size() - 1;
    beginInsertRows(QModelIndex(), numCompetitors, numCompetitors);
    endInsertRows();

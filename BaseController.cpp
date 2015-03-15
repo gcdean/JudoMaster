@@ -3,7 +3,6 @@
 #include "Bracket.h"
 #include "Competitor.h"
 #include "CompetitorFilter.h"
-#include "JudoMasterApplication.h"
 #include "Tournament.h"
 
 #include <QDebug>
@@ -59,16 +58,19 @@ void BaseController::removeIndex(int index)
 
 JMDataObj* BaseController::find(int id) const
 {
+    Q_UNUSED(id);
     return 0;
 }
 
 int BaseController::indexOf(int id)
 {
+    Q_UNUSED(id);
     return -1;
 }
 
 const QList<Competitor *> BaseController::competitors(int parentId) const
 {
+    Q_UNUSED(parentId);
     return QList<Competitor *>();
 }
 

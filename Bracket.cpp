@@ -19,47 +19,6 @@ namespace bracket
     const QString HeavyStr("Heavy");
     const QString SuperHeavyStr("Super Heavy");
     const QString UnknownWeightType("Unknown");
-    QString weightTypeToStr(Bracket::WeightType type)
-    {
-        switch(type)
-        {
-            case Bracket::Light:
-                return LightStr;
-                break;
-            case Bracket::Medium:
-                return MediumStr;
-                break;
-            case Bracket::Heavy:
-                return HeavyStr;
-                break;
-            case Bracket::SuperHeavy:
-                return SuperHeavyStr;
-                break;
-            case Bracket::IJF:
-                return AbsoluteStr;
-                break;
-
-        default:
-            return UnknownWeightType;
-        }
-
-    }
-
-    Bracket::WeightType weightTypeFromStr(QString typeStr)
-    {
-        if(typeStr.compare(LightStr, Qt::CaseInsensitive) == 0)
-            return Bracket::Light;
-        if(typeStr.compare(MediumStr, Qt::CaseInsensitive) == 0)
-            return Bracket::Medium;
-        if(typeStr.compare(HeavyStr, Qt::CaseInsensitive) == 0)
-            return Bracket::Heavy;
-        if(typeStr.compare(SuperHeavyStr, Qt::CaseInsensitive) == 0)
-            return Bracket::SuperHeavy;
-        if(typeStr.compare(AbsoluteStr, Qt::CaseInsensitive) == 0)
-            return Bracket::IJF;
-
-        qDebug() << "WARNING!!! Unknown Weight Type Specified: [" << typeStr << "]";
-    }
 }
 
 using namespace bracket;
@@ -72,15 +31,15 @@ Bracket::Bracket()
     , m_minAge(0)
     , m_maxAge(0)
     , m_time(3)
-    , m_maxWeight(0.0)
     , m_chokesAllowed(false)
     , m_armbarsAllowed(false)
     , m_matNumber(0)
-    , m_firstPlace()
-    , m_secondPlace()
-    , m_thirdPlace_1()
-    , m_thirdPlace_2()
-{    
+    , m_firstPlace(-1)
+    , m_secondPlace(-1)
+    , m_thirdPlace_1(-1)
+    , m_thirdPlace_2(-1)
+    , m_maxWeight(0.0)
+{
 }
 
 Bracket::Bracket(int id)
@@ -91,14 +50,14 @@ Bracket::Bracket(int id)
     , m_minAge(0)
     , m_maxAge(0)
     , m_time(3)
-    , m_maxWeight(0.0)
     , m_chokesAllowed(false)
     , m_armbarsAllowed(false)
     , m_matNumber(0)
-    , m_firstPlace()
-    , m_secondPlace()
-    , m_thirdPlace_1()
-    , m_thirdPlace_2()
+    , m_firstPlace(-1)
+    , m_secondPlace(-1)
+    , m_thirdPlace_1(-1)
+    , m_thirdPlace_2(-1)
+    , m_maxWeight(0.0)
 {
 
 }
@@ -128,6 +87,11 @@ Bracket::Bracket(const QJsonObject &json)
     // The base class constructor will call read
 }
 
+void Bracket::read(const QJsonObject &json)
+{
+    read(json, QList<Competitor *>());
+}
+
 void Bracket::read(const QJsonObject &json, const QList<Competitor *>competitors)
 {
     JMDataObj::read(json);
@@ -143,10 +107,10 @@ void Bracket::read(const QJsonObject &json, const QList<Competitor *>competitors
     m_chokesAllowed = json["chokesAllowed"].toBool();
     m_armbarsAllowed = json["armbarsAllowed"].toBool();
     m_matNumber = json["matNumber"].toInt();
-    m_firstPlace = json["firstPlace"].toString();
-    m_secondPlace = json["secondPlace"].toString();
-    m_thirdPlace_1 = json["thirdPlace1"].toString();
-    m_thirdPlace_2 = json["thirdPlace2"].toString();
+    m_firstPlace = json["firstPlace"].toInt();
+    m_secondPlace = json["secondPlace"].toInt();
+    m_thirdPlace_1 = json["thirdPlace1"].toInt();
+    m_thirdPlace_2 = json["thirdPlace2"].toInt();
 
     QJsonArray bracketMembers = json["bracketMembers"].toArray();
 
@@ -250,4 +214,49 @@ void Bracket::removeCompetitor(int index)
 void Bracket::moveCompetitor(int srcRow, int destRow)
 {
     m_competitors.move(srcRow, destRow);
+}
+
+QString Bracket::weightTypeToStr(Bracket::WeightType type)
+{
+
+    switch(type)
+    {
+        case Bracket::Light:
+            return LightStr;
+            break;
+        case Bracket::Medium:
+            return MediumStr;
+            break;
+        case Bracket::Heavy:
+            return HeavyStr;
+            break;
+        case Bracket::SuperHeavy:
+            return SuperHeavyStr;
+            break;
+        case Bracket::IJF:
+            return AbsoluteStr;
+            break;
+
+    default:
+        return UnknownWeightType;
+    }
+}
+
+
+Bracket::WeightType Bracket::weightTypeFromStr(QString typeStr)
+{
+    if(typeStr.compare(LightStr, Qt::CaseInsensitive) == 0)
+        return Bracket::Light;
+    if(typeStr.compare(MediumStr, Qt::CaseInsensitive) == 0)
+        return Bracket::Medium;
+    if(typeStr.compare(HeavyStr, Qt::CaseInsensitive) == 0)
+        return Bracket::Heavy;
+    if(typeStr.compare(SuperHeavyStr, Qt::CaseInsensitive) == 0)
+        return Bracket::SuperHeavy;
+    if(typeStr.compare(AbsoluteStr, Qt::CaseInsensitive) == 0)
+        return Bracket::IJF;
+
+    qDebug() << "WARNING!!! Unknown Weight Type Specified: [" << typeStr << "]";
+
+    return Bracket::Light;
 }
