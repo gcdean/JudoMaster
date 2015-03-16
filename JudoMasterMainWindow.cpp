@@ -172,8 +172,7 @@ void JudoMasterMainWindow::open()
 
 void JudoMasterMainWindow::printBrackets()
 {
-    QList<Bracket *> brackets;
-   PrintBracketsCommand cmd(brackets);
+   PrintBracketsCommand cmd(m_tournament);
    cmd.run();
 }
 
