@@ -118,6 +118,7 @@ void JudoMasterMainWindow::save()
     QJsonDocument saveDoc(trnObj);
     saveFile.write(saveDoc.toJson());
 
+    resetTitle();
 }
 
 void JudoMasterMainWindow::saveAs()
@@ -196,6 +197,7 @@ void JudoMasterMainWindow::import()
     }
 
     importFile(openFileName);
+    resetTitle();
 }
 
 void JudoMasterMainWindow::loadFile(QString filename)
@@ -223,6 +225,7 @@ void JudoMasterMainWindow::loadFile(QString filename)
     JMApp()->competitorController()->setTournament(m_tournament);
     JMApp()->bracketController()->setTournament(m_tournament);
 
+    resetTitle();
 
 }
 
@@ -233,6 +236,19 @@ void JudoMasterMainWindow::importFile(QString filename)
 
     qDebug() << importCmd.importedCompetitors().size() << " Competitors were imported.";
     qDebug() << importCmd.skippedCompetitors().size() << " Competitors were skipped.";
+}
+
+void JudoMasterMainWindow::resetTitle()
+{
+    if(m_tournament && !m_tournament->fileName().isEmpty())
+    {
+        QFileInfo fi(m_tournament->fileName());
+        setWindowTitle(QString("Judo Master (%1.%2)").arg(fi.completeBaseName()).arg(fi.completeSuffix()));
+    }
+    else
+    {
+        setWindowTitle("Judo Master");
+    }
 }
 
 bool JudoMasterMainWindow::getFilename()
@@ -269,4 +285,6 @@ void JudoMasterMainWindow::updateControls()
         ui->tournamentDate->setDate(m_tournament->date());
         ui->startTime->setTime(m_tournament->startTime());
     }
+
+    resetTitle();
 }

@@ -5,6 +5,15 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
+namespace
+{
+    // TODO: Put this is a global namespace. Duplicated in the PrintBrackets command.
+    bool compareClubs(Club* club1, Club* club2)
+    {
+        return club1->clubName().compare(club2->clubName()) < 0;
+    }
+
+}
 Tournament::Tournament(QObject *parent) :
     QObject(parent)
 {
@@ -36,6 +45,10 @@ void Tournament::read(QJsonObject &json)
         club->read(jobj, m_competitors);
         m_clubs.append(club);
     }
+
+    // Let's sort the clubs by name.
+    // TODO: Need to make this part of the model and not force it here.
+    std::sort(m_clubs.begin(), m_clubs.end(), compareClubs);
 
     // Read the brackets
     QJsonArray brackets = json["brackets"].toArray();

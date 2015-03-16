@@ -38,6 +38,7 @@ private:
     void updateControls();
     void loadFile(QString filename);
     void importFile(QString filename);
+    void resetTitle();
 
 private:
     Ui::JudoMasterMainWindow *ui;
