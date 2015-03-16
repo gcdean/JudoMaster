@@ -5,6 +5,7 @@
 #include "BracketCompetitorTableModel.h"
 #include "BracketEditor.h"
 #include "BracketTableModel.h"
+#include "BracketTypeItemDelegate.h"
 #include "Competitor.h"
 #include "CompetitorFilter.h"
 #include "CompetitorTableModel.h"
@@ -14,106 +15,12 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDebug>
+#include <QList>
 #include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 #include <QTableView>
 
 
-class BracketTypeItemDelegate : public QStyledItemDelegate
-{
-public:
-    BracketTypeItemDelegate(QObject* parent = 0) : QStyledItemDelegate(parent) {}
-
-    QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override
-    {
-        QWidget *widget = 0;
-        switch(index.column())
-        {
-            case bracket::Gender:
-            case bracket::Type:
-                widget =  new QComboBox(parent);
-                break;
-
-            default:
-               widget = QStyledItemDelegate::createEditor(parent, option, index);
-        }
-
-
-        return widget;
-    }
-
-    void setEditorData(QWidget * editor, const QModelIndex & index) const
-    {
-        switch(index.column())
-        {
-            case bracket::Gender:
-            {
-                QComboBox *combo = dynamic_cast<QComboBox *>(editor);
-                if(combo)
-                {
-                    combo->addItem("Male");
-                    combo->addItem("Female");
-
-                    // Need to select the right one.
-                    QVariant var = index.model()->data(index);
-                    if(genderFromString(var.toString()) == JM::Male)
-                        combo->setCurrentIndex(0);
-                    else
-                        combo->setCurrentIndex(1);
-                }
-                break;
-            }
-            case bracket::Type:
-            {
-                QComboBox *combo = dynamic_cast<QComboBox *>(editor);
-                if(combo)
-                {
-                    combo->addItem("Light");
-                    combo->addItem("Medium");
-                    combo->addItem("Heavy");
-                    combo->addItem("Super Heavy");
-                    combo->addItem("IFJ");
-
-                    // Need to select the right one.
-                    QVariant var = index.model()->data(index);
-                    combo->setCurrentIndex(Bracket::weightTypeFromStr(var.toString()));
-                }
-                break;
-            }
-
-            default:
-                QStyledItemDelegate::setEditorData(editor, index);
-        }
-    }
-
-    void setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index) const
-    {
-        switch(index.column())
-        {
-            case bracket::Gender:
-            {
-                QComboBox *combo = dynamic_cast<QComboBox *>(editor);
-                if(combo)
-                {
-                    model->setData(index, QVariant(combo->currentText()));
-                }
-                break;
-            }
-            case bracket::Type:
-            {
-                QComboBox *combo = dynamic_cast<QComboBox *>(editor);
-                if(combo)
-                {
-                    model->setData(index, QVariant(combo->currentIndex()));
-                }
-                break;
-            }
-
-            default:
-                QStyledItemDelegate::setModelData(editor, model, index);
-        }
-    }
-};
 
 BracketManager::BracketManager(QWidget *parent) :
     QWidget(parent),
@@ -122,7 +29,8 @@ BracketManager::BracketManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->bracketList->setTableItemDelegate(new BracketTypeItemDelegate());
+    m_bracketItemDelegate = new BracketTypeItemDelegate();
+    ui->bracketList->setTableItemDelegate(m_bracketItemDelegate);
     m_bracketModel = new BracketTableModel(this);
     ui->bracketList->setModel(m_bracketModel);
     ui->bracketList->setController(JMApp()->bracketController());
@@ -141,7 +49,8 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->allCompetitors->tableView()->verticalHeader()->setVisible(true);
 
     ui->bracketCompetitors->setDisplayEditButtons(false);
-    ui->bracketCompetitors->setModel(new BracketCompetitorTableModel(JMApp()->bracketController()));
+    m_bracketCompetitorModel = new BracketCompetitorTableModel(JMApp()->bracketController());
+    ui->bracketCompetitors->setModel(m_bracketCompetitorModel);
     ui->bracketCompetitors->tableView()->setDragDropMode(QAbstractItemView::DragDrop);
     ui->bracketCompetitors->tableView()->setAcceptDrops(true);
     ui->bracketCompetitors->tableView()->viewport()->setAcceptDrops(true);
@@ -155,6 +64,8 @@ BracketManager::BracketManager(QWidget *parent) :
     connect(ui->removeBtn, &QPushButton::clicked, this, &BracketManager::removeCompetitorFromBracket);
     connect(ui->allCompetitors->tableView()->verticalHeader(), &QHeaderView::sectionDoubleClicked, this, &BracketManager::viewCompetitor);
     connect(ui->bracketList->tableView()->verticalHeader(), &QHeaderView::sectionDoubleClicked, this, &BracketManager::editBracket);
+    connect(m_bracketCompetitorModel, &BracketCompetitorTableModel::numCompetitorsChanged, this, &BracketManager::resetMatCompetitors);
+    connect(m_bracketItemDelegate, &BracketTypeItemDelegate::matNumberChanged, this, &BracketManager::resetMatCompetitors);
 
 }
 
@@ -162,6 +73,24 @@ BracketManager::~BracketManager()
 {
     delete ui;
     delete m_bracketModel;
+}
+
+void BracketManager::resetMatCompetitors()
+{
+    int mat1 = 0;
+    int mat2 = 0;
+
+    const QList<Bracket *> *brackets = JMApp()->bracketController()->brackets();
+    foreach(Bracket *bracket, *brackets)
+    {
+        if(bracket->matNumber() == 1)
+            mat1 += bracket->competitors().size();
+        if(bracket->matNumber() == 2)
+            mat2 += bracket->competitors().size();
+    }
+
+    ui->mat1Cntr->display(mat1);
+    ui->ma2Cntr->display(mat2);
 }
 
 void BracketManager::addBracket()
@@ -184,6 +113,8 @@ void BracketManager::tournamentChanged()
 
     ui->allCompetitors->tableView()->setModel(proxyModel);
     ui->allCompetitors->tableView()->resizeColumnsToContents();
+
+    resetMatCompetitors();
 }
 
 void BracketManager::rowChanged(const QModelIndex &current, const QModelIndex &previous)
@@ -232,6 +163,9 @@ void BracketManager::removeCompetitorFromBracket()
         Competitor *competitor = m_currentBracket->competitors().at(index.row());
         JMApp()->bracketController()->removeCompetitorFromBracket(m_currentBracket->id(), competitor->id());
     }
+
+    resetMatCompetitors();
+
 }
 
 void BracketManager::viewCompetitor(int logicalIndex)

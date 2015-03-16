@@ -175,6 +175,10 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
                         case JM::Black:
                             return QIcon(":/images/black.png");
                             break;
+
+                        case JM::Unknown:
+                        default:
+                            return QVariant();
                     }
                 }
             }
@@ -351,19 +355,9 @@ bool CompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAction ac
         return true;
 
     bool success = false;
-    foreach(QString fmt, data->formats())
-    {
-        qDebug() << "CompetitorTableModel::dropMimeData Format: " << fmt;
-    }
-
-    if(data->hasFormat("application/x-qabstractitemmodeldatalist"))
-    {
-        qDebug() << "ITEM MODEL DATA FOUND!!!";
-    }
 
     if(data->hasFormat("application/jm.comp.list"))
     {
-        qDebug() << "Valid Drop Format";
         QByteArray encoded = data->data("application/jm.comp.list");
         QDataStream stream(&encoded, QIODevice::ReadOnly);
 

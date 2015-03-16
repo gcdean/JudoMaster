@@ -127,4 +127,5 @@ bool ImportDataCommand::run()
         file.close();
     }
 
+    return true;
 }

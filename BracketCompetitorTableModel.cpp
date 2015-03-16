@@ -38,6 +38,7 @@ bool BracketCompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAc
     qDebug() << "row: " << row << ", col: " << column << ", parent.row: " << parent.row() << ", parent.col: " << parent.column();
     if(data->hasFormat("application/x-qabstractitemmodeldatalist"))
     {
+        // Internal move.
         BaseController* cntrl = controller();
 
         int pId = parentId();
@@ -88,7 +89,12 @@ bool BracketCompetitorTableModel::dropMimeData(const QMimeData *data, Qt::DropAc
         return false;
     }
 
-    return CompetitorTableModel::dropMimeData(data, action, row, column, parent);
+
+    bool success = CompetitorTableModel::dropMimeData(data, action, row, column, parent);
+    if(success)
+        emit numCompetitorsChanged();
+
+    return success;
 }
 
 void BracketCompetitorTableModel::removeCompetitor(int index)
