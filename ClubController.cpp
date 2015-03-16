@@ -81,9 +81,9 @@ Club *ClubController::findClubByName(QString name)
     int firstSpace = name.indexOf(' ');
     if(firstSpace != -1)
     {
-        qDebug() << "Truncating (" << name << ")";
+//        qDebug() << "Truncating (" << name << ")";
         name.truncate(firstSpace);
-        qDebug() << "Truncated Name is: (" << name << ")";
+//        qDebug() << "Truncated Name is: (" << name << ")";
     }
 
     foreach(Club *club, tournament()->clubs())

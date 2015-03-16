@@ -70,6 +70,13 @@ bool ImportDataCommand::run()
                 QString div1 = columns.at(colMap["Division 1"]);
                 QString div2 = columns.at(colMap["Division 2"]);
                 QString div3 = columns.at(colMap["Division 3"]);
+                QString kata = columns.at(colMap["Kata"]);
+
+                if(!kata.isEmpty())
+                {
+                    qDebug() << "Not Importing " << lname << ", " << fname << " because they have registered for a kata: " << kata;
+                    continue;
+                }
 
                 int numDivs = 0;
 
@@ -84,12 +91,7 @@ bool ImportDataCommand::run()
 
                 // Let's find the club.
                 Club *club = JMApp()->clubController()->findClubByName(clubName);
-                if(club)
-                {
-                    // Found the Club
-                    qDebug() << "Found Club '" << clubName << "' as '" << club->clubName() << "'";
-                }
-                else
+                if(!club)
                 {
                     qDebug() << "Creating New Club for name " << clubName;
                     // Need to add the club.
