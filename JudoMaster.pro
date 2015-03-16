@@ -45,8 +45,9 @@ SOURCES += main.cpp\
     commands/PrintRegistrationCommand.cpp \
     BracketCompetitorTableModel.cpp \
     commands/MergeClubsCommand.cpp \
+    commands/ImportDataCommand.cpp \
+    BracketTypeItemDelegate.cpp \
     PrintController.cpp
-
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
     Club.h \
@@ -76,6 +77,8 @@ HEADERS  += JudoMasterMainWindow.h \
     commands/PrintRegistrationCommand.h \
     BracketCompetitorTableModel.h \
     commands/MergeClubsCommand.h \
+    commands/ImportDataCommand.h \
+    BracketTypeItemDelegate.h
     PrintController.h
 
 FORMS    += JudoMasterMainWindow.ui \

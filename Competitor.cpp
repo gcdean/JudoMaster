@@ -8,9 +8,9 @@ Competitor::Competitor(int id, QString firstName, QString lastName, JM::Gender g
     , m_age(age)
     , m_weight(weight)
     , m_rank(rank)
-    , m_clubId(clubId)
     , m_numBrackets(1)
     , m_notes()
+    , m_clubId(clubId)
 {
 }
 

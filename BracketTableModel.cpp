@@ -102,7 +102,7 @@ QVariant BracketTableModel::data(const QModelIndex &index, int role) const
                     break;
 
                 case bracket::Type: // Type
-                    return QVariant(bracket::weightTypeToStr(selectedBracket->weightType()));
+                    return QVariant(Bracket::weightTypeToStr(selectedBracket->weightType()));
 
                 break;
 
@@ -192,6 +192,7 @@ Qt::ItemFlags BracketTableModel::flags(const QModelIndex &index) const
 
 bool BracketTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    Q_UNUSED(role);
 
     bool updated = true;
     const QList<Bracket *> *brackets = JMApp()->bracketController()->brackets();

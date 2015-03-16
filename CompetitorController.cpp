@@ -1,6 +1,8 @@
 #include "CompetitorController.h"
 
+#include "Club.h"
 #include "Competitor.h"
+#include "JudoMasterApplication.h"
 #include "JMUtil.h"
 #include "Tournament.h"
 
@@ -17,6 +19,12 @@ Competitor *CompetitorController::createCompetitor(QString firstName, QString la
     Competitor *competitor = new Competitor(compId, firstName, lastName, gender, age, weight, rank, clubId);
 
     tournament()->competitors().append(competitor);
+
+    Club *club = dynamic_cast<Club *>(JMApp()->clubController()->find(clubId));
+    if(club)
+    {
+        club->addCompetitor(competitor);
+    }
 
     emit addedDataObj(competitor);
 

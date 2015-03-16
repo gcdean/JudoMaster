@@ -6,6 +6,7 @@
 #include "JudoMasterApplication.h"
 #include "Tournament.h"
 #include "actions/PrintBracketsAction.h"
+#include "commands/ImportDataCommand.h"
 #include "commands/PrintBrancketsCommand.h"
 #include "commands/PrintRegistrationCommand.h"
 
@@ -32,6 +33,8 @@ JudoMasterMainWindow::JudoMasterMainWindow(QWidget *parent) :
 
     m_saveDir = QDir::home();
 
+
+    ui->mainToolBar->setVisible(false);
 
     ui->tabWidget->setTabText(0, QString("General"));
     ui->tabWidget->setTabText(1, QString("Brackets"));
@@ -115,6 +118,7 @@ void JudoMasterMainWindow::save()
     QJsonDocument saveDoc(trnObj);
     saveFile.write(saveDoc.toJson());
 
+    resetTitle();
 }
 
 void JudoMasterMainWindow::saveAs()
@@ -192,6 +196,7 @@ void JudoMasterMainWindow::import()
     }
 
     importFile(openFileName);
+    resetTitle();
 }
 
 void JudoMasterMainWindow::loadFile(QString filename)
@@ -219,97 +224,30 @@ void JudoMasterMainWindow::loadFile(QString filename)
     JMApp()->competitorController()->setTournament(m_tournament);
     JMApp()->bracketController()->setTournament(m_tournament);
 
+    resetTitle();
 
 }
 
 void JudoMasterMainWindow::importFile(QString filename)
 {
-    QFile file(filename);
-    if(file.open(QFile::ReadOnly))
+    ImportDataCommand importCmd(filename);
+    importCmd.run();
+
+    qDebug() << importCmd.importedCompetitors().size() << " Competitors were imported.";
+    qDebug() << importCmd.skippedCompetitors().size() << " Competitors were skipped.";
+}
+
+void JudoMasterMainWindow::resetTitle()
+{
+    if(m_tournament && !m_tournament->fileName().isEmpty())
     {
-        QTextStream fileStream(&file);
-        QString line = fileStream.readLine();
-        QStringList headers = line.split(',');
-
-        qDebug() << "Printing CSV Headers";
-        QHash<QString, int> colMap;
-        int index = 0;
-        foreach(QString header, headers)
-        {
-            colMap[header] = index;
-//            qDebug() << "Column: " << header << " Has index " << index;
-            index++;
-        }
-
-        do
-        {
-            line = fileStream.readLine();
-            if(!line.isNull())
-            {
-                QStringList columns = line.split(',');
-                QString lname = columns.at(colMap["Last Name"]);
-                QString fname = columns.at(colMap["First Name"]);
-                QString gender = columns.at(colMap["Gender"]);
-                QString age = columns.at(colMap["Age"]);
-                QString weight = columns.at(colMap["Weight (Lbs)"]);
-                QString belt = columns.at(colMap["Belt color / rank"]);
-                QString clubName = columns.at(colMap["Club Name"]);
-                QString div0 = columns.at(colMap["Division"]);
-                QString div1 = columns.at(colMap["Division 1"]);
-                QString div2 = columns.at(colMap["Division 2"]);
-                QString div3 = columns.at(colMap["Division 3"]);
-
-                int numDivs = 0;
-
-                numDivs += div0.isEmpty() ? 0 : 1;
-                numDivs += div1.isEmpty() ? 0 : 1;
-                numDivs += div2.isEmpty() ? 0 : 1;
-                numDivs += div3.isEmpty() ? 0 : 1;
-
-                QString notes = QString("div0: (%1), div1: (%2), div2: (%3), div3: (%4)").arg(div0).arg(div1).arg(div2).arg(div3);
-//                qDebug() << "First: " << fname << ", Last: " << lname << ", Gender: " << gender << ", Age: " << age << ", Weight: " << weight
-//                         << ", belt: " << belt << ", club: " << clubName << ", num Divs: " << numDivs;
-
-                // Let's find the club.
-                Club *club = JMApp()->clubController()->findClubByName(clubName);
-                if(club)
-                {
-                    // Found the Club
-                    qDebug() << "Found Club '" << clubName << "' as '" << club->clubName() << "'";
-                }
-                else
-                {
-                    qDebug() << "Creating New Club for name " << clubName;
-                    // Need to add the club.
-                    club = JMApp()->clubController()->createClub();
-                    club->setClubName(clubName);
-                }
-
-                // Now add the competitor.
-                JM::Rank rank = rankFromString(belt);
-                if(rank == JM::Unknown)
-                {
-                    notes += QString("belt: %1").arg(belt);
-                }
-                auto mf = genderFromString(gender);
-
-                // See if the competitor is already added (from previous import)
-                Competitor *competitor = JMApp()->competitorController()->findByName(fname, lname);
-
-                if(!competitor)
-                {
-                    // Competitor not found, so add.
-                    competitor = JMApp()->competitorController()->createCompetitor(fname,lname, mf, age.toInt(), weight.toDouble(), rank, club->id());
-                    // TODO add the following to the constructor.
-                    competitor->setNumBrackets(numDivs);
-                    competitor->setNotes(notes);
-                }
-
-            }
-        } while (!line.isNull());
-        file.close();
+        QFileInfo fi(m_tournament->fileName());
+        setWindowTitle(QString("Judo Master (%1.%2)").arg(fi.completeBaseName()).arg(fi.completeSuffix()));
     }
-
+    else
+    {
+        setWindowTitle("Judo Master");
+    }
 }
 
 bool JudoMasterMainWindow::getFilename()
@@ -346,4 +284,6 @@ void JudoMasterMainWindow::updateControls()
         ui->tournamentDate->setDate(m_tournament->date());
         ui->startTime->setTime(m_tournament->startTime());
     }
+
+    resetTitle();
 }

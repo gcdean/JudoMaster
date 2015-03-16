@@ -4,6 +4,9 @@
 #include <QWidget>
 
 class Bracket;
+class BracketCompetitorTableModel;
+class BracketTableModel;
+class BracketTypeItemDelegate;
 class CompetitorFilter;
 
 namespace Ui {
@@ -25,10 +28,15 @@ private Q_SLOTS:
     void competitorFilterChanged(const CompetitorFilter& filter);
     void removeCompetitorFromBracket();
     void viewCompetitor(int logicalIndex);
+    void editBracket(int logicalIndex);
+    void resetMatCompetitors();
 
 private:
     Ui::BracketManager *ui;
     Bracket *m_currentBracket;
+    BracketTableModel *m_bracketModel;
+    BracketCompetitorTableModel *m_bracketCompetitorModel;
+    BracketTypeItemDelegate *m_bracketItemDelegate;
 };
 
 #endif // BRACKETMANAGER_H

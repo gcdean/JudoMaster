@@ -11,6 +11,7 @@
 
 class Competitor;
 
+
 /**
  * @brief The Bracket class
  *
@@ -34,6 +35,7 @@ public:
         IJF
     };
 
+    void read(const QJsonObject &json ) override;
     void read(const QJsonObject& json, const QList<Competitor *> competitors);
 
     void write(QJsonObject& json) const override;
@@ -58,19 +60,23 @@ public:
     bool armbarsAllowed() const {return m_armbarsAllowed;}
     void setMatNumber(int number) {m_matNumber = number;}
     int matNumber() const {return m_matNumber;}
-    void setFirstPlace(const QString& firstPlace) {m_firstPlace = firstPlace;}
-    QString firstPlace() const {return m_firstPlace;}
-    void setSecondPlace(const QString& place) {m_secondPlace = place;}
-    QString secondPlace() const{return m_secondPlace;}
-    void setThirdPlace1(const QString& place) {m_thirdPlace_1 = place;}
-    QString thirdPlace1() const {return m_thirdPlace_1;}
-    void setThirdPlace2(const QString& place) {m_thirdPlace_2 = place;}
-    QString thirdPlace2() const {return m_thirdPlace_2;}
+    void setFirstPlace(const int firstPlace) {m_firstPlace = firstPlace;}
+    int firstPlace() const {return m_firstPlace;}
+    void setSecondPlace(const int place) {m_secondPlace = place;}
+    int secondPlace() const{return m_secondPlace;}
+    void setThirdPlace1(const int place) {m_thirdPlace_1 = place;}
+    int thirdPlace1() const {return m_thirdPlace_1;}
+    void setThirdPlace2(const int place) {m_thirdPlace_2 = place;}
+    int thirdPlace2() const {return m_thirdPlace_2;}
 
     const QList< Competitor *> competitors() const;
     bool addCompetitor(Competitor *competitor, int location = -1);
     void removeCompetitor(int index);
     void moveCompetitor(int srcRow, int destRow);
+
+
+    static QString weightTypeToStr(Bracket::WeightType type);
+    static Bracket::WeightType weightTypeFromStr(QString typeStr);
 
 private:
     QString m_name;
@@ -83,10 +89,10 @@ private:
     bool m_chokesAllowed;
     bool m_armbarsAllowed;
     int m_matNumber;
-    QString m_firstPlace;
-    QString m_secondPlace;
-    QString m_thirdPlace_1;
-    QString m_thirdPlace_2;
+    int m_firstPlace;
+    int m_secondPlace;
+    int m_thirdPlace_1;
+    int m_thirdPlace_2;
 
     double m_maxWeight;
 

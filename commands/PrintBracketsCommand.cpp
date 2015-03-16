@@ -70,5 +70,6 @@ bool PrintBracketsCommand::run()
         qDebug() << "Nothing to Print";
     }
 
+    return true;
 }
 
