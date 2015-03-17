@@ -128,26 +128,35 @@ void PrintController::printDoubleEliminationBracket(const Bracket *bracket)
     drawPlace(0.5, 2.5625, "Third:");
 
     QList<QString> compNames;
+    QList<QString> clubNames;
     const QList<Competitor *> comps = bracket->competitors();
     QString bye("BYE");
     compNames << bye << bye << bye << bye << bye << bye << bye << bye;
+    clubNames << "" << "" << "" << "" << "" << "" << "" << "";
     int indices[8] = { 0, 1, 2, 4, 6, 5, 3, 7 };
     for (int i=0; i < comps.size(); i++)
     {
         compNames[indices[i]] = comps[i]->firstName() + " " + comps[i]->lastName()[0];
+        Club * club = getClub(comps[i]->clubId());
+        if (club)
+        {
+            clubNames[indices[i]] = QString(club->clubName());
+        }
     }
 
-    float startY = 2.875;
+    float startY = 2.8125;
     for (int i=0; i < 4; i++)
     {
-        drawNormalText(6.125, startY, compNames[i*2]);
-        drawNormalText(6.125, startY + 0.5, compNames[i*2+1]);
+        drawNormalText(6.0625, startY, compNames[i*2]);
+        drawText(6.125, startY + 0.1875, clubNames[i*2], 10.0, false, Qt::gray);
+        drawNormalText(6.0625, startY + 0.4375, compNames[i*2+1]);
+        drawText(6.125, startY + 0.625, clubNames[i*2+1], 10.0, false, Qt::gray);
         startY += 1.0;
     }
 
 
-    drawNormalText(10.125, 4.75, "#1");
-    drawNormalText(0.75, 6.125, "#2");
+    drawNormalText(10.125, 4.6875, "#1");
+    drawRightAlignedText(0.75, 5.9375, "#2");
 }
 
 
@@ -163,7 +172,7 @@ void PrintController::printHeader(const Bracket *bracket)
     drawCenteredText(5.5, 1.0, m_tournament->name(), 16, true);
     drawCenteredText(5.5, 1.5, bracket->name(), 16.0, true);
 
-    drawChokeArmbar(9.0, 1.25, bracket->chokesAllowed(), bracket->armbarsAllowed());
+    drawChokeArmbar(9.75, 1.25, bracket->chokesAllowed(), bracket->armbarsAllowed());
 
 }
 
@@ -174,6 +183,13 @@ void PrintController::printRoundRobinBracket(const Bracket *bracket)
     drawPlace(0.5, 1.8125, "First:");
     drawPlace(0.5, 2.1875, "Second:");
     drawPlace(0.5, 2.5625, "Third:");
+
+    float y = 3.125;
+    float x = 8.625;
+
+    drawCenteredText(x+0.5, y-0.25, "TOTAL", 12.0, true);
+    drawCenteredText(x, y, "WINS", 12.0, true);
+    drawCenteredText(x+1.0, y, "POINTS", 12.0, true);
 
 
     switch (bracket->competitors().size())
@@ -188,6 +204,17 @@ void PrintController::printRoundRobinBracket(const Bracket *bracket)
         printRoundRobinFour(bracket);
         break;
     }
+
+    y = 7.5;
+    x = 10.0;
+    drawRightAlignedText(x, y, "Ippon / Hansoku Make:", 10.0);
+    drawRightAlignedText(x+0.25, y, "10", 10.0);
+    drawRightAlignedText(x, y+0.25, "Waza-ari / Shido #3:", 10.0);
+    drawRightAlignedText(x+0.25, y+0.25, "7", 10.0);
+    drawRightAlignedText(x, y+0.125, "Yuko / Shido #2:", 10.0);
+    drawRightAlignedText(x+0.25, y+0.125, "5", 10.0);
+    drawRightAlignedText(x, y+0.375, "Judges Decision:", 10.0);
+    drawRightAlignedText(x+0.25, y+0.375, "1", 10.0);
 }
 
 void PrintController::printRoundRobinTwo(const Bracket *bracket)
@@ -241,40 +268,55 @@ void PrintController::printCompetitor(float y, float height, Competitor *comp, Q
 {
     float x = 0.75;
     drawHeavyBox(x, y, 2.0, height);
-    drawHeavyBox(x+6.25, y, 0.5, height);
-    drawHeavyBox(x+7.0, y, 0.5, height);
+    float boxesWidth = x + 2.0 + 5*(height + 0.25) + 0.5;
+    drawHeavyBox(boxesWidth, y, height, height);
+    drawHeavyBox(boxesWidth + height + 0.25, y, height, height);
 
     float tempx = x+2.25;
     foreach (bool box, boxes)
     {
         if (box)
         {
-            drawLightBox(tempx, y, 0.5, height);
+            drawLightBox(tempx, y, height, height);
         }
-        tempx += 0.75;
+        tempx += height + 0.25;
     }
     QString compName(comp->firstName());
     compName += " " + comp->lastName()[0];
-    drawNormalText(x+0.125, y+0.25, compName);
+    drawNormalText(x+0.0625, y+0.25, compName);
 
-    Club * club = m_tournament->clubs()[comp->clubId()];
-    QString clubName(club->clubName());
-    drawNormalText(x+0.25, y+0.625, clubName);
+    Club * club = getClub(comp->clubId());
+    if (club)
+    {
+        drawText(x+0.125, y+0.625, club->clubName(), 10.0);
+    }
+}
 
+Club * PrintController::getClub(int clubId)
+{
+    foreach(Club *club, m_tournament->clubs())
+    {
+        if(clubId == club->id())
+            return club;
+    }
+
+    return 0;
 }
 
 void PrintController::joinMatch(float baseY, float height, int comp1, int comp2, int match)
 {
     float y = baseY + height + (comp1-1)*(height + 0.25);
     float length = 0.25 + (comp2-comp1-1)*(height + 0.25);
-    float x = 3.25 + ((match-1) * 0.75);
+    float x = 3.0 + height/2 + ((match-1) * (height + 0.25));
     drawVerticalLine(x, y, length);
 }
 
 void PrintController::drawChokeArmbar(float x, float y, bool choke, bool armbar)
 {
-    drawNormalText(x, y, QString("Chokes: ") + (choke?"Yes":"No"));
-    drawNormalText(x, y+0.25, QString("Arm Bars: ") + (armbar?"Yes":"No"));
+    drawRightAlignedText(x, y, QString("Chokes:"));
+    drawText(x+0.125, y, (choke?"Yes":"No"));
+    drawRightAlignedText(x, y+0.25, QString("Arm Bars:"));
+    drawText(x+0.125, y+0.25, (armbar?"Yes":"No"));
 }
 
 void PrintController::drawPlace(float x, float y, const QString &text)
@@ -366,7 +408,7 @@ void PrintController::drawOpenRectRight(float x, float y, float width, float hei
     p.drawPolyline(points, 4);
 }
 
-void PrintController::drawText(float x, float y, const QString & text, float size, bool underlined)
+void PrintController::drawText(float x, float y, const QString & text, float size, bool underlined, int color)
 {
     QPointF point(x, y);
     float points_to_inches = 1/72.0;
@@ -376,6 +418,7 @@ void PrintController::drawText(float x, float y, const QString & text, float siz
     f.setUnderline(underlined);
 
     p.setFont(f);
+    p.setPen(color);
     p.drawText( t.map( point ), text );
 }
 
@@ -395,6 +438,24 @@ void PrintController::drawCenteredText(float x, float y, const QString & text, f
 
     p.drawText( mapped_point, text );
 }
+
+void PrintController::drawRightAlignedText(float x, float y, const QString & text, float size, bool underlined)
+{
+    QPointF point(x, y);
+    QPointF mapped_point(t.map(point));
+    float points_to_inches = 1/72.0;
+
+    QFont f("Arial");
+    f.setPixelSize(dpi*points_to_inches*size);
+    f.setUnderline(underlined);
+    p.setFont(f);
+
+    int width = p.fontMetrics().width(text);
+    mapped_point.setX(mapped_point.x() - width);
+
+    p.drawText( mapped_point, text );
+}
+
 
 void PrintController::drawNormalText(float x, float y, const QString & text)
 {

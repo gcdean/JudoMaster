@@ -7,6 +7,7 @@
 class Tournament;
 class Bracket;
 class Competitor;
+class Club;
 
 #define PRINT_DEBUG
 
@@ -27,6 +28,7 @@ private:
     void printRoundRobinThree(const Bracket *bracket);
     void printRoundRobinFour(const Bracket *bracket);
     void printCompetitor(float y, float height, Competitor *comp, QVector<bool> &boxes);
+    Club * getClub(int clubId);
     void joinMatch(float baseY, float height, int comp1, int comp2, int match);
     void printHeader(const Bracket *bracket);
     void drawBox(float x, float y, float width, float height, float weight);
@@ -39,7 +41,8 @@ private:
     void drawNormalText(float x, float y, const QString & text);
     void drawUnderlinedText(float x, float y, const QString & text);
     void drawCenteredText(float x, float y, const QString & text, float size=12.0, bool underlined=false);
-    void drawText(float x, float y, const QString & text, float size=12.0, bool underlined=false);
+    void drawRightAlignedText(float x, float y, const QString & text, float size=12.0, bool underlined=false);
+    void drawText(float x, float y, const QString & text, float size=12.0, bool underlined=false, int color = Qt::black);
     void drawPlace(float x, float y, const QString &text);
     void drawChokeArmbar(float x, float y, bool choke, bool armbar);
     int m_timerId;
