@@ -11,11 +11,14 @@
 #include "CompetitorTableModel.h"
 #include "JMUtil.h"
 #include "JudoMasterApplication.h"
+#include "actions/PrintBracketsAction.h"
+#include "commands/PrintBrancketsCommand.h"
 
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDebug>
 #include <QList>
+#include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 #include <QTableView>
@@ -29,6 +32,9 @@ BracketManager::BracketManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_printAction = new PrintBracketsAction(this);
+    m_editBracketAction = new QAction("Edit..", this);
+
     m_bracketItemDelegate = new BracketTypeItemDelegate();
     ui->bracketList->setTableItemDelegate(m_bracketItemDelegate);
     m_bracketModel = new BracketTableModel(this);
@@ -37,6 +43,8 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->bracketList->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->bracketList->tableView()->verticalHeader()->setVisible(true);
     ui->bracketList->tableView()->setSortingEnabled(false);
+    ui->bracketList->tableView()->verticalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->bracketList->tableView()->setContextMenuPolicy(Qt::CustomContextMenu);
 
 
     ui->allCompetitors->tableView()->setSortingEnabled(true);
@@ -66,6 +74,9 @@ BracketManager::BracketManager(QWidget *parent) :
     connect(ui->bracketList->tableView()->verticalHeader(), &QHeaderView::sectionDoubleClicked, this, &BracketManager::editBracket);
     connect(m_bracketCompetitorModel, &BracketCompetitorTableModel::numCompetitorsChanged, this, &BracketManager::resetMatCompetitors);
     connect(m_bracketItemDelegate, &BracketTypeItemDelegate::matNumberChanged, this, &BracketManager::resetMatCompetitors);
+    connect(ui->bracketList->tableView()->verticalHeader(), &QWidget::customContextMenuRequested, this, &BracketManager::bracketContextMenu);
+    connect(m_printAction, &QAction::triggered, this, &BracketManager::printSelectedBrackets);
+    connect(m_editBracketAction, &QAction::triggered, this, &BracketManager::editBracket);
 
 }
 
@@ -91,6 +102,58 @@ void BracketManager::resetMatCompetitors()
 
     ui->mat1Cntr->display(mat1);
     ui->ma2Cntr->display(mat2);
+}
+
+void BracketManager::bracketContextMenu(const QPoint &pos)
+{
+    // Get the selected indexes.
+    QModelIndexList selectedIndexes = ui->bracketList->tableView()->selectionModel()->selectedRows();
+    int logicalIndex = ui->bracketList->tableView()->verticalHeader()->logicalIndexAt(pos);
+    QModelIndex index = ui->bracketList->tableModel()->index(logicalIndex, 0);
+
+    // If the index we clicked on is not part of the selected indexes, then unselect current ones
+    // and select the current index.
+    bool found = false;
+    for(int x = 0; x < selectedIndexes.size(); x++)
+    {
+        QModelIndex i = selectedIndexes[x];
+        if(i.row() == index.row())
+        {
+            // the row under the cursor is selected.
+            found = true;
+            break;
+        }
+    }
+
+    if(!found)
+    {
+        ui->bracketList->tableView()->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        selectedIndexes = ui->bracketList->tableView()->selectionModel()->selectedRows();
+    }
+
+    qDebug() << "There are " << selectedIndexes.size() << " selected Indexes";
+
+   QPoint globalPos = ui->bracketList->tableView()->viewport()->mapToGlobal(pos);
+
+   QMenu myMenu;
+   m_editBracketAction->setEnabled(selectedIndexes.size() == 1);
+   myMenu.addAction(m_editBracketAction);
+   myMenu.addAction(m_printAction);
+   myMenu.exec(globalPos);
+}
+
+void BracketManager::printSelectedBrackets()
+{
+    QModelIndexList selectedIndexes = ui->bracketList->tableView()->selectionModel()->selectedRows();
+    QList<int> bracketIds;
+    foreach(QModelIndex index, selectedIndexes)
+    {
+        bracketIds.append(m_bracketModel->data(index, Qt::UserRole).toInt());
+    }
+
+    PrintBracketsCommand cmd("TEST", bracketIds);
+    cmd.run();
+
 }
 
 void BracketManager::addBracket()
@@ -184,10 +247,15 @@ void BracketManager::viewCompetitor(int logicalIndex)
     }
 }
 
-void BracketManager::editBracket(int logicalIndex)
+void BracketManager::editBracket()
 {
-    qDebug() << "BracketManager::editBracket(" << logicalIndex << ")";
-    QModelIndex modelIndex = m_bracketModel->index(logicalIndex, 0);
+    QModelIndexList selected = ui->bracketList->tableView()->selectionModel()->selectedRows();
+    if(selected.size() > 1)
+    {
+        return;
+    }
+
+    QModelIndex modelIndex = selected[0];
     QVariant qv = m_bracketModel->data(modelIndex, Qt::UserRole);
     Bracket *bracket = dynamic_cast<Bracket *>(JMApp()->bracketController()->find(qv.toInt()));
 

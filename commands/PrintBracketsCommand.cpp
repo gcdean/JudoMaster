@@ -1,26 +1,25 @@
 #include "PrintBrancketsCommand.h"
 
-#include "Tournament.h"
 #include "Bracket.h"
+#include "JudoMasterApplication.h"
 #include "PrintController.h"
+#include "Tournament.h"
 
 #include <QDebug>
 #include <QList>
 
-PrintBracketsCommand::PrintBracketsCommand(Tournament * tournament)
+PrintBracketsCommand::PrintBracketsCommand(QString tournament)
     : BaseCommand()
     , m_tournament(tournament)
-    , m_bracket(-1)
 {
 
 }
 
-PrintBracketsCommand::PrintBracketsCommand(Tournament * tournament, int bracket)
+PrintBracketsCommand::PrintBracketsCommand(QString tournament, QList<int> brackets)
     : BaseCommand()
     , m_tournament(tournament)
-    , m_bracket(bracket)
 {
-
+       m_bracketIds.append(brackets);
 }
 
 
@@ -35,31 +34,38 @@ bool PrintBracketsCommand::run()
     // Open the print dialog
     // Set the print options.
 
-    if ((m_bracket > -1) && (m_bracket < m_tournament->brackets().size()))
+    if(m_bracketIds.size() > 0)
     {
+
         PrintController pc(m_tournament);
         pc.prepare("Print Single Bracket");
-        pc.printBracket(m_tournament->brackets()[m_bracket]);
+        for(int x = 0; x < m_bracketIds.size(); x++)
+        {
+            int bracketId = m_bracketIds[x];
+            Bracket *bracket = dynamic_cast<Bracket *>(JMApp()->bracketController()->find(bracketId));
+            if(bracket)
+            {
+                qDebug() << "Print Bracket: " << bracket->name();
+                bool printed = pc.printBracket(bracket);
+                if(printed && x < m_bracketIds.size() - 1)
+                    pc.nextPage();
+            }
+        }
         pc.endPrint();
-        qDebug() << "Print Bracket: " << m_tournament->brackets()[m_bracket]->name();
     }
-    else if(m_tournament->brackets().size() > 0)
+    else if(JMApp()->bracketController()->brackets()->size() > 0)
     {
         PrintController pc(m_tournament);
         pc.prepare("Print Brackets");
-        bool first = true;
-        foreach(Bracket *bracket, m_tournament->brackets())
+        bool newPage = false;
+        foreach(Bracket *bracket, *JMApp()->bracketController()->brackets())
         {
-            if (!first)
+            if (newPage)
             {
                 pc.nextPage();
             }
-            else
-            {
-                first = false;
-            }
 
-            pc.printBracket(bracket);
+            newPage = pc.printBracket(bracket);
             qDebug() << "Print Bracket: " << bracket->name();
         }
         pc.endPrint();

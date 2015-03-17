@@ -8,6 +8,7 @@ class BracketCompetitorTableModel;
 class BracketTableModel;
 class BracketTypeItemDelegate;
 class CompetitorFilter;
+class PrintBracketsAction;
 
 namespace Ui {
 class BracketManager;
@@ -28,8 +29,10 @@ private Q_SLOTS:
     void competitorFilterChanged(const CompetitorFilter& filter);
     void removeCompetitorFromBracket();
     void viewCompetitor(int logicalIndex);
-    void editBracket(int logicalIndex);
+    void editBracket();
     void resetMatCompetitors();
+    void bracketContextMenu(const QPoint & pos);
+    void printSelectedBrackets();
 
 private:
     Ui::BracketManager *ui;
@@ -37,6 +40,8 @@ private:
     BracketTableModel *m_bracketModel;
     BracketCompetitorTableModel *m_bracketCompetitorModel;
     BracketTypeItemDelegate *m_bracketItemDelegate;
+    PrintBracketsAction *m_printAction;
+    QAction *m_editBracketAction;
 };
 
 #endif // BRACKETMANAGER_H

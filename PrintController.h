@@ -3,6 +3,7 @@
 
 #include <QPainter>
 #include <QPrinter>
+#include <QString>
 
 class Tournament;
 class Bracket;
@@ -15,9 +16,9 @@ class PrintController : public QObject
 {
     Q_OBJECT
 public:
-    PrintController(Tournament * tournament);
+    PrintController(QString tournament);
     bool prepare(const QString &title);
-    void printBracket(const Bracket *bracket);
+    bool printBracket(const Bracket *bracket);
     void nextPage();
     void endPrint();
 
@@ -47,7 +48,7 @@ private:
     void drawChokeArmbar(float x, float y, bool choke, bool armbar);
     int m_timerId;
     int m_page;
-    Tournament * m_tournament;
+    QString m_tournament;
     QTransform t;
     QPainter p;
 #ifndef PRINT_DEBUG

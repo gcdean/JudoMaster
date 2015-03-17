@@ -4,6 +4,7 @@
 #include "Bracket.h"
 #include "Competitor.h"
 #include "Club.h"
+#include "JudoMasterApplication.h"
 
 #include <QtGui>
 
@@ -15,7 +16,7 @@
 //#include <QString>
 //#include <QWidget>
 
-PrintController::PrintController(Tournament * tournament)
+PrintController::PrintController(QString tournament)
     : QObject()
     , m_tournament(tournament)
     , m_page(1)
@@ -68,9 +69,14 @@ void PrintController::endPrint()
 #endif
 }
 
-void PrintController::printBracket(const Bracket *bracket)
+bool PrintController::printBracket(const Bracket *bracket)
 {
-    if (bracket->competitors().size() > 8)
+    if(bracket->competitors().size() == 0)
+    {
+        // Don't print a bracket with now competitors.
+        return false;
+    }
+    else if (bracket->competitors().size() > 8)
     {
         // Not sure what to do here
     }
@@ -83,6 +89,7 @@ void PrintController::printBracket(const Bracket *bracket)
         printRoundRobinBracket(bracket);
     }
 
+    return true;
 }
 
 void PrintController::printDoubleEliminationBracket(const Bracket *bracket)
@@ -169,7 +176,7 @@ void PrintController::printHeader(const Bracket *bracket)
     t = p.combinedTransform();
     p.restore();
 
-    drawCenteredText(5.5, 1.0, m_tournament->name(), 16, true);
+    drawCenteredText(5.5, 1.0, m_tournament, 16, true);
     drawCenteredText(5.5, 1.5, bracket->name(), 16.0, true);
 
     drawChokeArmbar(9.75, 1.25, bracket->chokesAllowed(), bracket->armbarsAllowed());
@@ -294,13 +301,7 @@ void PrintController::printCompetitor(float y, float height, Competitor *comp, Q
 
 Club * PrintController::getClub(int clubId)
 {
-    foreach(Club *club, m_tournament->clubs())
-    {
-        if(clubId == club->id())
-            return club;
-    }
-
-    return 0;
+    return dynamic_cast<Club *>(JMApp()->clubController()->find(clubId));
 }
 
 void PrintController::joinMatch(float baseY, float height, int comp1, int comp2, int match)

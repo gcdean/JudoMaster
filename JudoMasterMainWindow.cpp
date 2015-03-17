@@ -176,7 +176,7 @@ void JudoMasterMainWindow::open()
 
 void JudoMasterMainWindow::printBrackets()
 {
-   PrintBracketsCommand cmd(m_tournament);
+   PrintBracketsCommand cmd(m_tournament->name());
    cmd.run();
 }
 
