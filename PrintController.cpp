@@ -388,7 +388,6 @@ float PrintController::printCompetitorRegistration(float y, Competitor *competit
 
     //    drawText(0.7, top + 0.15, QString("%1, %2").arg(competitor->lastName()).arg(competitor->firstName()), 12.0);
 
-    qDebug() << "Printing Competitor " << competitor->firstName() << " " << competitor->lastName();
     top += 0.20;
     return top;
 }

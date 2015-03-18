@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QList>
 
+class QAction;
 
 namespace Ui {
 class ClubsEditor;
@@ -28,9 +29,12 @@ private slots:
     void removeClub();
     void clubSelected(const QModelIndex &index);
     void tournamentChanged();
+    void clubContextMenu(const QPoint & pos);
+    void printClubRegistration();
 
 private:
     Ui::ClubsEditor *ui;
+    QAction *m_printClubRegAction;
 
 //    QList<Club *>* m_clubs;
 };

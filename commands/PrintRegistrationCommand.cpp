@@ -42,8 +42,9 @@ namespace
     }
 }
 
-PrintRegistrationCommand::PrintRegistrationCommand(QWidget *parent)
+PrintRegistrationCommand::PrintRegistrationCommand(QWidget *parent, QList<Club *> clubs)
     : m_parent(parent)
+    , m_clubs(clubs)
 {
 
 }
@@ -56,12 +57,7 @@ PrintRegistrationCommand::~PrintRegistrationCommand()
 bool PrintRegistrationCommand::run()
 {
 
-    qDebug() << "Print Registration";
-
-    const QList<Club *> *clubs = JMApp()->clubController()->clubs();
-
-    QList<Club *>sortedClubs(*clubs);
-    std::sort(sortedClubs.begin(), sortedClubs.end(), compareClubs);
+    QList<Club *>sortedClubs = getClubs();
 
     PrintController pc(JMApp()->tournament()->name(), QPrinter::Portrait);
     pc.prepare("Print Registration");
@@ -75,5 +71,25 @@ bool PrintRegistrationCommand::run()
     }
 
     return true;
+}
+
+QList<Club *> PrintRegistrationCommand::getClubs()
+{
+    QList<Club *>sortedClubs;
+
+    if(m_clubs.size() == 0)
+    {
+        const QList<Club *> *clubs = JMApp()->clubController()->clubs();
+
+        sortedClubs.append(*clubs);
+    }
+    else
+    {
+        sortedClubs.append(m_clubs);
+    }
+
+    std::sort(sortedClubs.begin(), sortedClubs.end(), compareClubs);
+
+    return sortedClubs;
 }
 
