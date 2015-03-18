@@ -137,6 +137,7 @@ void JudoMasterMainWindow::newTournament()
         delete m_tournament;
     }
     m_tournament = new Tournament();
+    JMApp()->setTournament(m_tournament);
     m_tournament->setName("Test");
     QDate trnDate(2015, 3, 15);
     m_tournament->setDate(trnDate);
@@ -176,7 +177,7 @@ void JudoMasterMainWindow::open()
 
 void JudoMasterMainWindow::printBrackets()
 {
-   PrintBracketsCommand cmd(m_tournament);
+   PrintBracketsCommand cmd(m_tournament->name());
    cmd.run();
 }
 
@@ -214,6 +215,7 @@ void JudoMasterMainWindow::loadFile(QString filename)
     QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
 
     m_tournament = new Tournament();
+    JMApp()->setTournament(m_tournament);
     m_tournament->setFileName(filename);
 
 

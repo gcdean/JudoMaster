@@ -3,22 +3,23 @@
 
 #include "commands/BaseCommand.h"
 #include <QList>
+#include <QString>
 
 class Tournament;
 
 class PrintBracketsCommand : public BaseCommand
 {
 public:
-    PrintBracketsCommand(Tournament *tournament);
-    PrintBracketsCommand(Tournament *tournament, int m_bracket);
+    PrintBracketsCommand(QString tournament);
+    PrintBracketsCommand(QString tournament, QList<int> brackets);
     ~PrintBracketsCommand();
 
     // BaseCommand interface
     bool run();
 
 private:
-    Tournament * m_tournament;
-    int m_bracket;
+    QString m_tournament;
+    QList<int> m_bracketIds;
 };
 
 #endif // PRINTBRANCHESCOMMAND_H

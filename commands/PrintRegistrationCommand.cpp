@@ -3,6 +3,8 @@
 #include "Club.h"
 #include "Competitor.h"
 #include "JudoMasterApplication.h"
+#include "PrintController.h"
+#include "Tournament.h"
 
 #include <algorithm>
 #include <QFontMetrics>
@@ -40,8 +42,9 @@ namespace
     }
 }
 
-PrintRegistrationCommand::PrintRegistrationCommand(QWidget *parent)
+PrintRegistrationCommand::PrintRegistrationCommand(QWidget *parent, QList<Club *> clubs)
     : m_parent(parent)
+    , m_clubs(clubs)
 {
 
 }
@@ -53,71 +56,40 @@ PrintRegistrationCommand::~PrintRegistrationCommand()
 
 bool PrintRegistrationCommand::run()
 {
-    QPrinter printer;
 
-    QPrintDialog *dialog = new QPrintDialog(&printer, m_parent);
-    dialog->setWindowTitle("Print Document");
-//    if (editor->textCursor().hasSelection())
-//        dialog->addEnabledOption(QAbstractPrintDialog::PrintSelection);
-    if (dialog->exec() != QDialog::Accepted)
-        return false;
+    QList<Club *>sortedClubs = getClubs();
 
-    qDebug() << "Print Registration";
-
-//    const QList<Club *> *clubs = JMApp()->clubController()->clubs();
-    QPainter painter;
-    painter.begin(&printer);
-    QRect pageRect = printer.pageRect();
-    int firstNamePos = pageRect.width() / 4;
-    int agePos = pageRect.width() / 2;
-    QFontMetrics fm(painter.font(), &printer);
-
-    int wtPos = agePos + fm.boundingRect("XXX").width();
-
-    const QList<Club *> *clubs = JMApp()->clubController()->clubs();
-
-    QList<Club *>sortedClubs(*clubs);
-    std::sort(sortedClubs.begin(), sortedClubs.end(), compareClubs);
-
-    bool firstClub = true;
+    PrintController pc(JMApp()->tournament()->name(), QPrinter::Portrait);
+    pc.prepare("Print Registration");
+    bool newPage = false;
     foreach(const Club* club, sortedClubs)
     {
-        if(!firstClub)
-            printer.newPage();
-        else
-            firstClub = false;
+        if(newPage)
+            pc.nextPage();
 
-        QRect boundRect = fm.boundingRect(club->clubName());
-        int left = pageRect.center().x() - boundRect.width() / 2;
-        painter.drawText(left, pageRect.top(), club->clubName());
-
-        int top = pageRect.top() + (boundRect.height() * 2);
-
-        painter.drawText(pageRect.left(), top, "Last Name");
-        painter.drawText(firstNamePos, top, "First Name");
-        painter.drawText(agePos, top, "Age");
-        painter.drawText(wtPos, top, "Weight");
-
-        top += boundRect.height();
-
-        QList< Competitor *>sortedCompetitors(JMApp()->competitorController()->competitors(club->id()));
-        std::sort(sortedCompetitors.begin(), sortedCompetitors.end(), compareCompetitorNames);
-        foreach(const Competitor *competitor, sortedCompetitors)
-        {
-            // Last Name, First Name    Age Weight Organization, #
-            // Names 50% of width, Age, Weight
-
-//            boundRect = fm.boundingRect(name);
-            painter.drawText(pageRect.left(), top, competitor->lastName());
-            painter.drawText(firstNamePos, top, competitor->firstName());
-            painter.drawText(agePos, top, QString("%1").arg(competitor->age()));
-            painter.drawText(wtPos, top, QString("%1").arg(competitor->weight()));
-            top += boundRect.height();
-        }
-
+        newPage = pc.printClubRegistration(club);
     }
 
-    painter.end();
     return true;
+}
+
+QList<Club *> PrintRegistrationCommand::getClubs()
+{
+    QList<Club *>sortedClubs;
+
+    if(m_clubs.size() == 0)
+    {
+        const QList<Club *> *clubs = JMApp()->clubController()->clubs();
+
+        sortedClubs.append(*clubs);
+    }
+    else
+    {
+        sortedClubs.append(m_clubs);
+    }
+
+    std::sort(sortedClubs.begin(), sortedClubs.end(), compareClubs);
+
+    return sortedClubs;
 }
 

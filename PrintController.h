@@ -3,6 +3,7 @@
 
 #include <QPainter>
 #include <QPrinter>
+#include <QString>
 
 class Tournament;
 class Bracket;
@@ -15,9 +16,11 @@ class PrintController : public QObject
 {
     Q_OBJECT
 public:
-    PrintController(Tournament * tournament);
+    PrintController(QString tournament, QPrinter::Orientation = QPrinter::Landscape);
     bool prepare(const QString &title);
-    void printBracket(const Bracket *bracket);
+    bool printBracket(const Bracket *bracket);
+    bool printClubRegistration(const Club *club);
+
     void nextPage();
     void endPrint();
 
@@ -28,8 +31,10 @@ private:
     void printRoundRobinThree(const Bracket *bracket);
     void printRoundRobinFour(const Bracket *bracket);
     void printCompetitor(float y, float height, Competitor *comp, QVector<bool> &boxes);
+    float printCompetitorRegistration(float y, Competitor *competitor);
     Club * getClub(int clubId);
     void joinMatch(float baseY, float height, int comp1, int comp2, int match);
+    void printClubHeader(const Club *club);
     void printHeader(const Bracket *bracket);
     void drawBox(float x, float y, float width, float height, float weight);
     void drawLightBox(float x, float y, float width, float height);
@@ -43,11 +48,17 @@ private:
     void drawCenteredText(float x, float y, const QString & text, float size=12.0, bool underlined=false);
     void drawRightAlignedText(float x, float y, const QString & text, float size=12.0, bool underlined=false);
     void drawText(float x, float y, const QString & text, float size=12.0, bool underlined=false, int color = Qt::black);
+    void drawText(QRectF rect, const QString & text, int flags=Qt::AlignLeft, float size=12.0, bool underlined=false, QColor color=QColor(Qt::black));
+
     void drawPlace(float x, float y, const QString &text);
     void drawChokeArmbar(float x, float y, bool choke, bool armbar);
+    float pageWidth();
+    float pageHeight();
+
+
     int m_timerId;
     int m_page;
-    Tournament * m_tournament;
+    QString m_tournament;
     QTransform t;
     QPainter p;
 #ifndef PRINT_DEBUG
@@ -56,6 +67,7 @@ private:
     QImage *image;
 #endif
     float dpi;
+    QPrinter::Orientation m_orientation;
 };
 
 

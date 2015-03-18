@@ -5,28 +5,31 @@
 #include "CompetitorItemDelegate.h"
 #include "CompetitorTableModel.h"
 #include "JudoMasterApplication.h"
+#include "commands/PrintRegistrationCommand.h";
 
 #include <QAbstractListModel>
 
 #include <QDebug>
+#include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QTableView>
 
 ClubsEditor::ClubsEditor(QWidget *parent) :
     QWidget(parent)
     , ui(new Ui::ClubsEditor)
+    , m_printClubRegAction(0)
 {
     ui->setupUi(this);
 
+    m_printClubRegAction = new QAction("Print Registration...", this);
+
     ui->clubList->setModel(new ClubListModel(ui->clubList));
-    qDebug() << "Drag Enabled: " << ui->clubList->dragEnabled()
-             << ", AcceptsDrops: " << ui->clubList->acceptDrops()
-             << ", DragDropMode: " << ui->clubList->dragDropMode();
 //    ui->clubList->setDragEnabled(true);
 //    ui->clubList->setDragDropMode(QAbstractItemView::InternalMove);
 //    ui->clubList->setDropIndicatorShown(true);
 //    ui->clubList->setAcceptDrops(true);
 //    ui->clubList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->clubList->setContextMenuPolicy(Qt::CustomContextMenu);
 
 
     CompetitorTableModel *sourceModel = new CompetitorTableModel(JMApp()->competitorController(), this);
@@ -45,6 +48,10 @@ ClubsEditor::ClubsEditor(QWidget *parent) :
 
     connect(ui->clubList->selectionModel(), &QItemSelectionModel::currentChanged, this, &ClubsEditor::clubSelected);
     connect(JMApp()->clubController(), &ClubController::tournamentChanged, this, &ClubsEditor::tournamentChanged);
+
+    connect(ui->clubList, &QWidget::customContextMenuRequested, this, &ClubsEditor::clubContextMenu);
+    connect(m_printClubRegAction, &QAction::triggered, this, &ClubsEditor::printClubRegistration);
+
 }
 
 ClubsEditor::~ClubsEditor()
@@ -88,4 +95,32 @@ void ClubsEditor::clubSelected(const QModelIndex &index)
 void ClubsEditor::tournamentChanged()
 {
     ui->clubList->reset();
+}
+
+void ClubsEditor::clubContextMenu(const QPoint &pos)
+{
+    QPoint globalPos = ui->clubList->viewport()->mapToGlobal(pos);
+
+    QMenu contextMenu;
+    contextMenu.addAction(m_printClubRegAction);
+
+    contextMenu.exec(globalPos);
+
+}
+
+void ClubsEditor::printClubRegistration()
+{
+    QModelIndexList indexes = ui->clubList->selectionModel()->selectedRows();
+    QList<Club *> selectedClubs;
+    foreach(QModelIndex index, indexes)
+    {
+        Club *club = dynamic_cast<Club *>(JMApp()->clubController()->find(ui->clubList->model()->data(index, Qt::UserRole).toInt()));
+        if(club)
+        {
+            selectedClubs.append(club);
+        }
+    }
+
+    PrintRegistrationCommand cmd(this, selectedClubs);
+    cmd.run();
 }
