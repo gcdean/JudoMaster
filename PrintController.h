@@ -10,7 +10,7 @@ class Bracket;
 class Competitor;
 class Club;
 
-//#define PRINT_DEBUG
+#define PRINT_DEBUG
 
 class PrintController : public QObject
 {
