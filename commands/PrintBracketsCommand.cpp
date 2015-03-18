@@ -38,31 +38,50 @@ bool PrintBracketsCommand::run()
     if ((m_bracket > -1) && (m_bracket < m_tournament->brackets().size()))
     {
         PrintController pc(m_tournament);
-        pc.prepare("Print Single Bracket");
-        pc.printBracket(m_tournament->brackets()[m_bracket]);
-        pc.endPrint();
-        qDebug() << "Print Bracket: " << m_tournament->brackets()[m_bracket]->name();
+        if (pc.prepare("Print Single Bracket"))
+        {
+            pc.printBracket(m_tournament->brackets()[m_bracket]);
+            pc.endPrint();
+            qDebug() << "Print Bracket: " << m_tournament->brackets()[m_bracket]->name();
+        }
+        else
+        {
+            qDebug() << "Print failed";
+        }
     }
     else if(m_tournament->brackets().size() > 0)
     {
         PrintController pc(m_tournament);
-        pc.prepare("Print Brackets");
-        bool first = true;
-        foreach(Bracket *bracket, m_tournament->brackets())
+        if (pc.prepare("Print Brackets"))
         {
-            if (!first)
+            bool first = true;
+            foreach(Bracket *bracket, m_tournament->brackets())
             {
-                pc.nextPage();
-            }
-            else
-            {
-                first = false;
-            }
+                if (bracket->competitors().size() > 1)
+                {
+                    if (!first)
+                    {
+                        pc.nextPage();
+                    }
+                    else
+                    {
+                        first = false;
+                    }
 
-            pc.printBracket(bracket);
-            qDebug() << "Print Bracket: " << bracket->name();
+                    pc.printBracket(bracket);
+                    qDebug() << "Print Bracket: " << bracket->name();
+                }
+                else if (bracket->competitors().size() == 1)
+                {
+                    qDebug() << "WARNING: Bracket with only one competitor: " << bracket->name();
+                }
+            }
+            pc.endPrint();
         }
-        pc.endPrint();
+        else
+        {
+            qDebug() << "Printing Failed";
+        }
     }
     else
     {

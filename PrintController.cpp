@@ -4,6 +4,7 @@
 #include "Bracket.h"
 #include "Competitor.h"
 #include "Club.h"
+#include "JMUtil.h"
 
 #include <QtGui>
 
@@ -136,7 +137,7 @@ void PrintController::printDoubleEliminationBracket(const Bracket *bracket)
     int indices[8] = { 0, 1, 2, 4, 6, 5, 3, 7 };
     for (int i=0; i < comps.size(); i++)
     {
-        compNames[indices[i]] = comps[i]->firstName() + " " + comps[i]->lastName()[0];
+        compNames[indices[i]] = comps[i]->firstName() + " " + comps[i]->lastName();
         Club * club = getClub(comps[i]->clubId());
         if (club)
         {
@@ -154,7 +155,6 @@ void PrintController::printDoubleEliminationBracket(const Bracket *bracket)
         startY += 1.0;
     }
 
-
     drawNormalText(10.125, 4.6875, "#1");
     drawRightAlignedText(0.75, 5.9375, "#2");
 }
@@ -169,10 +169,15 @@ void PrintController::printHeader(const Bracket *bracket)
     t = p.combinedTransform();
     p.restore();
 
+    QString bracket_info(bracket->name());
+    bracket_info += " - " + genderToString(bracket->gender()) + " " + bracket->weightTypeToStr(bracket->weightType());
+
     drawCenteredText(5.5, 1.0, m_tournament->name(), 16, true);
-    drawCenteredText(5.5, 1.5, bracket->name(), 16.0, true);
+    drawCenteredText(5.5, 1.5, bracket_info, 16.0, true);
 
     drawChokeArmbar(9.75, 1.25, bracket->chokesAllowed(), bracket->armbarsAllowed());
+    drawText(0.5, 1.25, "Mat #");
+    drawHorizontalLine(1.0, 1.25, 1.0);
 
 }
 
@@ -209,10 +214,10 @@ void PrintController::printRoundRobinBracket(const Bracket *bracket)
     x = 10.0;
     drawRightAlignedText(x, y, "Ippon / Hansoku Make:", 10.0);
     drawRightAlignedText(x+0.25, y, "10", 10.0);
-    drawRightAlignedText(x, y+0.25, "Waza-ari / Shido #3:", 10.0);
-    drawRightAlignedText(x+0.25, y+0.25, "7", 10.0);
-    drawRightAlignedText(x, y+0.125, "Yuko / Shido #2:", 10.0);
-    drawRightAlignedText(x+0.25, y+0.125, "5", 10.0);
+    drawRightAlignedText(x, y+0.125, "Waza-ari / Shido #3:", 10.0);
+    drawRightAlignedText(x+0.25, y+0.125, "7", 10.0);
+    drawRightAlignedText(x, y+0.25, "Yuko / Shido #2:", 10.0);
+    drawRightAlignedText(x+0.25, y+0.25, "5", 10.0);
     drawRightAlignedText(x, y+0.375, "Judges Decision:", 10.0);
     drawRightAlignedText(x+0.25, y+0.375, "1", 10.0);
 }
@@ -282,7 +287,7 @@ void PrintController::printCompetitor(float y, float height, Competitor *comp, Q
         tempx += height + 0.25;
     }
     QString compName(comp->firstName());
-    compName += " " + comp->lastName()[0];
+    compName += " " + comp->lastName();
     drawNormalText(x+0.0625, y+0.25, compName);
 
     Club * club = getClub(comp->clubId());
