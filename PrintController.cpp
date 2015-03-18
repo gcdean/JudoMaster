@@ -6,6 +6,7 @@
 #include "Club.h"
 #include "JudoMasterApplication.h"
 
+#include <QDebug>
 #include <QtGui>
 
 //#include <QFontMetrics>
@@ -16,10 +17,39 @@
 //#include <QString>
 //#include <QWidget>
 
-PrintController::PrintController(QString tournament)
+namespace
+{
+    const QRectF nameRect(0.5, 2.0, 3.5, 0.2);
+    const QRectF genderRect(4.0, 2.0, 1.0, 0.2);
+    const QRectF ageRect(5.0, 2.0, 0.5, 0.2);
+    const QRectF numDivsRect(5.5, 2.0, 0.5, 0.2);
+    const QRectF regWeightRect(5.5, 2.0, 1.0, 0.2);
+    const QRectF actWeightRect(6.5, 2.0, 1.0, 0.2);
+
+    bool compareCompetitorNames(Competitor* competitor1, Competitor* competitor2)
+    {
+        int lastNameCompare = competitor1->lastName().compare(competitor2->lastName());
+        if( lastNameCompare < 0)
+        {
+            return true;
+        }
+
+        if(lastNameCompare == 0)
+        {
+            // Last names are the same, compare the first name.
+            return competitor1->firstName().compare(competitor2->firstName()) < 0;
+        }
+
+        return false;
+    }
+
+}
+
+PrintController::PrintController(QString tournament, QPrinter::Orientation orientation)
     : QObject()
     , m_tournament(tournament)
     , m_page(1)
+    , m_orientation(orientation)
 {
 }
 
@@ -28,7 +58,7 @@ bool PrintController::prepare(const QString &title)
 #ifndef PRINT_DEBUG
     printer = new QPrinter();
     printer->setFullPage(true);
-    printer->setOrientation(QPrinter::Landscape);
+    printer->setOrientation(m_orientation);
     QPrintDialog *dialog = new QPrintDialog(printer);
     dialog->setWindowTitle(title);
     if (dialog->exec() != QDialog::Accepted)
@@ -87,6 +117,23 @@ bool PrintController::printBracket(const Bracket *bracket)
     else if (bracket->competitors().size() > 1)
     {
         printRoundRobinBracket(bracket);
+    }
+
+    return true;
+}
+
+bool PrintController::printClubRegistration(const Club *club)
+{
+    qDebug() << "Printing Registration for Club: " << club->clubName();
+
+    printClubHeader(club);
+
+    float y = 2.2;
+    QList<Competitor *> clubCompetitors(club->competitors());
+    std::sort(clubCompetitors.begin(), clubCompetitors.end(), compareCompetitorNames);
+    foreach(Competitor *competitor, clubCompetitors)
+    {
+        y = printCompetitorRegistration(y, competitor);
     }
 
     return true;
@@ -166,18 +213,44 @@ void PrintController::printDoubleEliminationBracket(const Bracket *bracket)
     drawRightAlignedText(0.75, 5.9375, "#2");
 }
 
+void PrintController::printClubHeader(const Club *club)
+{
+    // TODO Below Code should be refactored, maybe to prepare()?
+    p.setRenderHint(QPainter::Antialiasing);
+    dpi = qMin(p.viewport().width()/pageWidth(), p.viewport().height()/pageHeight());
+    p.save();
+    p.scale(dpi, dpi);
+    t = p.combinedTransform();
+    p.restore();
+    // END OF CODE TO BE REFACTORED
+
+    drawCenteredText(pageWidth() / 2/*5.5*/, 1.0, m_tournament, 16, true);
+    drawCenteredText(pageWidth() / 2/*5.5*/, 1.5, club->clubName(), 16.0, true);
+
+    // | Name                       | Gender  | Age | #Divs |  Reg Weight | Actual Weight |
+    //            4"                    1"      .5"      .5"          1"           1"
+
+    drawText(nameRect, "Name");
+    drawText(genderRect, "Gender", Qt::AlignCenter);
+    drawText(ageRect, "Age", Qt::AlignCenter);
+//    drawText(numDivsRect, "# Divs", Qt::AlignCenter);
+    drawText(regWeightRect, "Reg Weight", Qt::AlignCenter);
+    drawText(actWeightRect, "Act Weight", Qt::AlignCenter);
+
+}
+
 
 void PrintController::printHeader(const Bracket *bracket)
 {
     p.setRenderHint(QPainter::Antialiasing);
-    dpi = qMin(p.viewport().width()/11.0, p.viewport().height()/8.5);
+    dpi = qMin(p.viewport().width()/pageWidth(), p.viewport().height()/pageHeight());
     p.save();
     p.scale(dpi, dpi);
     t = p.combinedTransform();
     p.restore();
 
-    drawCenteredText(5.5, 1.0, m_tournament, 16, true);
-    drawCenteredText(5.5, 1.5, bracket->name(), 16.0, true);
+    drawCenteredText(pageWidth() / 2/*5.5*/, 1.0, m_tournament, 16, true);
+    drawCenteredText(pageWidth() / 2/*5.5*/, 1.5, bracket->name(), 16.0, true);
 
     drawChokeArmbar(9.75, 1.25, bracket->chokesAllowed(), bracket->armbarsAllowed());
 
@@ -299,6 +372,27 @@ void PrintController::printCompetitor(float y, float height, Competitor *comp, Q
     }
 }
 
+float PrintController::printCompetitorRegistration(float y, Competitor *competitor)
+{
+    float top = y;
+    drawLightBox(0.5, top, pageWidth() - 1.0, 0.20);
+    QRectF rect(nameRect.left(), top, nameRect.width(), nameRect.height());
+    drawText(rect, QString("%1, %2").arg(competitor->lastName()).arg(competitor->firstName()));
+    drawText(QRectF(genderRect.left(), top, genderRect.width(), genderRect.height()), genderToString(competitor->gender()), Qt::AlignCenter);
+    drawText(QRectF(ageRect.left(), top, ageRect.width(), ageRect.height()), QString("%1").arg(competitor->age()), Qt::AlignCenter);
+//    int numDivs = JMApp()->bracketController()->competitorBrackets(competitor->id()).size();
+//    int registeredDivs = competitor->numBrackets();
+//    QColor color = numDivs == registeredDivs ? QColor(Qt::black) : QColor(Qt::red);
+//    drawText(QRectF(numDivsRect.left(), top, numDivsRect.width(), numDivsRect.height()), QString("%1/%2").arg(numDivs).arg(registeredDivs), Qt::AlignCenter, 12.0, false, color);
+    drawText(QRectF(regWeightRect.left(), top, regWeightRect.width(), regWeightRect.height()), QString("%1").arg(competitor->weight()), Qt::AlignCenter);
+
+    //    drawText(0.7, top + 0.15, QString("%1, %2").arg(competitor->lastName()).arg(competitor->firstName()), 12.0);
+
+    qDebug() << "Printing Competitor " << competitor->firstName() << " " << competitor->lastName();
+    top += 0.20;
+    return top;
+}
+
 Club * PrintController::getClub(int clubId)
 {
     return dynamic_cast<Club *>(JMApp()->clubController()->find(clubId));
@@ -318,6 +412,22 @@ void PrintController::drawChokeArmbar(float x, float y, bool choke, bool armbar)
     drawText(x+0.125, y, (choke?"Yes":"No"));
     drawRightAlignedText(x, y+0.25, QString("Arm Bars:"));
     drawText(x+0.125, y+0.25, (armbar?"Yes":"No"));
+}
+
+float PrintController::pageWidth()
+{
+    if(m_orientation == QPrinter::Portrait)
+        return 8.5;
+
+    return 11.0;
+}
+
+float PrintController::pageHeight()
+{
+    if(m_orientation == QPrinter::Portrait)
+        return 11.0;
+
+    return 8.5;
 }
 
 void PrintController::drawPlace(float x, float y, const QString &text)
@@ -421,6 +531,21 @@ void PrintController::drawText(float x, float y, const QString & text, float siz
     p.setFont(f);
     p.setPen(color);
     p.drawText( t.map( point ), text );
+}
+
+void PrintController::drawText(QRectF rect, const QString &text, int flags, float size, bool underlined, QColor color)
+{
+    float points_to_inches = 1/72.0;
+
+    QFont f("Arial");
+    f.setPixelSize(dpi*points_to_inches*size);
+    f.setUnderline(underlined);
+
+    p.setFont(f);
+    p.setPen(color);
+
+    p.drawText(t.mapRect(rect), flags|Qt::TextSingleLine, text);
+
 }
 
 void PrintController::drawCenteredText(float x, float y, const QString & text, float size, bool underlined)
