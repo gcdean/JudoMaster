@@ -98,6 +98,10 @@ const QList<Competitor *> BaseController::competitors(const CompetitorFilter &fi
             if(!competitor->lastName().startsWith(filter.lastName(), Qt::CaseInsensitive))
                 add = false;
         }
+        if(filter.male() && competitor->gender() == JM::Female)
+            add = false;
+        else if(filter.female() && competitor->gender() == JM::Male)
+            add = false;
 
         if(add)
             filteredCompetitors.append(competitor);

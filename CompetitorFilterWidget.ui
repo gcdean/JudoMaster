@@ -166,6 +166,20 @@
      <item>
       <widget class="QLineEdit" name="lastName"/>
      </item>
+     <item>
+      <widget class="QCheckBox" name="maleChkBox">
+       <property name="text">
+        <string>Male</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="femaleChkBox">
+       <property name="text">
+        <string>Female</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

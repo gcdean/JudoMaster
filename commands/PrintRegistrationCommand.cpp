@@ -60,17 +60,21 @@ bool PrintRegistrationCommand::run()
     QList<Club *>sortedClubs = getClubs();
 
     PrintController pc(JMApp()->tournament()->name(), QPrinter::Portrait);
-    pc.prepare("Print Registration");
-    bool newPage = false;
-    foreach(const Club* club, sortedClubs)
+    if(pc.prepare("Print Registration"))
     {
-        if(newPage)
-            pc.nextPage();
+        bool newPage = false;
+        foreach(const Club* club, sortedClubs)
+        {
+            if(newPage)
+                pc.nextPage();
 
-        newPage = pc.printClubRegistration(club);
+            newPage = pc.printClubRegistration(club);
+        }
+
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 QList<Club *> PrintRegistrationCommand::getClubs()

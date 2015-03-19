@@ -9,12 +9,14 @@ CompetitorFilter::CompetitorFilter()
 
 }
 
-CompetitorFilter::CompetitorFilter(int minAge, int maxAge, double minWeight, double maxWeight, QString lastName)
+CompetitorFilter::CompetitorFilter(int minAge, int maxAge, double minWeight, double maxWeight, QString lastName, bool male, bool female)
     : m_minAge(minAge)
     , m_maxAge(maxAge)
     , m_minWeight(minWeight)
     , m_maxWeight(maxWeight)
     , m_lastName(lastName)
+    , m_male(male)
+    , m_female(female)
 {
 
 }
@@ -55,5 +57,15 @@ double CompetitorFilter::maxWeight() const
 QString CompetitorFilter::lastName() const
 {
     return m_lastName;
+}
+
+bool CompetitorFilter::male() const
+{
+    return m_male;
+}
+
+bool CompetitorFilter::female() const
+{
+    return m_female;
 }
 
