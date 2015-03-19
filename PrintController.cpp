@@ -255,9 +255,20 @@ void PrintController::printHeader(const Bracket *bracket)
     drawCenteredText(pageWidth() / 2/*5.5*/, 1.0, m_tournament, 16, true);
     drawCenteredText(pageWidth() / 2/*5.5*/, 1.5, bracket_info, 16.0, true);
 
-    drawChokeArmbar(9.75, 1.25, bracket->chokesAllowed(), bracket->armbarsAllowed());
+    drawRightAlignedText(9.75, 1.25, "Match Time:");
+    drawText(9.875, 1.25, QString("%1:00").arg(bracket->time()));
+    drawChokeArmbar(9.75, 1.75, bracket->chokesAllowed(), bracket->armbarsAllowed());
+
     drawText(0.5, 1.25, "Mat #");
-    drawHorizontalLine(1.0, 1.25, 1.0);
+
+    if (bracket->matNumber() > 0)
+    {
+        drawText(1.0625, 1.25, QString::number(bracket->matNumber()), 14.0);
+    }
+    else
+    {
+        drawHorizontalLine(1.0, 1.25, 1.0);
+    }
 
 }
 
