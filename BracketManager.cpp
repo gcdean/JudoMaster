@@ -7,6 +7,7 @@
 #include "BracketTableModel.h"
 #include "BracketTypeItemDelegate.h"
 #include "Competitor.h"
+#include "CompetitorEditor.h"
 #include "CompetitorFilter.h"
 #include "CompetitorTableModel.h"
 #include "JMUtil.h"
@@ -19,6 +20,7 @@
 #include <QDebug>
 #include <QList>
 #include <QMenu>
+#include <QmessageBox>
 #include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 #include <QTableView>
@@ -55,6 +57,7 @@ BracketManager::BracketManager(QWidget *parent) :
     ui->allCompetitors->tableView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->allCompetitors->tableView()->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->allCompetitors->tableView()->verticalHeader()->setVisible(true);
+    connect(ui->allCompetitors->tableView()->verticalHeader(), &QHeaderView::sectionDoubleClicked, this, &BracketManager::editCompetitor);
 
     ui->bracketCompetitors->setDisplayEditButtons(false);
     m_bracketCompetitorModel = new BracketCompetitorTableModel(JMApp()->bracketController());
@@ -156,6 +159,7 @@ void BracketManager::printSelectedBrackets()
 
 }
 
+
 void BracketManager::addBracket()
 {
     qDebug() << "ADD A BRACKET";
@@ -167,14 +171,15 @@ void BracketManager::tournamentChanged()
     connect(ui->bracketList->tableView()->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BracketManager::rowChanged);
     ui->bracketList->tableView()->resizeColumnsToContents();
 
-    CompetitorTableModel *allCompTableModel = new CompetitorTableModel(JMApp()->competitorController(), this);
-    allCompTableModel->setParentId(-1);
-    allCompTableModel->setEditable(false);
+    m_allCompModel = new CompetitorTableModel(JMApp()->competitorController(), this);
+    m_allCompModel->setParentId(-1);
+    m_allCompModel->setEditable(false);
 
-    QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
-    proxyModel->setSourceModel(allCompTableModel);
+    m_allCompSortModel = new QSortFilterProxyModel(this);
+    m_allCompSortModel->setSourceModel(m_allCompModel);
+    m_allCompSortModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 
-    ui->allCompetitors->tableView()->setModel(proxyModel);
+    ui->allCompetitors->tableView()->setModel(m_allCompSortModel);
     ui->allCompetitors->tableView()->resizeColumnsToContents();
 
     resetMatCompetitors();
@@ -209,8 +214,9 @@ void BracketManager::competitorFilterChanged(const CompetitorFilter &filter)
 {
     qDebug() << "BracketManager::competitorFilterChanged() minAge: " << filter.minAge() << ", maxAge: " << filter.maxAge() << ", minWeight: " << filter.minWeight() << ", maxWeight: " << filter.maxWeight();
 
-    QSortFilterProxyModel* proxyModel = dynamic_cast<QSortFilterProxyModel *>(ui->allCompetitors->tableView()->model());
-    CompetitorTableModel* cmodel = dynamic_cast<CompetitorTableModel *>(proxyModel->sourceModel());
+//    QSortFilterProxyModel* proxyModel = dynamic_cast<QSortFilterProxyModel *>(ui->allCompetitors->tableView()->model());
+//    CompetitorTableModel* cmodel = dynamic_cast<CompetitorTableModel *>(proxyModel->sourceModel());
+    CompetitorTableModel* cmodel = allCompetitorModel();
     cmodel->setFilter(filter);
 
 }
@@ -261,4 +267,34 @@ void BracketManager::editBracket()
 
     BracketEditor be(bracket, this);
     be.exec();
+}
+
+void BracketManager::editCompetitor()
+{
+    QModelIndexList selected = ui->allCompetitors->tableView()->selectionModel()->selectedRows();
+    if(selected.size() > 1)
+    {
+        return;
+    }
+
+    QModelIndex modelIndex = selected[0];
+
+    QModelIndex rootIndex = m_allCompSortModel->mapToSource(modelIndex);
+
+    CompetitorTableModel *cmodel = allCompetitorModel();
+    QVariant qv = cmodel->data(rootIndex, Qt::UserRole);
+    Competitor *competitor = dynamic_cast<Competitor *>(JMApp()->competitorController()->find(qv.toInt()));
+
+    CompetitorEditor editor(competitor, this);
+    editor.exec();
+
+    //QMessageBox::information(this, "Competitor", QString("Edit %1 %2 Here").arg(competitor->firstName()).arg(competitor->lastName()));
+}
+
+CompetitorTableModel *BracketManager::allCompetitorModel()
+{
+    QSortFilterProxyModel* proxyModel = dynamic_cast<QSortFilterProxyModel *>(ui->allCompetitors->tableView()->model());
+    CompetitorTableModel* cmodel = dynamic_cast<CompetitorTableModel *>(proxyModel->sourceModel());
+
+    return cmodel;
 }

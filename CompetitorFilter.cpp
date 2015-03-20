@@ -5,6 +5,8 @@ CompetitorFilter::CompetitorFilter()
     , m_maxAge(0)
     , m_minWeight(0.0)
     , m_maxWeight(0.0)
+    , m_male(false)
+    , m_female(false)
 {
 
 }

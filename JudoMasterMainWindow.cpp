@@ -235,8 +235,22 @@ void JudoMasterMainWindow::importFile(QString filename)
     ImportDataCommand importCmd(filename);
     importCmd.run();
 
-    qDebug() << importCmd.importedCompetitors().size() << " Competitors were imported.";
-    qDebug() << importCmd.skippedCompetitors().size() << " Competitors were skipped.";
+    const QList<Competitor *> imported = importCmd.importedCompetitors();
+    const QList<Competitor *> skipped = importCmd.skippedCompetitors();
+
+    qDebug() << "Imported Competitors:";
+    foreach(Competitor *comp, imported)
+    {
+        qDebug() << comp->lastName() << ", " << comp->firstName() << ", " << dynamic_cast<Club *>(JMApp()->clubController()->find(comp->clubId()))->clubName();
+    }
+
+    qDebug() << "\n\nSkipped Competitors:";
+    foreach(Competitor *comp, skipped)
+    {
+        qDebug() << comp->lastName() << ", " << comp->firstName();
+
+    }
+
 }
 
 void JudoMasterMainWindow::resetTitle()

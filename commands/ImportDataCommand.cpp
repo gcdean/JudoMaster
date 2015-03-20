@@ -43,7 +43,7 @@ bool ImportDataCommand::run()
         QString line = fileStream.readLine();
         QStringList headers = line.split(',');
 
-        qDebug() << "Printing CSV Headers";
+//        qDebug() << "Printing CSV Headers";
         QHash<QString, int> colMap;
         int index = 0;
         foreach(QString header, headers)
@@ -93,7 +93,7 @@ bool ImportDataCommand::run()
                 Club *club = JMApp()->clubController()->findClubByName(clubName);
                 if(!club)
                 {
-                    qDebug() << "Creating New Club for name " << clubName;
+  //                  qDebug() << "Creating New Club for name " << clubName;
                     // Need to add the club.
                     club = JMApp()->clubController()->createClub();
                     club->setClubName(clubName);
@@ -128,6 +128,11 @@ bool ImportDataCommand::run()
         } while (!line.isNull());
         file.close();
     }
+
+    // Compare the # imported with the total # we have.
+    int total = JMApp()->competitorController()->competitors().size();
+    int numImported = m_importedCompetitors.size();
+    qDebug() << "Total Competitors: " << total << ", Total Imported: " << numImported;
 
     return true;
 }

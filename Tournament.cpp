@@ -2,6 +2,7 @@
 
 #include "Bracket.h"
 
+#include <QDebug>
 #include <QJsonArray>
 #include <QJsonObject>
 
@@ -10,7 +11,7 @@ namespace
     // TODO: Put this is a global namespace. Duplicated in the PrintBrackets command.
     bool compareClubs(Club* club1, Club* club2)
     {
-        return club1->clubName().compare(club2->clubName()) < 0;
+        return club1->clubName().compare(club2->clubName(), Qt::CaseInsensitive) < 0;
     }
 
 }
@@ -35,6 +36,7 @@ void Tournament::read(QJsonObject &json)
         m_competitors.append(competitor);
 
     }
+    qDebug() << "Total Competitors Read In: " << m_competitors.size();
 
     // Read the clubs
     QJsonArray clubs = json["clubs"].toArray();
@@ -83,11 +85,13 @@ void Tournament::write(QJsonObject &json) const
     QJsonArray judokas;
     foreach(Competitor *judoka, m_competitors)
     {
+        qDebug() << "Saving Competitor: " << judoka->lastName() << ", " << judoka->firstName();
         QJsonObject jobj;
         judoka->write(jobj);
         judokas.append(jobj);
     }
 
+    qDebug() << "Total Competitors Saved: " << judokas.size();
     json["competitors"] = judokas;
 
     // Brackets

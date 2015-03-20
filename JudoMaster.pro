@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     commands/MergeClubsCommand.cpp \
     commands/ImportDataCommand.cpp \
     BracketTypeItemDelegate.cpp \
-    PrintController.cpp
+    PrintController.cpp \
+    CompetitorEditor.cpp
 
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
@@ -80,7 +81,8 @@ HEADERS  += JudoMasterMainWindow.h \
     commands/MergeClubsCommand.h \
     commands/ImportDataCommand.h \
     BracketTypeItemDelegate.h \
-    PrintController.h
+    PrintController.h \
+    CompetitorEditor.h
 
 FORMS    += JudoMasterMainWindow.ui \
     ClubsEditor.ui \
@@ -89,7 +91,8 @@ FORMS    += JudoMasterMainWindow.ui \
     BracketEditor.ui \
     BracketManager.ui \
     CompetitorFilterWidget.ui \
-    CompetitorFilterWidget.ui
+    CompetitorFilterWidget.ui \
+    CompetitorEditor.ui
 
 RESOURCES += \
     Resources.qrc
