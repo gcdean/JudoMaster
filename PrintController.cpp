@@ -188,14 +188,21 @@ void PrintController::printDoubleEliminationBracket(const Bracket *bracket)
     QString bye("BYE");
     compNames << bye << bye << bye << bye << bye << bye << bye << bye;
     clubNames << "" << "" << "" << "" << "" << "" << "" << "";
-    int indices[8] = { 0, 1, 2, 4, 6, 5, 3, 7 };
-    for (int i=0; i < comps.size(); i++)
+    int indices[8] = { 4, 4, 4, 6, 4, 5, 4, 7 };
+
+    int count = comps.size();
+    int j = 0;
+    for (int i=0; i < 8; i++)
     {
-        compNames[indices[i]] = comps[i]->firstName() + " " + comps[i]->lastName();
-        Club * club = getClub(comps[i]->clubId());
-        if (club)
+        if (count > indices[i])
         {
-            clubNames[indices[i]] = QString(club->clubName());
+            compNames[i] = comps[j]->firstName() + " " + comps[j]->lastName();
+            Club * club = getClub(comps[j]->clubId());
+            if (club)
+            {
+                clubNames[i] = QString(club->clubName().left(22));
+            }
+            j++;
         }
     }
 
