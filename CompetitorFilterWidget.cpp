@@ -25,8 +25,8 @@ void CompetitorFilterWidget::clearFilters()
     ui->minWt->setValue(0);
     ui->maxWt->setValue(0);
     ui->lastName->setText(QString());
-    ui->maleChkBox->setChecked(true);
-    ui->femaleChkBox->setChecked(true);
+    ui->maleChkBox->setChecked(false);
+    ui->femaleChkBox->setChecked(false);
 }
 
 void CompetitorFilterWidget::apply()

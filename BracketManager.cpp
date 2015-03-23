@@ -12,6 +12,7 @@
 #include "CompetitorTableModel.h"
 #include "JMUtil.h"
 #include "JudoMasterApplication.h"
+#include "Tournament.h"
 #include "actions/PrintBracketsAction.h"
 #include "commands/PrintBrancketsCommand.h"
 
@@ -20,7 +21,7 @@
 #include <QDebug>
 #include <QList>
 #include <QMenu>
-#include <QmessageBox>
+#include <QMessageBox>
 #include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 #include <QTableView>
@@ -154,7 +155,7 @@ void BracketManager::printSelectedBrackets()
         bracketIds.append(m_bracketModel->data(index, Qt::UserRole).toInt());
     }
 
-    PrintBracketsCommand cmd("TEST", bracketIds);
+    PrintBracketsCommand cmd(JMApp()->tournament()->name(), bracketIds);
     cmd.run();
 
 }

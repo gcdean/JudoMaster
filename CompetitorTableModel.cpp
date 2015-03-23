@@ -66,11 +66,19 @@ QVariant CompetitorTableModel::headerData(int section, Qt::Orientation orientati
             case Qt::TextColorRole:
             {
                 QModelIndex idx = index(section, 0);
-                QVariant qv = data(idx, Qt::UserRole);
-                const QList<Bracket *> brackets = JMApp()->bracketController()->competitorBrackets(qv.toInt());
-                if(brackets.size() == 0)
+                if(idx.isValid())
                 {
-                    return QVariant(QColor(Qt::red));
+                    QVariant qv = data(idx, Qt::UserRole);
+                    Competitor *competitor = dynamic_cast<Competitor *>(this->m_controller->find(qv.toInt()));
+                    const QList<Bracket *> brackets = JMApp()->bracketController()->competitorBrackets(qv.toInt());
+                    if(competitor && competitor->numBrackets() != brackets.size())
+                    {
+                        return QVariant(QColor(Qt::red));
+                    }
+                }
+                else
+                {
+                    qDebug() << "INVALID Index. Section " << section << ", Orientation: " << orientation << ", # Rows is: " << m_controller->competitors(m_filter, m_parentId).size();
                 }
             }
             break;
@@ -133,6 +141,12 @@ QVariant CompetitorTableModel::data(const QModelIndex &index, int role) const
 {
     // Get the competitor.
     const QList<Competitor *> competitors = m_controller->competitors(m_filter, m_parentId);
+    if(index.row() >= competitors.size())
+    {
+        qDebug() << "ERROR!!! CompetitorTableModel::data() attempting to access row: " << index.row() << " with only " << competitors.size() << " Competitors with filter?";
+        return QVariant("ERROR");
+    }
+
     const Competitor *judoka = competitors.at(index.row());
     switch(role)
     {
@@ -437,7 +451,7 @@ QVariant CompetitorTableModel::columnBackground(const Competitor* judoka, int co
         case competitor::NumDivs:
         {
             const QList<Bracket *> brackets = JMApp()->bracketController()->competitorBrackets(judoka->id());
-            if(brackets.size() == 0)
+            if(brackets.size() == 0 && judoka->numBrackets() > 0)
                 return QVariant(QColor(Qt::red));
             else if(brackets.size() < judoka->numBrackets())
                 return QVariant(QColor(Qt::yellow));

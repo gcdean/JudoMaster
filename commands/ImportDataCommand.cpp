@@ -72,12 +72,6 @@ bool ImportDataCommand::run()
                 QString div3 = columns.at(colMap["Division 3"]);
                 QString kata = columns.at(colMap["Kata"]);
 
-                if(!kata.isEmpty())
-                {
-                    qDebug() << "Not Importing " << lname << ", " << fname << " because they have registered for a kata: " << kata;
-                    continue;
-                }
-
                 int numDivs = 0;
 
                 numDivs += div0.isEmpty() ? 0 : 1;
@@ -86,6 +80,10 @@ bool ImportDataCommand::run()
                 numDivs += div3.isEmpty() ? 0 : 1;
 
                 QString notes = QString("div0: (%1), div1: (%2), div2: (%3), div3: (%4)").arg(div0).arg(div1).arg(div2).arg(div3);
+                if(!kata.isEmpty())
+                {
+                    notes.append(QString(" Kata: %1").arg(kata));
+                }
 //                qDebug() << "First: " << fname << ", Last: " << lname << ", Gender: " << gender << ", Age: " << age << ", Weight: " << weight
 //                         << ", belt: " << belt << ", club: " << clubName << ", num Divs: " << numDivs;
 
