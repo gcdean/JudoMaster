@@ -48,7 +48,11 @@ SOURCES += main.cpp\
     commands/ImportDataCommand.cpp \
     BracketTypeItemDelegate.cpp \
     PrintController.cpp \
-    CompetitorEditor.cpp
+    CompetitorEditor.cpp \
+    MatchController.cpp \
+    Match.cpp \
+    MatchTableModel.cpp \
+    MatchItemDelegate.cpp
 
 HEADERS  += JudoMasterMainWindow.h \
     Competitor.h \
@@ -82,7 +86,11 @@ HEADERS  += JudoMasterMainWindow.h \
     commands/ImportDataCommand.h \
     BracketTypeItemDelegate.h \
     PrintController.h \
-    CompetitorEditor.h
+    CompetitorEditor.h \
+    MatchController.h \
+    Match.h \
+    MatchTableModel.h \
+    MatchItemDelegate.h
 
 FORMS    += JudoMasterMainWindow.ui \
     ClubsEditor.ui \

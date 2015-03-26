@@ -159,6 +159,7 @@ void Bracket::write(QJsonObject &json) const
 
     json["bracketMembers"] = bracketMembers;
 
+
 }
 
 void Bracket::setGender(JM::Gender gender)

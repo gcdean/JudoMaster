@@ -4,6 +4,7 @@
 #include "BracketController.h"
 #include "ClubController.h"
 #include "CompetitorController.h"
+#include "MatchController.h"
 
 #include <QApplication>
 
@@ -17,6 +18,7 @@ public:
     ClubController* clubController()  {return &m_clubController;}
     CompetitorController *competitorController() {return &m_competitorController;}
     BracketController *bracketController() {return &m_bracketController;}
+    MatchController *matchController() {return &m_matchController;}
     void setTournament(Tournament *tournament);
     const Tournament *tournament() const;
 
@@ -24,6 +26,7 @@ private:
     ClubController m_clubController;
     CompetitorController m_competitorController;
     BracketController m_bracketController;
+    MatchController m_matchController;
     Tournament *m_tournament;
 };
 

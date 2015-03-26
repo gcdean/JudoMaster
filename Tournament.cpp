@@ -1,6 +1,9 @@
 #include "Tournament.h"
 
 #include "Bracket.h"
+#include "Club.h"
+#include "Competitor.h"
+#include "Match.h"
 
 #include <QDebug>
 #include <QJsonArray>
@@ -61,6 +64,16 @@ void Tournament::read(QJsonObject &json)
         bracket->read(jobj, m_competitors);
         m_brackets.append(bracket);
     }
+
+    // Read the matches
+    QJsonArray matches = json["matches"].toArray();
+    for(int x = 0; x < matches.size(); x++)
+    {
+        QJsonObject jobj = matches[x].toObject();
+        Match *match = new Match();
+        match->read(jobj, m_competitors);
+        m_matches.append(match);
+    }
 }
 
 void Tournament::write(QJsonObject &json) const
@@ -104,5 +117,15 @@ void Tournament::write(QJsonObject &json) const
     }
 
     json["brackets"] = brackets;
+
+    //  Matches
+    QJsonArray matches;
+    foreach(Match *match, m_matches)
+    {
+        QJsonObject jobj;
+        match->write(jobj);
+        matches.append(jobj);
+    }
+    json["matches"] = matches;
 }
 

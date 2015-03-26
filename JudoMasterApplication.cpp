@@ -11,6 +11,7 @@ JudoMasterApplication::JudoMasterApplication(int &argc, char **argv) :
 void JudoMasterApplication::setTournament(Tournament *tournament)
 {
     m_tournament = tournament;
+    m_matchController.setTournament(m_tournament);
 }
 
 const Tournament *JudoMasterApplication::tournament() const

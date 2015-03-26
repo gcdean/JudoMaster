@@ -8,6 +8,7 @@ class BracketEditor;
 }
 
 class Bracket;
+class MatchTableModel;
 
 class BracketEditor : public QDialog
 {
@@ -21,9 +22,14 @@ public:
 public slots:
     virtual void accept();
 
+private slots:
+    void addMatch();
+    void removeMatch();
+
 private:
     Ui::BracketEditor *ui;
     Bracket *m_bracket;
+    MatchTableModel *m_matchTableModel;
 
 };
 

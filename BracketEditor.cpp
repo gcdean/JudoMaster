@@ -4,6 +4,11 @@
 #include "Bracket.h"
 #include "Competitor.h"
 #include "JMUtil.h"
+#include "JudoMasterApplication.h"
+#include "MatchItemDelegate.h"
+#include "MatchTableModel.h"
+
+#include <QDebug>
 
 BracketEditor::BracketEditor(Bracket *bracket, QWidget *parent) :
     QDialog(parent),
@@ -19,7 +24,6 @@ BracketEditor::BracketEditor(Bracket *bracket, QWidget *parent) :
     ui->firstPlaceCombo->addItem(QString("<None>"), QVariant(-1));
     ui->secondPlaceCombo->addItem(QString("<None>"), QVariant(-1));
     ui->thirdPlace1Combo->addItem(QString("<None>"), QVariant(-1));
-    ui->thirdPlace2Combo->addItem(QString("<None>"), QVariant(-1));
     int index = 1;
     foreach(Competitor *competitor, bracket->competitors())
     {
@@ -32,14 +36,18 @@ BracketEditor::BracketEditor(Bracket *bracket, QWidget *parent) :
         ui->thirdPlace1Combo->addItem(QString("%1, %2").arg(competitor->lastName()).arg(competitor->firstName()), QVariant(competitor->id()));
         if(bracket->thirdPlace1() == competitor->id())
             ui->thirdPlace1Combo->setCurrentIndex(index);
-        ui->thirdPlace2Combo->addItem(QString("%1, %2").arg(competitor->lastName()).arg(competitor->firstName()), QVariant(competitor->id()));
-        if(bracket->thirdPlace2() == competitor->id())
-            ui->thirdPlace2Combo->setCurrentIndex(index);
         index++;
     }
 
+    m_matchTableModel = new MatchTableModel(ui->matchesTable);
+    m_matchTableModel->setBracketId(bracket->id());
+    ui->matchesTable->setModel(m_matchTableModel);
+    ui->matchesTable->setItemDelegate(new MatchItemDelegate(m_bracket, ui->matchesTable));
+
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    connect(ui->addMatchBtn, &QPushButton::clicked, this, &BracketEditor::addMatch);
+    connect(ui->removeMatchBtn, &QPushButton::clicked, this, &BracketEditor::removeMatch);
 }
 
 BracketEditor::~BracketEditor()
@@ -55,6 +63,16 @@ void BracketEditor::accept()
     m_bracket->setFirstPlace(ui->firstPlaceCombo->currentData().toInt());
     m_bracket->setSecondPlace(ui->secondPlaceCombo->currentData().toInt());
     m_bracket->setThirdPlace1(ui->thirdPlace1Combo->currentData().toInt());
-    m_bracket->setThirdPlace2(ui->thirdPlace2Combo->currentData().toInt());
     QDialog::accept();
+}
+
+void BracketEditor::addMatch()
+{
+    qDebug() << "Add New Match";
+    JMApp()->matchController()->add(m_bracket->id());
+}
+
+void BracketEditor::removeMatch()
+{
+    qDebug() << "Remove Selected Match.";
 }

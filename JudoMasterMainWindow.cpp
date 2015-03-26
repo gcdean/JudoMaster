@@ -142,9 +142,11 @@ void JudoMasterMainWindow::newTournament()
     QDate trnDate(2015, 3, 15);
     m_tournament->setDate(trnDate);
 
+    // TODO Move all this into the JMApp()->setTournament() method.
     JMApp()->clubController()->setTournament(m_tournament);
     JMApp()->competitorController()->setTournament(m_tournament);
     JMApp()->bracketController()->setTournament(m_tournament);
+
 
     updateControls();
 }
@@ -153,6 +155,7 @@ void JudoMasterMainWindow::close()
 {
     // Check to see if we need to save.
 
+    // TODO Move all this into the JMApp()->setTournament() method.
     JMApp()->clubController()->setTournament(0);
     JMApp()->competitorController()->setTournament(0);
     JMApp()->bracketController()->setTournament(0);
@@ -222,9 +225,11 @@ void JudoMasterMainWindow::loadFile(QString filename)
     QJsonObject jobj = loadDoc.object();
     m_tournament->read(jobj);
 
+    // TODO Move all this into the JMApp()->setTournament() method.
     JMApp()->clubController()->setTournament(m_tournament);
     JMApp()->competitorController()->setTournament(m_tournament);
     JMApp()->bracketController()->setTournament(m_tournament);
+
 
     resetTitle();
 
