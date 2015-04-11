@@ -26,6 +26,7 @@ public slots:
     void updateCoachName();
     void updateClub();
     void revertClub();
+    void updateStateList();
 
 private:
     void updateControls();

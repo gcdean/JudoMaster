@@ -88,5 +88,24 @@ void Club::write(QJsonObject &json) const
     json["state"] = m_state;
     json["zip"] = m_zip;
 
-    // Write out Competitors?
+}
+
+void writeClubHeader(QTextStream &stream)
+{
+    stream << "ClubId,ClubName,CoachName,Address1,Address2,City,State,Zip,Country" << endl;
+}
+
+void Club::write(QTextStream &stream) const
+{
+    JMDataObj::write(stream);
+    stream << "," << m_clubName;
+    stream << "," << m_coachName;
+    stream << "," << m_address1;
+    stream << "," << m_address2;
+    stream << "," << m_city;
+    stream << "," << m_state;
+    stream << "," << m_zip;
+    stream << "," << m_country;
+
+    stream << endl;
 }

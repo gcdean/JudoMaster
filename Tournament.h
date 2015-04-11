@@ -37,6 +37,8 @@ public:
 
     void read(QJsonObject &json);
     void write(QJsonObject& json) const;
+    //void write(QTextStream &stream) const;
+    void write (QString dirname) const;
 
 signals:
 

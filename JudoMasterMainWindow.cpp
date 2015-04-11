@@ -50,6 +50,7 @@ JudoMasterMainWindow::JudoMasterMainWindow(QWidget *parent) :
     connect(ui->actionPrint_Registration, &QAction::triggered, this, &JudoMasterMainWindow::printRegistration);
     connect(m_printBracketsAction, &QAction::triggered, this, &JudoMasterMainWindow::printBrackets);
     connect(ui->actionImport, &QAction::triggered, this, &JudoMasterMainWindow::import);
+    connect(ui->actionExport, &QAction::triggered, this, &JudoMasterMainWindow::exportData);
 
     connect(ui->tournamentName, &QLineEdit::editingFinished, this, &JudoMasterMainWindow::nameChanged);
     connect(ui->tournamentDate, &QDateTimeEdit::dateChanged, this, &JudoMasterMainWindow::dateChanged);
@@ -201,6 +202,13 @@ void JudoMasterMainWindow::import()
 
     importFile(openFileName);
     resetTitle();
+}
+
+void JudoMasterMainWindow::exportData()
+{
+    QString dir = QFileDialog::getExistingDirectory(this, "Select Directory to export to.");
+    qDebug() << "EXPORT TO: (" << dir << ")";
+    JMApp()->tournament()->write(dir);
 }
 
 void JudoMasterMainWindow::loadFile(QString filename)

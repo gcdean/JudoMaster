@@ -32,6 +32,7 @@ public slots:
     void printBrackets();
     void printRegistration();
     void import();
+    void exportData();
 
 private:
     bool getFilename();

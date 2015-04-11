@@ -9,6 +9,8 @@
 #include "Competitor.h"
 #include "JMDataObj.h"
 
+void writeClubHeader(QTextStream &stream);
+
 /**
  * @brief Represents all the data for a Judo club
  */
@@ -44,6 +46,7 @@ public:
     void read(const QJsonObject &json) override;
     void read(const QJsonObject& json, const QList<Competitor *> competitors);
     void write(QJsonObject &json) const override;
+    void write(QTextStream &stream) const override;
 
 
 private:

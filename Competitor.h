@@ -26,6 +26,8 @@ namespace competitor
 
 }
 
+void writeCompetitorHeader(QTextStream &stream);
+
 class Competitor : public JMDataObj
 {
 
@@ -57,6 +59,7 @@ public:
     virtual void read(const QJsonObject& json);
 
     void write(QJsonObject& json) const override;
+    void write(QTextStream &stream) const override;
 
 private:
     QString m_firstName;

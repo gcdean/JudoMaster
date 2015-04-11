@@ -11,6 +11,9 @@
 
 class Competitor;
 
+void writeBracketHeader(QTextStream &stream);
+void writeBracketCompetitorHeader(QTextStream &stream);
+void writeBracketPlaceHeader(QTextStream &stream);
 
 /**
  * @brief The Bracket class
@@ -39,6 +42,9 @@ public:
     void read(const QJsonObject& json, const QList<Competitor *> competitors);
 
     void write(QJsonObject& json) const override;
+    void write(QTextStream &stream) const override;
+    void writeCompetitors(QTextStream &stream) const;
+    void writePlaces(QTextStream &stream) const;
 
     void setName(QString name) {m_name = name;}
     QString name() const {return m_name;}

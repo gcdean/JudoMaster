@@ -8,6 +8,8 @@
 
 class Competitor;
 
+void writeMatchHeader(QTextStream &stream);
+
 class Match : public JMDataObj
 {
 public:
@@ -31,6 +33,7 @@ public:
     // JMDataObj interface
     void read(const QJsonObject &json) override;
     void write(QJsonObject &json) const override;
+    void write(QTextStream &stream) const override;
 
 private:
     int m_bracketId;

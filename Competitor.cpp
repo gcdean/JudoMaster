@@ -1,5 +1,7 @@
 #include "Competitor.h"
 
+#include "JMUtil.h"
+
 Competitor::Competitor(int id, QString firstName, QString lastName, JM::Gender gender, int age , double weight, JM::Rank rank, int clubId) :
      JMDataObj(id)
     , m_firstName(firstName)
@@ -65,4 +67,27 @@ void Competitor::write(QJsonObject &json) const
     json["notes"] = m_notes;
     json["clubid"] = m_clubId;
 
+}
+
+void writeCompetitorHeader(QTextStream &stream)
+{
+    stream << "CompetitorId,FirstName,LastName,Gender,Age,Weight,Rank,NumBrackets,ClubId,Notes" << endl;
+}
+
+void Competitor::write(QTextStream &stream) const
+{
+    JMDataObj::write(stream);
+
+    stream << "," << m_firstName;
+    stream << "," << m_lastName;
+    stream << "," << genderToString(m_gender);
+    stream << "," << m_age;
+    stream << "," << m_weight;
+    stream << "," << rankToString(m_rank);
+    stream << "," << m_numBrackets;
+    stream << "," << m_clubId;
+
+    QString tmp(m_notes);
+    stream << "," << prepareStringForCSV(tmp);
+    stream << endl;
 }

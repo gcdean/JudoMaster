@@ -158,3 +158,9 @@ Gender genderFromString(QString genderStr)
 
     return NotApplicable;
 }
+
+
+QString prepareStringForCSV(QString str)
+{
+    return str.replace(QString(","), QString(";"));
+}

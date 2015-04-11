@@ -49,4 +49,6 @@ QColor rankToColor(JM::Rank rank);
 QString genderToString(JM::Gender gender);
 JM::Gender genderFromString(QString genderStr);
 
+QString prepareStringForCSV(QString str);
+
 #endif // JMUTIL_H

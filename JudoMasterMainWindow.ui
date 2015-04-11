@@ -202,7 +202,9 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="actionClose"/>
+    <addaction name="separator"/>
     <addaction name="actionImport"/>
+    <addaction name="actionExport"/>
     <addaction name="separator"/>
     <addaction name="menuPrint"/>
     <addaction name="separator"/>
@@ -262,6 +264,11 @@
   <action name="actionImport">
    <property name="text">
     <string>Import...</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export...</string>
    </property>
   </action>
  </widget>

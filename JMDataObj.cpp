@@ -1,6 +1,7 @@
 #include "JMDataObj.h"
 
 #include <QJsonObject>
+#include <QTextStream>
 
 JMDataObj::JMDataObj(int id)
     : m_id(id)
@@ -30,4 +31,9 @@ void JMDataObj::read(const QJsonObject &json)
 void JMDataObj::write(QJsonObject &json) const
 {
     json["id"] = m_id;
+}
+
+void JMDataObj::write(QTextStream &stream) const
+{
+    stream << m_id;
 }

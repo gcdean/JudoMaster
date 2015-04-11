@@ -1,6 +1,7 @@
 #include "Match.h"
 
 #include "Competitor.h"
+#include "JMUtil.h"
 #include "JudoMasterApplication.h"
 
 #include <QJsonObject>
@@ -117,6 +118,7 @@ void Match::read(const QJsonObject &json, const QList<Competitor *> competitors)
     }
 
     m_score = json["score"].toInt();
+    m_notes = json["notes"].toString();
 
 }
 
@@ -137,4 +139,43 @@ void Match::write(QJsonObject &json) const
     if(m_winner)
         json["winner"] = m_winner->id();
     json["score"] = m_score;
+    json["notes"] = m_notes;
+}
+
+void writeMatchHeader(QTextStream &stream)
+{
+    stream << "MatchId,BracketId,CompetitorId,Type,Notes" << endl;
+}
+
+void Match::write(QTextStream &stream) const
+{
+    QString notes = prepareStringForCSV(QString(m_notes));
+
+    // Want to write out 3 records, white, blue, winner
+    JMDataObj::write(stream);
+    stream << "," << m_bracketId;
+    stream << "," << (m_competitor1 ? m_competitor1->id() : -1);
+    stream << "," << "white";
+    stream << "," << notes;
+    stream << endl;
+
+    JMDataObj::write(stream);
+    stream << "," << m_bracketId;
+    stream << "," << (m_competitor2 ? m_competitor2->id() : -1);
+    stream << "," << "blue";
+    stream << "," << notes;
+    stream << endl;
+
+    JMDataObj::write(stream);
+    stream << "," << m_bracketId;
+    stream << "," << (m_winner ? m_winner->id() : -1);
+    stream << "," << "winner";
+    stream << "," << notes;
+    stream << endl;
+
+//    stream << "," << (m_competitor2 ? m_competitor2->id() : -1);
+//    stream << "," << (m_winner ? m_winner->id() : -1);
+//    stream << "," << m_score;
+//    stream << "," << prepareStringForCSV(QString(m_notes));
+//    stream << endl;
 }

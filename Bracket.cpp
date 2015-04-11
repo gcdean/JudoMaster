@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <QJsonValue>
 #include <QString>
+#include <QTextStream>
 
 
 namespace bracket
@@ -160,6 +161,62 @@ void Bracket::write(QJsonObject &json) const
     json["bracketMembers"] = bracketMembers;
 
 
+}
+
+void writeBracketHeader(QTextStream &stream)
+{
+    stream << "BracketId,Name,Gender,WeightType,MinAge,MaxAge,MaxWeight,MatchLength,Chokes,Armbars,MatNumber,FirstPlace,SecondPlace,ThirdPlace" << endl;
+}
+
+void Bracket::write(QTextStream &stream) const
+{
+    JMDataObj::write(stream);
+
+    stream << "," << m_name;
+    stream << "," << genderToString(m_gender);
+    stream << "," << weightTypeToStr(m_weightType);
+    stream << "," << m_minAge;
+    stream << "," << m_maxAge;
+    stream << "," << m_maxWeight;
+    stream << "," << m_time;
+    stream << "," << m_chokesAllowed;
+    stream << "," << m_armbarsAllowed;
+    stream << "," << m_matNumber;
+    stream << "," << m_firstPlace;
+    stream << "," << m_secondPlace;
+    stream << "," << m_thirdPlace_1;
+    stream << endl;
+
+    // TODO Write out Competitors?
+}
+
+void writeBracketCompetitorHeader(QTextStream &stream)
+{
+    stream << "BracketId,CompetitorId" << endl;
+}
+
+void Bracket::writeCompetitors(QTextStream &stream) const
+{
+    foreach(Competitor *competitor, m_competitors)
+    {
+        JMDataObj::write(stream);
+        stream << "," << competitor->id() << endl;
+    }
+}
+
+void writeBracketPlaceHeader(QTextStream &stream)
+{
+    stream << "BracketId,Place,CompetitorId" << endl;
+}
+
+void Bracket::writePlaces(QTextStream &stream) const
+{
+    JMDataObj::write(stream);
+    stream << "," << "1" << "," << m_firstPlace << endl;
+    JMDataObj::write(stream);
+    stream << "," << "2" << "," << m_secondPlace << endl;
+    JMDataObj::write(stream);
+    stream << "," << "3" << "," << m_thirdPlace_1 << endl;
 }
 
 void Bracket::setGender(JM::Gender gender)
